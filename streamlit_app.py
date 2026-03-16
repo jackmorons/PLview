@@ -84,7 +84,7 @@ def inject_custom_css():
             left: 0;
             width: 100%;
             text-align: center;
-            padding: 1rem;
+            padding: .8rem;
             background-color: #1a1a24;
             color: #5e5e73;
             font-size: 0.85rem;
