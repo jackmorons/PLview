@@ -93,7 +93,7 @@ def inject_custom_css():
         }
         .disk-bar2 {
             position: fixed;
-            bottom: 4;
+            bottom: 0;
             left: 0;
             width: 100%;
             height: 4px;
