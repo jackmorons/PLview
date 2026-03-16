@@ -174,16 +174,16 @@ def inject_custom_css():
         /* Info (White) */
         div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"] {
             background-color: rgba(150, 150, 150, 0.1);
-            border: 1px solid #9c27b0;
+            border: 1px solid #9e9e9e;
             border-radius: 8px;
             transition: all 0.2s ease;
         }
         div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"] p {
-            color: #ba68c8 !important;
+            color: #e0e0e0 !important;
             font-weight: 600;
         }
         div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"]:hover {
-            background-color: #9c27b0;
+            background-color: #757575;
             transform: translateY(-2px);
         }
         div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"]:hover p {
