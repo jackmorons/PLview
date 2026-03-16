@@ -7,20 +7,19 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS to hide the sidebar and style the top navbar
+# Custom CSS to hide the sidebar, style the top navbar, and add a footer
 def inject_custom_css():
     st.markdown("""
         <style>
-        /* Hide the default Streamlit sidebar */
+        /* Hide the default Streamlit sidebar and header */
         [data-testid="collapsedControl"] { display: none; }
         section[data-testid="stSidebar"] { display: none; }
-        
-        /* Hide the default Streamlit header bar */
         header {visibility: hidden;}
         
-        /* Reduce top padding of main content to make room for nav */
+        /* Reduce top/bottom padding of main content */
         .block-container {
             padding-top: 5rem !important;
+            padding-bottom: 5rem !important;
         }
         
         /* Powerlifting disk accent bar at the very top of the page */
@@ -46,23 +45,19 @@ def inject_custom_css():
             );
         }
         
-        /* Custom Top Navbar Styling Container */
-        .custom-navbar {
-            position: fixed;
-            top: 4px;
-            right: 2rem;
-            z-index: 999998;
-            background-color: rgba(18, 18, 24, 0.9);
-            padding: 0.5rem 1rem;
-            border-radius: 0 0 12px 12px;
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: none;
-            display: flex;
-            gap: 15px;
+        /* Logo styling */
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #f0f0f5;
+            letter-spacing: -0.5px;
+            margin-top: 5px;
+        }
+        .nav-logo span {
+            color: #d32f2f;
         }
 
-        /* Adjust hero text gradient to match the HTML version */
+        /* Hero Text Styles (used in home.py) */
         .hero-title {
             font-size: 3.5rem !important;
             font-weight: 800 !important;
@@ -75,16 +70,31 @@ def inject_custom_css():
             background-clip: text;
             text-align: center;
         }
-        
         .hero-subtitle {
             font-size: 1.25rem;
             color: #9a9ab0;
             text-align: center;
             margin-bottom: 2rem;
         }
+
+        /* Fixed Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            background-color: #1a1a24;
+            color: #5e5e73;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 999998;
+        }
         </style>
         
         <div class="disk-bar"></div>
+        <div class="footer">PLview &copy; 2026. Data sourced from OpenPowerlifting.</div>
     """, unsafe_allow_html=True)
 
 inject_custom_css()
@@ -98,9 +108,13 @@ pages = {
     "Info": st.Page("pages/info.py", title="Info", icon="ℹ️")
 }
 
-# Render top navigation using native columns mapped to HTML
+# Render top navigation using native columns
 with st.container():
-    cols = st.columns([8, 1, 1, 1, 1, 1])
+    # Col 0 is the Logo, the rest are nav links
+    cols = st.columns([4, 1, 1, 1, 1, 1])
+    
+    with cols[0]: 
+        st.markdown('<div class="nav-logo">PL<span>view</span></div>', unsafe_allow_html=True)
     with cols[1]: st.page_link(pages["Home"], label="Home", icon="🏠")
     with cols[2]: st.page_link(pages["Athletes"], label="Athletes", icon="🏋️")
     with cols[3]: st.page_link(pages["Records"], label="Records", icon="🏆")
