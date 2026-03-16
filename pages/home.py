@@ -59,7 +59,7 @@ with c2:
     st.write("Discover all-time records across weight classes, federations, and events.")
 
 with c3:
-    st.markdown("### 📊 Raw Data")
+    st.markdown("### ⚙️ Raw Data")
     st.write("Tools for data analysis and visualization.")
 
 st.markdown("---")
