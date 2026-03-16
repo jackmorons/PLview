@@ -72,12 +72,12 @@ st.markdown('<div style="margin-top: 2rem;"></div>', unsafe_allow_html=True)
 gallery = st.columns([0.6, 5, 0.2, 5, 0.4])
 with gallery[1]:
     st.image("https://placehold.co/600x400/EEE/31343C")
-    st.markdown("Caption")
+    st.markdown("Caption", text_alignment="center")
     st.image("https://placehold.co/600x400/EEE/31343C")
-    st.markdown("Caption")
+    st.markdown("Caption", text_alignment="center")
 with gallery[3]:
     st.image("https://placehold.co/600x400/EEE/31343C")
-    st.markdown("Caption")
+    st.markdown("Caption", text_alignment="center")
     st.image("https://placehold.co/600x400/EEE/31343C")
-    st.markdown("Caption")
+    st.markdown("Caption", text_alignment="center")
 
