@@ -219,6 +219,7 @@ def inject_custom_css():
         </style>
         
         <div class="disk-bar"></div>
+        <div class="disk-bar2"></div>
         <div class="footer">PLview &copy; 2026. Data sourced from OpenPowerlifting.</div>
     """, unsafe_allow_html=True)
 
