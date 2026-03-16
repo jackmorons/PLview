@@ -68,10 +68,12 @@ st.markdown("---")
 st.markdown("## Gallery")
 
 # Gallery Grid
-g1, g2 = st.columns(2)
-with g1:
+gallery = st.columns([0.4, 5, 0.2, 5, 0.4])
+with gallery[1]:
     st.image("https://placehold.co/600x400/EEE/31343C")
     st.image("https://placehold.co/600x400/EEE/31343C")
-with g2:
+with gallery[3]:
     st.image("https://placehold.co/600x400/EEE/31343C")
     st.image("https://placehold.co/600x400/EEE/31343C")
+
+    
