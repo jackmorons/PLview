@@ -60,7 +60,7 @@ with c2:
 
 with c3:
     st.markdown("### 📊 Raw Data")
-    st.write("Dive into the raw dataset and run your own queries and analysis.")
+    st.write("Tools for data analysis and visualization.")
 
 st.markdown("---")
 st.markdown("## Gallery")
