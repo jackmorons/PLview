@@ -9,9 +9,9 @@ with col2:
         st.switch_page("pages/athletes.py")
 
 col1, col2, col3 = st.columns([1, 1, 1])
-        with col2:
+with col2:
     if st.button("Browse Records", type="primary", use_container_width=True):
-        st.switch_page("pages/athletes.py")
+        st.switch_page("pages/record.py")
 
 st.markdown("---")
 
