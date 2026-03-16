@@ -66,6 +66,7 @@ with featureCards[4]:
 
 st.markdown("---")
 st.markdown("## Gallery", text_alignment="center")
+st.empty()
 
 # Gallery Grid
 gallery = st.columns([0.4, 5, 0.2, 5, 0.4])
