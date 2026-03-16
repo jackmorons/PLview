@@ -96,7 +96,7 @@ def inject_custom_css():
         /* Targeting each column's page link to apply predetermined colors */
         
         /* Home (RED) */
-        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] {
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] {
             background-color: rgba(211, 47, 47, 0.1);
             border: 1px solid #d32f2f;
             border-radius: 8px;
@@ -115,7 +115,7 @@ def inject_custom_css():
         }
 
         /* Athletes (BLUE) */
-        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] {
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] {
             background-color: rgba(25, 118, 210, 0.1);
             border: 1px solid #1976d2;
             border-radius: 8px;
