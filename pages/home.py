@@ -65,7 +65,7 @@ with featureCards[4]:
     st.write("Tools for data analysis and visualization built for coaches and athletes.")
 
 st.markdown("---")
-st.markdown("## Gallery", text_alignment="center")
+st.markdown("##Gallery", text_alignment="center")
 st.markdown('<div style="margin-top: 2rem;"></div>', unsafe_allow_html=True)
 
 # Gallery Grid
