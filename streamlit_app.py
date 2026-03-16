@@ -209,7 +209,7 @@ pages = {
 # Render top navigation using native columns
 with st.container():
     # Col 0 is the Logo, the rest are nav links
-    cols = st.columns([10, 1, 1, 1, 1, 1])
+    cols = st.columns([5, 1, 1, 1, 1, 1])
     
     with cols[0]: 
         st.markdown('<div class="nav-logo">PL<span>view</span></div>', unsafe_allow_html=True)
