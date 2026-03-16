@@ -47,11 +47,11 @@ def inject_custom_css():
         
         /* Logo styling */
         .nav-logo {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: 800;
             color: #f0f0f5;
             letter-spacing: -0.5px;
-            margin-top: 5px;
+            margin-top: 4px;
         }
         .nav-logo span {
             color: #d32f2f;
