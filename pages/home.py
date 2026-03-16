@@ -70,8 +70,8 @@ st.markdown("## Gallery")
 # Gallery Grid
 g1, g2 = st.columns(2)
 with g1:
-    st.image("https://via.placeholder.com/150")
-    st.image("https://via.placeholder.com/150")
+    st.image("https://placehold.co/600x400/EEE/31343C")
+    st.image("https://placehold.co/600x400/EEE/31343C")
 with g2:
-    st.image("https://via.placeholder.com/150")
-    st.image("https://via.placeholder.com/150")
+    st.image("https://placehold.co/600x400/EEE/31343C")
+    st.image("https://placehold.co/600x400/EEE/31343C")
