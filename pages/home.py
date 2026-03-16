@@ -48,12 +48,12 @@ with col5:
 st.markdown("---")
 
 # Feature Cards
-c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
+fc1, fc2, fc3, fc4, fc5, fc6, fc7 = st.columns([0.5, 0.5, 2, 2, 2, 0.5, 0.5])
 
-with c1: st.empty(width="small")
-with c2: st.empty(width="small")
+with fc1: st.empty(width="small")
+with fc2: st.empty(width="small")
 
-with c3:
+with fc3:
     st.page_link("pages/athletes.py", label="**Athletes**", icon="🏋️")
     st.write("Search and explore athlete profiles, competition history, and personal bests.")
 
