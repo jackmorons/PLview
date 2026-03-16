@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.markdown('<div class="hero-title">Powerlifting,<br>Visualized.</div>', unsafe_allow_html=True)
-st.markdown('<div class="hero-subtitle">Explore athletes, records, and data from the world of powerlifting, all in one place.</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-subtitle">Powerlifting is not just about lifting weights, it is about pushing yourself to the limit.\nPowerlifting is not just about big dudes and their lifts, it is about the journey.\nExplore athletes, records, and data from the world of powerlifting, all in one place.</div>', unsafe_allow_html=True)
 
 
 
