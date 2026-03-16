@@ -19,7 +19,7 @@ def inject_custom_css():
         /* Reduce top/bottom padding of main content */
         .block-container {
             padding-top: 2rem !important;
-            padding-bottom: 2rem !important;
+            padding-bottom: 5rem !important;
         }
         
         /* Powerlifting disk accent bar at the very top of the page */
@@ -171,9 +171,9 @@ def inject_custom_css():
             color: #ffffff !important;
         }
 
-        /* Info (Purple) */
+        /* Info (White) */
         div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"] {
-            background-color: rgba(156, 39, 176, 0.1);
+            background-color: rgba(150, 150, 150, 0.1);
             border: 1px solid #9c27b0;
             border-radius: 8px;
             transition: all 0.2s ease;
