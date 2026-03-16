@@ -50,7 +50,7 @@ st.markdown('<div class="hero-subtitle">Explore athletes, records, and data from
 st.markdown("---")
 
 # Feature Cards
-fc1, fc2, fc3, fc4, fc5, fc6, fc7 = st.columns([0.5, 0.5, 2, 2, 2, 0.5, 0.5])
+fc1, fc2, fc3, fc4, fc5, fc6, fc7 = st.columns([0.2, 0.2, 3, 3, 3, 0.2, 0.2])
 
 with fc3:
     st.page_link("pages/athletes.py", label="**Athletes**", icon="🏋️")
