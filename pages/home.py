@@ -50,8 +50,8 @@ st.markdown("---")
 # Feature Cards
 c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
 
-with c1: st.empty()
-with c2: st.empty()
+with c1: st.empty(width="small")
+with c2: st.empty(width="small")
 
 with c3:
     st.page_link("pages/athletes.py", label="**Athletes**", icon="🏋️")
@@ -65,8 +65,8 @@ with c5:
     st.page_link("pages/tools.py", label="**Tools**", icon="⚙️")
     st.write("Tools for data analysis and visualization built for coaches and athletes.")
 
-with c6: st.empty()
-with c7: st.empty()
+with c6: st.empty(width="small")
+with c7: st.empty(width="small")
 
 st.markdown("---")
 st.markdown("## Gallery")
