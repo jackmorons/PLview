@@ -71,8 +71,8 @@ st.markdown('<div style="margin-top: 2rem;"></div>', unsafe_allow_html=True)
 # Gallery Grid
 gallery = st.columns([0.6, 5, 0.2, 5, 0.4])
 with gallery[1]:
-    st.image("https://placehold.co/600x400/EEE/31343C")
-    st.markdown("Caption", text_alignment="center")
+    st.image("https://www.repelbullies.com/cdn/shop/articles/ed_coan_1024x1024.jpg?v=1604244278")
+    st.markdown("Ed Coan", text_alignment="center")
     st.image("https://placehold.co/600x400/EEE/31343C")
     st.markdown("Caption", text_alignment="center")
 with gallery[3]:
