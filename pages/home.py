@@ -73,8 +73,8 @@ gallery = st.columns([0.6, 5, 0.2, 5, 0.4])
 with gallery[1]:
     st.image("https://www.repelbullies.com/cdn/shop/articles/ed_coan_1024x1024.jpg?v=1604244278")
     st.markdown("Ed Coan", text_alignment="center")
-    st.image("https://placehold.co/600x400/EEE/31343C")
-    st.markdown("Caption", text_alignment="center")
+    st.image("https://i.vimeocdn.com/video/677094309-127c02ce090a4117d20683950924113a4e21a27cfeefc4c750ffa111fa1f50b4-d")
+    st.markdown("Konstantīns Konstantinovs", text_alignment="center")
 with gallery[3]:
     st.image("https://placehold.co/600x400/EEE/31343C")
     st.markdown("Caption", text_alignment="center")
