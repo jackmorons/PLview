@@ -54,11 +54,11 @@ with fc3:
     st.page_link("pages/athletes.py", label="**Athletes**", icon="🏋️")
     st.write("Search and explore athlete profiles, competition history, and personal bests.")
 
-with c4:
+with fc4:
     st.page_link("pages/record.py", label="**Records**", icon="🏆")
     st.write("Discover all-time records across weight classes, federations, and events.")
 
-with c5:
+with fc5:
     st.page_link("pages/tools.py", label="**Tools**", icon="⚙️")
     st.write("Tools for data analysis and visualization built for coaches and athletes.")
 
