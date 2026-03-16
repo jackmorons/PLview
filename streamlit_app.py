@@ -51,7 +51,7 @@ def inject_custom_css():
             font-weight: 800;
             color: #f0f0f5;
             letter-spacing: -0.5px;
-            margin-top: 0px;
+            margin-top: -10px;
         }
         .nav-logo span {
             color: #d32f2f;
