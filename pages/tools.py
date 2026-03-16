@@ -10,7 +10,7 @@ st.markdown("---")
 st.info("⚙️ **Coming Soon**\n\n Tools will be added here.")
 
 # --- Slick Dark Mode Plot Setup ---
-fig, ax = plt.subplots(figsize=(6, 3))
+fig, ax = plt.subplots(figsize=(10, 5))
 
 # Transparent backgrounds to blend perfectly with Streamlit
 fig.patch.set_facecolor('none')
