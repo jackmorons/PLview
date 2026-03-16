@@ -65,7 +65,7 @@ with featureCards[4]:
     st.write("Tools for data analysis and visualization built for coaches and athletes.")
 
 st.markdown("---")
-st.markdown("## Gallery")
+st.markdown("Gallery")
 
 # Gallery Grid
 gallery = st.columns([0.4, 5, 0.2, 5, 0.4])
@@ -76,4 +76,3 @@ with gallery[3]:
     st.image("https://placehold.co/600x400/EEE/31343C")
     st.image("https://placehold.co/600x400/EEE/31343C")
 
-    
