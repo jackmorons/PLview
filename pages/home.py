@@ -51,15 +51,15 @@ st.markdown("---")
 c1, c2, c3 = st.columns(3)
 
 with c1:
-    st.markdown("### 🏋️ Athletes")
+    st.page_link("pages/athletes.py", label="**🏋️ Athletes**")
     st.write("Search and explore athlete profiles, competition history, and personal bests.")
 
 with c2:
-    st.markdown("### 🏆 Records")
+    st.page_link("pages/record.py", label="**🏆 Records**")
     st.write("Discover all-time records across weight classes, federations, and events.")
 
 with c3:
-    st.markdown("### ⚙️ Tools")
+    st.page_link("pages/tools.py", label="**⚙️ Tools**")
     st.write("Tools for data analysis and visualization built for coaches and athletes.")
 
 st.markdown("---")

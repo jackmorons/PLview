@@ -123,40 +123,40 @@ def inject_custom_css():
         /* Targeting each column's page link to apply predetermined colors */
         
         /* Home (RED) */
-        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] {
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] {
             background-color: rgba(211, 47, 47, 0.1);
             border: 1px solid #d32f2f;
             border-radius: 8px;
             transition: all 0.2s ease;
         }
-        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] p {
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] p {
             color: #e57373 !important;
             font-weight: 600;
         }
-        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"]:hover {
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover {
             background-color: #d32f2f;
             transform: translateY(-2px);
         }
-        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"]:hover p {
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover p {
             color: #ffffff !important;
         }
 
         /* Athletes (BLUE) */
-        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] {
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] {
             background-color: rgba(25, 118, 210, 0.1);
             border: 1px solid #1976d2;
             border-radius: 8px;
             transition: all 0.2s ease;
         }
-        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] p {
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] p {
             color: #64b5f6 !important;
             font-weight: 600;
         }
-        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover {
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"]:hover {
             background-color: #1976d2;
             transform: translateY(-2px);
         }
-        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover p {
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"]:hover p {
             color: #ffffff !important;
         }
 
