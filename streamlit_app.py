@@ -93,6 +93,12 @@ def inject_custom_css():
         }
 
         /* --- Header Nav Link Colors --- */
+        div[data-testid="stColumn"] a[data-testid="stPageLink-NavLink"] {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+
         /* Targeting each column's page link to apply predetermined colors */
         
         /* Home (RED) */
