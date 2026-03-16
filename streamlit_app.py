@@ -47,7 +47,7 @@ def inject_custom_css():
         
         /* Logo styling */
         .nav-logo {
-            font-size: 1.5rem;
+            font-size: 3rem;
             font-weight: 800;
             color: #f0f0f5;
             letter-spacing: -0.5px;
