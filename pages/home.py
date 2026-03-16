@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.markdown('<div class="hero-title">Powerlifting,<br>Visualized.</div>', unsafe_allow_html=True)
-st.markdown('<div class="hero-subtitle">Explore athletes, records, and raw data from the world of powerlifting — all in one place.</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-subtitle">Explore athletes, records, and data from the world of powerlifting — all in one place.</div>', unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([1, 1, 1])
 with col2:
