@@ -18,8 +18,8 @@ def inject_custom_css():
         
         /* Reduce top/bottom padding of main content */
         .block-container {
-            padding-top: 5rem !important;
-            padding-bottom: 5rem !important;
+            padding-top: 2rem !important;
+            padding-bottom: 2rem !important;
         }
         
         /* Powerlifting disk accent bar at the very top of the page */
@@ -33,14 +33,14 @@ def inject_custom_css():
             background: linear-gradient(
                 90deg,
                 #d32f2f 0%,
-                #d32f2f 20%,
-                #1976d2 20%,
-                #1976d2 40%,
-                #388e3c 40%,
-                #388e3c 60%,
-                #f9a825 60%,
-                #f9a825 80%,
-                #e0e0e0 80%,
+                #d32f2f 15%,
+                #1976d2 25%,
+                #1976d2 35%,
+                #388e3c 45%,
+                #388e3c 55%,
+                #f9a825 66%,
+                #f9a825 75%,
+                #e0e0e0 85%,
                 #e0e0e0 100%
             );
         }
@@ -90,6 +90,104 @@ def inject_custom_css():
             font-size: 0.85rem;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             z-index: 999998;
+        }
+
+        /* --- Header Nav Link Colors --- */
+        /* Targeting each column's page link to apply predetermined colors */
+        
+        /* Home (Blue) */
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] {
+            background-color: rgba(25, 118, 210, 0.1);
+            border: 1px solid #1976d2;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] p {
+            color: #64b5f6 !important;
+            font-weight: 600;
+        }
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover {
+            background-color: #1976d2;
+            transform: translateY(-2px);
+        }
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover p {
+            color: #ffffff !important;
+        }
+
+        /* Athletes (Red) */
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] {
+            background-color: rgba(211, 47, 47, 0.1);
+            border: 1px solid #d32f2f;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] p {
+            color: #e57373 !important;
+            font-weight: 600;
+        }
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"]:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"]:hover p {
+            color: #ffffff !important;
+        }
+
+        /* Records (Gold) */
+        div[data-testid="stColumn"]:nth-of-type(4) a[data-testid="stPageLink-NavLink"] {
+            background-color: rgba(249, 168, 37, 0.1);
+            border: 1px solid #f9a825;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        div[data-testid="stColumn"]:nth-of-type(4) a[data-testid="stPageLink-NavLink"] p {
+            color: #ffd54f !important;
+            font-weight: 600;
+        }
+        div[data-testid="stColumn"]:nth-of-type(4) a[data-testid="stPageLink-NavLink"]:hover {
+            background-color: #f9a825;
+            transform: translateY(-2px);
+        }
+        div[data-testid="stColumn"]:nth-of-type(4) a[data-testid="stPageLink-NavLink"]:hover p {
+            color: #ffffff !important;
+        }
+
+        /* Raw Data (Green) */
+        div[data-testid="stColumn"]:nth-of-type(5) a[data-testid="stPageLink-NavLink"] {
+            background-color: rgba(56, 142, 60, 0.1);
+            border: 1px solid #388e3c;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        div[data-testid="stColumn"]:nth-of-type(5) a[data-testid="stPageLink-NavLink"] p {
+            color: #81c784 !important;
+            font-weight: 600;
+        }
+        div[data-testid="stColumn"]:nth-of-type(5) a[data-testid="stPageLink-NavLink"]:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+        div[data-testid="stColumn"]:nth-of-type(5) a[data-testid="stPageLink-NavLink"]:hover p {
+            color: #ffffff !important;
+        }
+
+        /* Info (Purple) */
+        div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"] {
+            background-color: rgba(156, 39, 176, 0.1);
+            border: 1px solid #9c27b0;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"] p {
+            color: #ba68c8 !important;
+            font-weight: 600;
+        }
+        div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"]:hover {
+            background-color: #9c27b0;
+            transform: translateY(-2px);
+        }
+        div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"]:hover p {
+            color: #ffffff !important;
         }
         </style>
         

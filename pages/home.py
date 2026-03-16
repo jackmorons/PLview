@@ -8,6 +8,11 @@ with col2:
     if st.button("Browse Athletes", type="primary", use_container_width=True):
         st.switch_page("pages/athletes.py")
 
+col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+    if st.button("Browse Records", type="primary", use_container_width=True):
+        st.switch_page("pages/athletes.py")
+
 st.markdown("---")
 
 # Feature Cards
