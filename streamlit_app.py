@@ -237,15 +237,15 @@ pages = {
 # Render top navigation using native columns
 with st.container():
     # Col 0 is the Logo, the rest are nav links
-    cols = st.columns([5, 1, 1, 1, 1, 1])
+    headerNavLinks = st.columns([5, 1, 1, 1, 1, 1])
     
-    with cols[0]: 
+    with headerNavLinks[0]: 
         st.markdown('<div class="nav-logo">PL<span>view</span></div>', unsafe_allow_html=True)
-    with cols[1]: st.page_link(pages["Home"], label="Home", icon="🏠", use_container_width=True)
-    with cols[2]: st.page_link(pages["Athletes"], label="Athletes", icon="🏋️", use_container_width=True)
-    with cols[3]: st.page_link(pages["Records"], label="Records", icon="🏆", use_container_width=True)
-    with cols[4]: st.page_link(pages["Tools"], label="Tools", icon="⚙️", use_container_width=True)
-    with cols[5]: st.page_link(pages["Info"], label="Info", icon="ℹ️", use_container_width=True)
+    with headerNavLinks[1]: st.page_link(pages["Home"], label="Home", icon="🏠", use_container_width=True)
+    with headerNavLinks[2]: st.page_link(pages["Athletes"], label="Athletes", icon="🏋️", use_container_width=True)
+    with headerNavLinks[3]: st.page_link(pages["Records"], label="Records", icon="🏆", use_container_width=True)
+    with headerNavLinks[4]: st.page_link(pages["Tools"], label="Tools", icon="⚙️", use_container_width=True)
+    with headerNavLinks[5]: st.page_link(pages["Info"], label="Info", icon="ℹ️", use_container_width=True)
 
 st.markdown("---")
 

@@ -50,17 +50,17 @@ st.markdown('<div class="hero-subtitle">Explore athletes, records, and data from
 st.markdown("---")
 
 # Feature Cards
-fc1, fc2, fc3, fc4, fc5, fc6, fc7 = st.columns([0.2, 0.2, 3, 3, 3, 0.2, 0.2])
+featureCards = st.columns([0.2, 0.2, 3, 3, 3, 0.2, 0.2])
 
-with fc3:
+with featureCards[2]:
     st.page_link("pages/athletes.py", label="**Athletes**", icon="🏋️")
     st.write("Search and explore athlete profiles, competition history, and personal bests.")
 
-with fc4:
+with featureCards[3]:
     st.page_link("pages/record.py", label="**Records**", icon="🏆")
     st.write("Discover all-time records across weight classes, federations, and events.")
 
-with fc5:
+with featureCards[4]:
     st.page_link("pages/tools.py", label="**Tools**", icon="⚙️")
     st.write("Tools for data analysis and visualization built for coaches and athletes.")
 
