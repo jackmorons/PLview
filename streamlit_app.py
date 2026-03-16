@@ -213,11 +213,11 @@ with st.container():
     
     with cols[0]: 
         st.markdown('<div class="nav-logo">PL<span>view</span></div>', unsafe_allow_html=True)
-    with cols[1]: st.page_link(pages["Home"], label="Home", icon="🏠", width="400px")
-    with cols[2]: st.page_link(pages["Athletes"], label="Athletes", icon="🏋️")
-    with cols[3]: st.page_link(pages["Records"], label="Records", icon="🏆")
-    with cols[4]: st.page_link(pages["Tools"], label="Tools", icon="⚙️")
-    with cols[5]: st.page_link(pages["Info"], label="Info", icon="ℹ️")
+    with cols[1]: st.page_link(pages["Home"], label="Home", icon="🏠", width="wide")
+    with cols[2]: st.page_link(pages["Athletes"], label="Athletes", icon="🏋️", width="wide")
+    with cols[3]: st.page_link(pages["Records"], label="Records", icon="🏆", width="wide")
+    with cols[4]: st.page_link(pages["Tools"], label="Tools", icon="⚙️", width="wide")
+    with cols[5]: st.page_link(pages["Info"], label="Info", icon="ℹ️", width="wide")
 
 st.markdown("---")
 
