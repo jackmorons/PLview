@@ -10,6 +10,22 @@ with col2:
 
 col1, col2, col3 = st.columns([1, 1, 1])
 with col2:
+    st.markdown("""
+        <style>
+        div[data-testid="stElementContainer"]:has(.record-btn-marker) + div[data-testid="stElementContainer"] button {
+            background-color: rgba(25, 118, 210, 0.1);
+            border: 1px solid #1976d2;
+            color: #64b5f6;
+            transition: all 0.2s ease;
+        }
+        div[data-testid="stElementContainer"]:has(.record-btn-marker) + div[data-testid="stElementContainer"] button:hover {
+            background-color: #1976d2;
+            color: #ffffff;
+            border: 1px solid #1976d2;
+        }
+        </style>
+        <div class="record-btn-marker"></div>
+    """, unsafe_allow_html=True)
     if st.button("Browse Records", type="primary", use_container_width=True):
         st.switch_page("pages/record.py")
 
