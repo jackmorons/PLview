@@ -202,7 +202,7 @@ pages = {
     "Home": st.Page("pages/home.py", title="Home", icon="🏠"),
     "Athletes": st.Page("pages/athletes.py", title="Athletes", icon="🏋️"),
     "Records": st.Page("pages/record.py", title="Records", icon="🏆"),
-    "Raw Data": st.Page("pages/raw.py", title="Raw Data", icon="📊"),
+    "Tools": st.Page("pages/tools.py", title="Tools", icon="📊"),
     "Info": st.Page("pages/info.py", title="Info", icon="ℹ️")
 }
 
@@ -216,7 +216,7 @@ with st.container():
     with cols[1]: st.page_link(pages["Home"], label="Home", icon="🏠")
     with cols[2]: st.page_link(pages["Athletes"], label="Athletes", icon="🏋️")
     with cols[3]: st.page_link(pages["Records"], label="Records", icon="🏆")
-    with cols[4]: st.page_link(pages["Raw Data"], label="Raw", icon="📊")
+    with cols[4]: st.page_link(pages["Tools"], label="Tools", icon="📊")
     with cols[5]: st.page_link(pages["Info"], label="Info", icon="ℹ️")
 
 st.markdown("---")
