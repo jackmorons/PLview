@@ -66,7 +66,7 @@ with featureCards[4]:
 
 st.markdown("---")
 st.markdown("## Gallery", text_alignment="center")
-st.empty()
+st.markdown('<div style="margin-top: 2rem;"></div>', unsafe_allow_html=True)
 
 # Gallery Grid
 gallery = st.columns([0.4, 5, 0.2, 5, 0.4])
