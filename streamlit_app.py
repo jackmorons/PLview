@@ -36,10 +36,10 @@ def inject_custom_css():
                 #d32f2f 15%,
                 #1976d2 25%,
                 #1976d2 35%,
-                #388e3c 45%,
-                #388e3c 55%,
-                #f9a825 66%,
-                #f9a825 75%,
+                #f9a825 45%,
+                #f9a825 55%,
+                #388e3c 65%,
+                #388e3c 75%,
                 #e0e0e0 85%,
                 #e0e0e0 100%
             );
@@ -95,27 +95,8 @@ def inject_custom_css():
         /* --- Header Nav Link Colors --- */
         /* Targeting each column's page link to apply predetermined colors */
         
-        /* Home (Blue) */
+        /* Home (RED) */
         div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] {
-            background-color: rgba(25, 118, 210, 0.1);
-            border: 1px solid #1976d2;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] p {
-            color: #64b5f6 !important;
-            font-weight: 600;
-        }
-        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover {
-            background-color: #1976d2;
-            transform: translateY(-2px);
-        }
-        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover p {
-            color: #ffffff !important;
-        }
-
-        /* Athletes (Red) */
-        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] {
             background-color: rgba(211, 47, 47, 0.1);
             border: 1px solid #d32f2f;
             border-radius: 8px;
@@ -133,7 +114,26 @@ def inject_custom_css():
             color: #ffffff !important;
         }
 
-        /* Records (Gold) */
+        /* Athletes (BLUE) */
+        div[data-testid="stColumn"]:nth-of-type(3) a[data-testid="stPageLink-NavLink"] {
+            background-color: rgba(25, 118, 210, 0.1);
+            border: 1px solid #1976d2;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"] p {
+            color: #64b5f6 !important;
+            font-weight: 600;
+        }
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover {
+            background-color: #1976d2;
+            transform: translateY(-2px);
+        }
+        div[data-testid="stColumn"]:nth-of-type(2) a[data-testid="stPageLink-NavLink"]:hover p {
+            color: #ffffff !important;
+        }
+
+        /* Records (GOLD) */
         div[data-testid="stColumn"]:nth-of-type(4) a[data-testid="stPageLink-NavLink"] {
             background-color: rgba(249, 168, 37, 0.1);
             border: 1px solid #f9a825;
@@ -152,7 +152,7 @@ def inject_custom_css():
             color: #ffffff !important;
         }
 
-        /* Raw Data (Green) */
+        /* Raw Data (GREEN) */
         div[data-testid="stColumn"]:nth-of-type(5) a[data-testid="stPageLink-NavLink"] {
             background-color: rgba(56, 142, 60, 0.1);
             border: 1px solid #388e3c;
@@ -171,7 +171,7 @@ def inject_custom_css():
             color: #ffffff !important;
         }
 
-        /* Info (White) */
+        /* Info (WHITE) */
         div[data-testid="stColumn"]:nth-of-type(6) a[data-testid="stPageLink-NavLink"] {
             background-color: rgba(150, 150, 150, 0.1);
             border: 1px solid #9e9e9e;
