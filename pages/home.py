@@ -50,9 +50,6 @@ st.markdown("---")
 # Feature Cards
 fc1, fc2, fc3, fc4, fc5, fc6, fc7 = st.columns([0.5, 0.5, 2, 2, 2, 0.5, 0.5])
 
-with fc1: st.empty(width="small")
-with fc2: st.empty(width="small")
-
 with fc3:
     st.page_link("pages/athletes.py", label="**Athletes**", icon="🏋️")
     st.write("Search and explore athlete profiles, competition history, and personal bests.")
@@ -64,9 +61,6 @@ with c4:
 with c5:
     st.page_link("pages/tools.py", label="**Tools**", icon="⚙️")
     st.write("Tools for data analysis and visualization built for coaches and athletes.")
-
-with c6: st.empty(width="small")
-with c7: st.empty(width="small")
 
 st.markdown("---")
 st.markdown("## Gallery")
