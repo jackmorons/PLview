@@ -69,7 +69,7 @@ st.markdown("## Gallery", text_alignment="center")
 st.markdown('<div style="margin-top: 2rem;"></div>', unsafe_allow_html=True)
 
 # Gallery Grid
-gallery = st.columns([0.4, 5, 0.2, 5, 0.4])
+gallery = st.columns([0.6, 5, 0.2, 5, 0.4])
 with gallery[1]:
     st.image("https://placehold.co/600x400/EEE/31343C")
     st.image("https://placehold.co/600x400/EEE/31343C")
