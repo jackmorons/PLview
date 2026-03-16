@@ -65,7 +65,7 @@ with featureCards[4]:
     st.write("Tools for data analysis and visualization built for coaches and athletes.")
 
 st.markdown("---")
-st.markdown("## Gallery", center=True)
+st.markdown("## Gallery", text_align="center")
 
 # Gallery Grid
 gallery = st.columns([0.4, 5, 0.2, 5, 0.4])
