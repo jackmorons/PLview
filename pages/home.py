@@ -70,8 +70,8 @@ st.markdown("## Gallery")
 # Gallery Grid
 g1, g2 = st.columns(2)
 with g1:
-    st.info("📷 Image 1 (Placeholder)")
-    st.info("📷 Image 3 (Placeholder)")
+    st.image("https://via.placeholder.com/150")
+    st.image("https://via.placeholder.com/150")
 with g2:
-    st.info("📷 Image 2 (Placeholder)")
-    st.info("📷 Image 4 (Placeholder)")
+    st.image("https://via.placeholder.com/150")
+    st.image("https://via.placeholder.com/150")
