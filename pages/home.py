@@ -24,8 +24,8 @@ with col2:
     if st.button("Browse Athletes", type="primary", use_container_width=True):
         st.switch_page("pages/athletes.py")
 
-col1, col2, col3 = st.columns([1, 1, 1])
-with col2:
+col4, col5, col6 = st.columns([1, 1, 1])
+with col5:
     st.markdown("""
         <style>
         div[data-testid="stElementContainer"]:has(.record-btn-marker) + div[data-testid="stElementContainer"] button {
