@@ -76,8 +76,8 @@ with gallery[1]:
     st.image("https://i.vimeocdn.com/video/677094309-127c02ce090a4117d20683950924113a4e21a27cfeefc4c750ffa111fa1f50b4-d")
     st.markdown("Konstantīns Konstantinovs", text_alignment="center")
 with gallery[3]:
-    st.image("https://placehold.co/600x400/EEE/31343C")
-    st.markdown("Caption", text_alignment="center")
-    st.image("https://placehold.co/600x400/EEE/31343C")
-    st.markdown("Caption", text_alignment="center")
+    st.image("https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2018/06/andrey-1109.jpg?quality=86&strip=all")
+    st.markdown("Andrey Malanichev", text_alignment="center")
+    st.image("https://www.ironcompany.com/media/magefan_blog/2018/04/Larry-Pacifico-Squat.jpg")
+    st.markdown("Larry Pacifico", text_alignment="center")
 
