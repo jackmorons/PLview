@@ -91,6 +91,27 @@ def inject_custom_css():
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             z-index: 999998;
         }
+        .disk-bar2 {
+            position: fixed;
+            bottom: 4;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            z-index: 999999;
+            background: linear-gradient(
+                90deg,
+                #d32f2f 0%,
+                #d32f2f 15%,
+                #1976d2 25%,
+                #1976d2 35%,
+                #f9a825 45%,
+                #f9a825 55%,
+                #388e3c 65%,
+                #388e3c 75%,
+                #e0e0e0 85%,
+                #e0e0e0 100%
+            );
+        }
 
         /* --- Header Nav Link Colors --- */
         div[data-testid="stColumn"] a[data-testid="stPageLink-NavLink"] {
