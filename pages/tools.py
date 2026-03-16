@@ -5,4 +5,4 @@ st.write("Tools for data analysis and visualization built for coaches and athlet
 
 st.markdown("---")
 
-st.info("⚙️ **Coming Soon**\n\Tools will be added here.")
+st.info("⚙️ **Coming Soon**\n\n Tools will be added here.")
