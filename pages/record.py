@@ -50,7 +50,7 @@ with filter_cols[3]:
 
 # --- Apply filters ---
 filtered = df[
-    (df["AgeClass"] == age_class) &
+    (df["AgeClass"].isin(selected_age_classes)) &
     (df["WeightClassKg"] == weight_class) &
     (df["Equipment"] == equipment)
 ].copy()
