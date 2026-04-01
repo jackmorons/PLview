@@ -20,9 +20,10 @@ femalesdf = pd.DataFrame(females_data)
 # ── Sub-page definitions ──────────────────────────────────────────────
 TOOLS_PAGES = [
     {"key": "lift_distributions", "label": "📊 Lift Distributions"},
-    {"key": "weight_class_analysis", "label": "⚖️ Weight Class Analysis"},
-    {"key": "performance_trends", "label": "📈 Performance Trends"},
-    {"key": "wilks_calculator", "label": "🧮 Wilks Calculator"},
+    {"key": "aaaa", "label": "aaaa"},
+    {"key": "bbbb", "label": "bbbb"},
+    {"key": "cccc", "label": "cccc"},
+    {"key": "strength_index_calculator", "label": "🧮 Strength Index Calculator"},
 ]
 
 # Initialise active sub-page (default to first)
