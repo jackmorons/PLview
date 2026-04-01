@@ -76,31 +76,74 @@ if selected_name:
 
     # --- Progress Chart ---
     st.markdown("---")
-    st.subheader("📈 Total Over Time")
+    st.subheader("📈 Lifts Over Time")
 
-    chart_df = athlete_df[athlete_df["TotalKg"] > 0][["Date", "TotalKg", "Equipment", "MeetName"]].copy()
-    if not chart_df.empty:
-        chart_df["Date"] = pd.to_datetime(chart_df["Date"], errors="coerce")
-        chart_df = chart_df.dropna(subset=["Date"]).sort_values("Date")
+    lift_columns = {
+        "Squat 1": "Squat1Kg",
+        "Squat 2": "Squat2Kg",
+        "Squat 3": "Squat3Kg",
+        "Bench 1": "Bench1Kg",
+        "Bench 2": "Bench2Kg",
+        "Bench 3": "Bench3Kg",
+        "Deadlift 1": "Deadlift1Kg",
+        "Deadlift 2": "Deadlift2Kg",
+        "Deadlift 3": "Deadlift3Kg",
+        "Total": "TotalKg",
+    }
 
-        fig = px.line(
-            chart_df,
-            x="Date",
-            y="TotalKg",
-            markers=True,
-            hover_data=["MeetName", "Equipment"],
-            title="Competition Total Over Time",
-            template="plotly_dark",
-        )
+    # Color families: reds for squat, blues for bench, greens for deadlift, gold for total
+    lift_colors = {
+        "Squat 1": "#ef5350", "Squat 2": "#e53935", "Squat 3": "#b71c1c",
+        "Bench 1": "#42a5f5", "Bench 2": "#1e88e5", "Bench 3": "#0d47a1",
+        "Deadlift 1": "#66bb6a", "Deadlift 2": "#43a047", "Deadlift 3": "#1b5e20",
+        "Total": "#ffd54f",
+    }
+
+    chart_source = athlete_df.copy()
+    chart_source["Date"] = pd.to_datetime(chart_source["Date"], errors="coerce")
+    chart_source = chart_source.dropna(subset=["Date"]).sort_values("Date")
+
+    if not chart_source.empty:
+        import plotly.graph_objects as go
+        fig = go.Figure()
+
+        for label, col in lift_columns.items():
+            if col not in chart_source.columns:
+                continue
+            # Convert to numeric, failed attempts are negative
+            series = pd.to_numeric(chart_source[col], errors="coerce")
+
+            fig.add_trace(go.Scatter(
+                x=chart_source["Date"],
+                y=series,
+                mode="lines+markers",
+                name=label,
+                line=dict(color=lift_colors[label], width=2 if "Total" not in label else 3),
+                marker=dict(size=6 if "Total" not in label else 8),
+                hovertemplate=f"{label}: %{{y}} kg<br>%{{x|%Y-%m-%d}}<extra></extra>",
+                visible=True if label == "Total" else "legendonly",
+            ))
+
         fig.update_layout(
+            template="plotly_dark",
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
             font_color="#9a9ab0",
             title_font_color="#f0f0f5",
-            margin=dict(l=20, r=20, t=50, b=20),
-            yaxis_title="Total (kg)",
+            title="All Lifts Over Time (click legend to toggle)",
+            yaxis_title="Weight (kg)",
             xaxis_title="Date",
+            margin=dict(l=20, r=20, t=50, b=20),
+            legend=dict(
+                orientation="v",
+                yanchor="top",
+                y=1,
+                xanchor="left",
+                x=1.02,
+                font=dict(size=12),
+            ),
         )
+
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Not enough data to show a progress chart.")
