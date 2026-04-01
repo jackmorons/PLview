@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 st.set_page_config(
     page_title="PLview",
@@ -250,6 +251,16 @@ with st.container():
     with headerNavLinks[5]: st.page_link(pages["Info"], label="Info", icon="ℹ️", use_container_width=True)
 
 st.markdown("---")
+
+# import data from csv files as dictionaries
+males_data = pd.read_csv("datasets/OP_Males.csv")
+females_data = pd.read_csv("datasets/OP_Females.csv")
+
+if st.session_state.get("males_data") is None:
+    st.session_state["males_data"] = males_data
+if st.session_state.get("females_data") is None:
+    st.session_state["females_data"] = females_data
+
 
 # Run navigation engine
 pg = st.navigation(list(pages.values()), position="hidden")
