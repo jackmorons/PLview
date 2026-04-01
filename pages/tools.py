@@ -70,14 +70,37 @@ with col1:
         color="Sets",
         color_continuous_scale="Viridis"
     )
+    
+    fig_bar.update_traces(
+        unselected=dict(marker=dict(opacity=0.3))
+    )
     fig_bar.update_layout(
+        clickmode="event+select",
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         font_color="#9a9ab0",
         title_font_color="#f0f0f5",
         margin=dict(l=20, r=20, t=50, b=20)
     )
-    st.plotly_chart(fig_bar, use_container_width=True)
+    
+    event = st.plotly_chart(
+        fig_bar, 
+        use_container_width=True, 
+        on_select="rerun",
+        selection_mode="points",
+        key="bar_select"
+    )
+    
+    selected_muscles = []
+    if event and "selection" in event and event["selection"]["points"]:
+        selected_muscles = [pt["x"] for pt in event["selection"]["points"]]
+        
+    if selected_muscles:
+        st.write("📊 Filtered Data:")
+        st.dataframe(volume_df[volume_df["Muscle Group"].isin(selected_muscles)], hide_index=True, use_container_width=True)
+    else:
+        st.write("📊 All Data:")
+        st.dataframe(volume_df, hide_index=True, use_container_width=True)
 
 with col2:
     st.subheader("🎯 Strength-Velocity Profile")
