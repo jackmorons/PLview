@@ -77,6 +77,7 @@ if selected_name:
     # --- Progress Chart ---
     st.markdown("---")
     st.subheader("📈 Lifts Over Time")
+    st.write("This chart shows all lifts performed by the athlete, including failed attempts (negative values).")
 
     lift_columns = {
         "Squat 1": "Squat1Kg",
