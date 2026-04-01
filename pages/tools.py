@@ -17,10 +17,10 @@ females_data = st.session_state["females_data"]
 malesdf = pd.DataFrame(males_data)
 femalesdf = pd.DataFrame(females_data)
 
-fig1 = px.histogram(malesdf, x="Squat", title="Squat Distribution")
+fig1 = px.histogram(malesdf, x="Best3SquatKg", title="Squat Distribution (Males)")
 st.plotly_chart(fig1, use_container_width=True)
 
-fig2 = px.histogram(femalesdf, x="Squat", title="Squat Distribution")
+fig2 = px.histogram(femalesdf, x="Best3SquatKg", title="Squat Distribution (Females)")
 st.plotly_chart(fig2, use_container_width=True)
 
 
