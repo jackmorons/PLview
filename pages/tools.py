@@ -54,11 +54,9 @@ TOOLS_PAGES = [
     {"key": "strength_index_calculator", "label": "🧮 Strength Index"},
 ]
 
-st.session_state["tools_active_page"] = TOOLS_PAGES[0]["key"]
-
 # Initialise active sub-page (default to first)
-# if "tools_active_page" not in st.session_state:
-#     st.session_state["tools_active_page"] = TOOLS_PAGES[0]["key"]
+if "tools_active_page" not in st.session_state:
+    st.session_state["tools_active_page"] = TOOLS_PAGES[0]["key"]
 
 # ── Sub-page button row ──────────────────────────────────────────────
 btn_cols = st.columns(len(TOOLS_PAGES))
