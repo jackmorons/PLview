@@ -17,153 +17,83 @@ females_data = st.session_state["females_data"]
 malesdf = pd.DataFrame(males_data)
 femalesdf = pd.DataFrame(females_data)
 
-lift_cols = {
-    "🏋️ Squat": "Best3SquatKg",
-    "💪 Bench": "Best3BenchKg",
-    "🔥 Deadlift": "Best3DeadliftKg",
-    "🏆 Total": "TotalKg",
-}
+# ── Sub-page definitions ──────────────────────────────────────────────
+TOOLS_PAGES = [
+    {"key": "lift_distributions", "label": "📊 Lift Distributions"},
+    {"key": "weight_class_analysis", "label": "⚖️ Weight Class Analysis"},
+    {"key": "performance_trends", "label": "📈 Performance Trends"},
+    {"key": "wilks_calculator", "label": "🧮 Wilks Calculator"},
+]
 
-for label, col in lift_cols.items():
-    st.subheader(label)
-    col1, col2 = st.columns(2)
-    with col1:
-        fig_m = px.histogram(
-            malesdf[malesdf[col] > 0], x=col,
-            title=f"{label} Distribution (Males)",
-            template="plotly_dark",
-            color_discrete_sequence=["#42a5f5"],
-        )
-        fig_m.update_layout(
-            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-            font_color="#9a9ab0", title_font_color="#f0f0f5",
-            margin=dict(l=20, r=20, t=50, b=20),
-        )
-        st.plotly_chart(fig_m, use_container_width=True)
-    with col2:
-        fig_f = px.histogram(
-            femalesdf[femalesdf[col] > 0], x=col,
-            title=f"{label} Distribution (Females)",
-            template="plotly_dark",
-            color_discrete_sequence=["#ef5350"],
-        )
-        fig_f.update_layout(
-            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-            font_color="#9a9ab0", title_font_color="#f0f0f5",
-            margin=dict(l=20, r=20, t=50, b=20),
-        )
-        st.plotly_chart(fig_f, use_container_width=True)
+# Initialise active sub-page (default to first)
+if "tools_active_page" not in st.session_state:
+    st.session_state["tools_active_page"] = TOOLS_PAGES[0]["key"]
 
+# ── Sub-page button row ──────────────────────────────────────────────
+btn_cols = st.columns(len(TOOLS_PAGES))
+for i, page in enumerate(TOOLS_PAGES):
+    with btn_cols[i]:
+        is_active = st.session_state["tools_active_page"] == page["key"]
+        btn_type = "primary" if is_active else "secondary"
+        if st.button(page["label"], key=f"tools_btn_{page['key']}", use_container_width=True, type=btn_type):
+            st.session_state["tools_active_page"] = page["key"]
+            st.rerun()
 
-# # --- Sample Data Generation ---
-# # 1. Performance Over Time (Line Chart)
-# np.random.seed(42)
-# dates = pd.date_range(start="2024-01-01", periods=20, freq="W")
-# performance_df = pd.DataFrame({
-#     "Date": dates,
-#     "Squat": np.linspace(150, 180, 20) + np.random.normal(0, 2, 20),
-#     "Bench": np.linspace(100, 115, 20) + np.random.normal(0, 1.5, 20),
-#     "Deadlift": np.linspace(180, 210, 20) + np.random.normal(0, 3, 20)
-# })
-# performance_df_melted = performance_df.melt(id_vars=["Date"], var_name="Exercise", value_name="Weight (kg)")
+st.markdown("---")
 
-# # 2. Volume Distribution (Bar Chart)
-# volume_df = pd.DataFrame({
-#     "Muscle Group": ["Legs", "Chest", "Back", "Shoulders", "Arms"],
-#     "Sets": [15, 12, 14, 8, 10]
-# })
+# ── Sub-page content ─────────────────────────────────────────────────
+active = st.session_state["tools_active_page"]
 
-# # 3. Strength vs. Speed (Scatter Plot)
-# scatter_df = pd.DataFrame({
-#     "Relative Strength (% 1RM)": np.random.uniform(70, 100, 50),
-#     "Velocity (m/s)": 1.2 - (np.random.uniform(70, 100, 50) / 100) + np.random.normal(0, 0.05, 50)
-# })
+# ---------- 1. Lift Distributions (original content) ----------
+if active == "lift_distributions":
+    lift_cols = {
+        "🏋️ Squat": "Best3SquatKg",
+        "💪 Bench": "Best3BenchKg",
+        "🔥 Deadlift": "Best3DeadliftKg",
+        "🏆 Total": "TotalKg",
+    }
 
-# # --- Plotly Charts ---
+    for label, col in lift_cols.items():
+        st.subheader(label)
+        c1, c2 = st.columns(2)
+        with c1:
+            fig_m = px.histogram(
+                malesdf[malesdf[col] > 0], x=col,
+                title=f"{label} Distribution (Males)",
+                template="plotly_dark",
+                color_discrete_sequence=["#42a5f5"],
+            )
+            fig_m.update_layout(
+                plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                font_color="#9a9ab0", title_font_color="#f0f0f5",
+                margin=dict(l=20, r=20, t=50, b=20),
+            )
+            st.plotly_chart(fig_m, use_container_width=True)
+        with c2:
+            fig_f = px.histogram(
+                femalesdf[femalesdf[col] > 0], x=col,
+                title=f"{label} Distribution (Females)",
+                template="plotly_dark",
+                color_discrete_sequence=["#ef5350"],
+            )
+            fig_f.update_layout(
+                plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                font_color="#9a9ab0", title_font_color="#f0f0f5",
+                margin=dict(l=20, r=20, t=50, b=20),
+            )
+            st.plotly_chart(fig_f, use_container_width=True)
 
-# st.subheader("📈 Athlete Performance Progress")
-# fig_line = px.line(
-#     performance_df_melted, 
-#     x="Date", 
-#     y="Weight (kg)", 
-#     color="Exercise",
-#     title="Top Lift Progress (Mockup)",
-#     template="plotly_dark",
-#     color_discrete_sequence=px.colors.qualitative.Prism
-# )
-# fig_line.update_layout(
-#     plot_bgcolor="rgba(0,0,0,0)",
-#     paper_bgcolor="rgba(0,0,0,0)",
-#     font_color="#9a9ab0",
-#     title_font_color="#f0f0f5",
-#     legend_title_font_color="#f0f0f5",
-#     margin=dict(l=20, r=20, t=50, b=20)
-# )
-# st.plotly_chart(fig_line, use_container_width=True)
+# ---------- 2. Weight Class Analysis (placeholder) ----------
+elif active == "weight_class_analysis":
+    st.subheader("⚖️ Weight Class Analysis")
+    st.info("🚧 **Coming soon** — Breakdowns and comparisons across weight classes.")
 
-# col1, col2 = st.columns(2)
+# ---------- 3. Performance Trends (placeholder) ----------
+elif active == "performance_trends":
+    st.subheader("📈 Performance Trends")
+    st.info("🚧 **Coming soon** — Historical trend lines and progression tracking.")
 
-# with col1:
-#     st.subheader("📊 Training Volume")
-#     fig_bar = px.bar(
-#         volume_df, 
-#         x="Muscle Group", 
-#         y="Sets", 
-#         title="Weekly Sets by Group",
-#         template="plotly_dark",
-#         color="Sets",
-#         color_continuous_scale="Viridis"
-#     )
-    
-#     fig_bar.update_traces(
-#         unselected=dict(marker=dict(opacity=0.3))
-#     )
-#     fig_bar.update_layout(
-#         clickmode="event+select",
-#         plot_bgcolor="rgba(0,0,0,0)",
-#         paper_bgcolor="rgba(0,0,0,0)",
-#         font_color="#9a9ab0",
-#         title_font_color="#f0f0f5",
-#         margin=dict(l=20, r=20, t=50, b=20)
-#     )
-    
-#     event = st.plotly_chart(
-#         fig_bar, 
-#         use_container_width=True, 
-#         on_select="rerun",
-#         selection_mode="points",
-#         key="bar_select"
-#     )
-    
-#     selected_muscles = []
-#     if event and "selection" in event and event["selection"]["points"]:
-#         selected_muscles = [pt["x"] for pt in event["selection"]["points"]]
-        
-#     if selected_muscles:
-#         st.write("📊 Filtered Data:")
-#         st.dataframe(volume_df[volume_df["Muscle Group"].isin(selected_muscles)], hide_index=True, use_container_width=True)
-#     else:
-#         st.write("📊 All Data:")
-#         st.dataframe(volume_df, hide_index=True, use_container_width=True)
-
-# with col2:
-#     st.subheader("🎯 Strength-Velocity Profile")
-#     fig_scatter = px.scatter(
-#         scatter_df, 
-#         x="Relative Strength (% 1RM)", 
-#         y="Velocity (m/s)",
-#         title="Load-Velocity Correlation",
-#         template="plotly_dark",
-#         color="Velocity (m/s)",
-#         color_continuous_scale="RdYlGn"
-#     )
-#     fig_scatter.update_layout(
-#         plot_bgcolor="rgba(0,0,0,0)",
-#         paper_bgcolor="rgba(0,0,0,0)",
-#         font_color="#9a9ab0",
-#         title_font_color="#f0f0f5",
-#         margin=dict(l=20, r=20, t=50, b=20)
-#     )
-#     st.plotly_chart(fig_scatter, use_container_width=True)
-
-st.info("⚙️ **More tools coming soon**")
+# ---------- 4. Wilks Calculator (placeholder) ----------
+elif active == "wilks_calculator":
+    st.subheader("🧮 Wilks Calculator")
+    st.info("🚧 **Coming soon** — Compute and compare Wilks / DOTS scores.")
