@@ -9,6 +9,34 @@ st.set_page_config(page_title="Tools - PLview", page_icon="⚙️", layout="wide
 st.header("Tools")
 st.write("Tools for data analysis and visualization built for coaches and athletes.")
 
+# ── Custom CSS for sub-navigation buttons ─────────────────────────────
+st.markdown("""
+    <style>
+    /* Target the buttons inside columns and color the 'primary' (active) one */
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(1) button[kind="primary"] {
+        background-color: #d32f2f !important; color: white !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(2) button[kind="primary"] {
+        background-color: #1976d2 !important; color: white !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(3) button[kind="primary"] {
+        background-color: #f9a825 !important; color: white !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(4) button[kind="primary"] {
+        background-color: #388e3c !important; color: white !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(5) button[kind="primary"] {
+        background-color: #f0f0f5 !important; color: #1a1a24 !important; border: none !important;
+    }
+    
+    /* Subtle hover effect for inactive buttons */
+    div[data-testid="stColumn"] button[kind="secondary"]:hover {
+        border-color: #9a9ab0 !important;
+        color: #f0f0f5 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.markdown("---")
 
 # read data stored at beginning
@@ -23,7 +51,7 @@ TOOLS_PAGES = [
     {"key": "aaaa", "label": "aaaa"},
     {"key": "bbbb", "label": "bbbb"},
     {"key": "cccc", "label": "cccc"},
-    {"key": "strength_index_calculator", "label": "🧮 Strength Index Calculator"},
+    {"key": "strength_index_calculator", "label": "🧮 Strength Index"},
 ]
 
 # Initialise active sub-page (default to first)
@@ -45,7 +73,7 @@ st.markdown("---")
 # ── Sub-page content ─────────────────────────────────────────────────
 active = st.session_state["tools_active_page"]
 
-# ---------- 1. Lift Distributions (original content) ----------
+# ---------- 1. Lift Distributions ----------
 if active == "lift_distributions":
     lift_cols = {
         "🏋️ Squat": "Best3SquatKg",
@@ -84,17 +112,22 @@ if active == "lift_distributions":
             )
             st.plotly_chart(fig_f, use_container_width=True)
 
-# ---------- 2. Weight Class Analysis (placeholder) ----------
-elif active == "weight_class_analysis":
-    st.subheader("⚖️ Weight Class Analysis")
-    st.info("🚧 **Coming soon** — Breakdowns and comparisons across weight classes.")
+# ---------- 2. Placeholder aaaa ----------
+elif active == "aaaa":
+    st.subheader("🔵 Section A")
+    st.info("🚧 **Placeholder content** for the second tool.")
 
-# ---------- 3. Performance Trends (placeholder) ----------
-elif active == "performance_trends":
-    st.subheader("📈 Performance Trends")
-    st.info("🚧 **Coming soon** — Historical trend lines and progression tracking.")
+# ---------- 3. Placeholder bbbb ----------
+elif active == "bbbb":
+    st.subheader("🟡 Section B")
+    st.info("🚧 **Placeholder content** for the third tool.")
 
-# ---------- 4. Wilks Calculator (placeholder) ----------
-elif active == "wilks_calculator":
-    st.subheader("🧮 Wilks Calculator")
-    st.info("🚧 **Coming soon** — Compute and compare Wilks / DOTS scores.")
+# ---------- 4. Placeholder cccc ----------
+elif active == "cccc":
+    st.subheader("🟢 Section C")
+    st.info("🚧 **Placeholder content** for the fourth tool.")
+
+# ---------- 5. Strength Index Calculator ----------
+elif active == "strength_index_calculator":
+    st.subheader("🧮 Strength Index Calculator")
+    st.info("🚧 **Coming soon** — Detailed strength index and DOTS/Wilks comparisons.")
