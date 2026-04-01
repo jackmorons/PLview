@@ -17,11 +17,42 @@ females_data = st.session_state["females_data"]
 malesdf = pd.DataFrame(males_data)
 femalesdf = pd.DataFrame(females_data)
 
-fig1 = px.histogram(malesdf, x="Best3SquatKg", title="Squat Distribution (Males)")
-st.plotly_chart(fig1, use_container_width=True)
+lift_cols = {
+    "🏋️ Squat": "Best3SquatKg",
+    "💪 Bench": "Best3BenchKg",
+    "🔥 Deadlift": "Best3DeadliftKg",
+    "🏆 Total": "TotalKg",
+}
 
-fig2 = px.histogram(femalesdf, x="Best3SquatKg", title="Squat Distribution (Females)")
-st.plotly_chart(fig2, use_container_width=True)
+for label, col in lift_cols.items():
+    st.subheader(label)
+    col1, col2 = st.columns(2)
+    with col1:
+        fig_m = px.histogram(
+            malesdf[malesdf[col] > 0], x=col,
+            title=f"{label} Distribution (Males)",
+            template="plotly_dark",
+            color_discrete_sequence=["#42a5f5"],
+        )
+        fig_m.update_layout(
+            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+            font_color="#9a9ab0", title_font_color="#f0f0f5",
+            margin=dict(l=20, r=20, t=50, b=20),
+        )
+        st.plotly_chart(fig_m, use_container_width=True)
+    with col2:
+        fig_f = px.histogram(
+            femalesdf[femalesdf[col] > 0], x=col,
+            title=f"{label} Distribution (Females)",
+            template="plotly_dark",
+            color_discrete_sequence=["#ef5350"],
+        )
+        fig_f.update_layout(
+            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+            font_color="#9a9ab0", title_font_color="#f0f0f5",
+            margin=dict(l=20, r=20, t=50, b=20),
+        )
+        st.plotly_chart(fig_f, use_container_width=True)
 
 
 # # --- Sample Data Generation ---
