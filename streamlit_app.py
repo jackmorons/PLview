@@ -261,7 +261,6 @@ if st.session_state.get("males_data") is None:
 if st.session_state.get("females_data") is None:
     st.session_state["females_data"] = females_data
 
-
 # Run navigation engine
 pg = st.navigation(list(pages.values()), position="hidden")
 pg.run()
