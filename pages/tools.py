@@ -45,8 +45,6 @@ females_data = st.session_state["females_data"]
 malesdf = pd.DataFrame(males_data)
 femalesdf = pd.DataFrame(females_data)
 
-st.session_state["tools_active_page"] = TOOLS_PAGES[0]["key"]
-
 # ── Sub-page definitions ──────────────────────────────────────────────
 TOOLS_PAGES = [
     {"key": "lift_distributions", "label": "📊 Lift Distributions"},
@@ -56,9 +54,11 @@ TOOLS_PAGES = [
     {"key": "strength_index_calculator", "label": "🧮 Strength Index"},
 ]
 
+st.session_state["tools_active_page"] = TOOLS_PAGES[0]["key"]
+
 # Initialise active sub-page (default to first)
-if "tools_active_page" not in st.session_state:
-    st.session_state["tools_active_page"] = TOOLS_PAGES[0]["key"]
+# if "tools_active_page" not in st.session_state:
+#     st.session_state["tools_active_page"] = TOOLS_PAGES[0]["key"]
 
 # ── Sub-page button row ──────────────────────────────────────────────
 btn_cols = st.columns(len(TOOLS_PAGES))
