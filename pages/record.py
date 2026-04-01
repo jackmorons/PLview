@@ -107,7 +107,9 @@ else:
     st.subheader("📊 Top 5 Totals")
     top5 = (
         filtered[filtered["TotalKg"] > 0]
-        .nlargest(5, "TotalKg")[["Name", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg", "TotalKg", "Dots", "Date", "Federation"]]
+        .sort_values("TotalKg", ascending=False)
+        .drop_duplicates(subset="Name")
+        .head(5)[["Name", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg", "TotalKg", "Dots", "Date", "Federation"]]
         .reset_index(drop=True)
     )
     top5.index = top5.index + 1  # 1-indexed ranking
