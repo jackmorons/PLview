@@ -91,12 +91,14 @@ if active == "lift_distributions":
                 title=f"{label} Distribution (Males)",
                 template="plotly_dark",
                 color_discrete_sequence=["#42a5f5"],
+                histnorm="probability",
             )
             fig_m.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 margin=dict(l=20, r=20, t=50, b=20),
             )
+            fig_m.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_m, use_container_width=True)
         with c2:
             fig_f = px.histogram(
@@ -104,12 +106,14 @@ if active == "lift_distributions":
                 title=f"{label} Distribution (Females)",
                 template="plotly_dark",
                 color_discrete_sequence=["#ef5350"],
+                histnorm="probability",
             )
             fig_f.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 margin=dict(l=20, r=20, t=50, b=20),
             )
+            fig_f.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_f, use_container_width=True)
 
 # ---------- 2. Placeholder aaaa ----------
