@@ -45,6 +45,8 @@ females_data = st.session_state["females_data"]
 malesdf = pd.DataFrame(males_data)
 femalesdf = pd.DataFrame(females_data)
 
+st.session_state["tools_active_page"] = TOOLS_PAGES[0]["key"]
+
 # ── Sub-page definitions ──────────────────────────────────────────────
 TOOLS_PAGES = [
     {"key": "lift_distributions", "label": "📊 Lift Distributions"},
