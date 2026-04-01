@@ -22,12 +22,23 @@ filter_cols = st.columns(4)
 with filter_cols[0]:
     sex = st.selectbox("Sex", ["Male", "Female"], key="rec_sex")
 
+# IPF age division mapping → AgeClass values
+IPF_AGE_DIVISIONS = {
+    "Sub-Junior (14-18)": ["13-15", "16-17"],
+    "Junior (19-23)":     ["18-19", "20-23"],
+    "Open (24-39)":       ["24-34", "35-39"],
+    "Masters 1 (40-49)":  ["40-44", "45-49"],
+    "Masters 2 (50-59)":  ["50-54", "55-59"],
+    "Masters 3 (60-69)":  ["60-64", "65-69"],
+    "Masters 4 (70+)":    ["70-74", "75-79", "80-84"],
+}
+
 # Pick the right dataframe based on sex selection
 df = malesdf if sex == "Male" else femalesdf
 
 with filter_cols[1]:
-    age_classes = sorted(df["AgeClass"].dropna().unique().tolist())
-    age_class = st.selectbox("Age Class", age_classes, key="rec_age")
+    ipf_division = st.selectbox("Age Division", list(IPF_AGE_DIVISIONS.keys()), key="rec_age")
+    selected_age_classes = IPF_AGE_DIVISIONS[ipf_division]
 
 with filter_cols[2]:
     weight_classes = sorted(df["WeightClassKg"].dropna().unique().tolist())
