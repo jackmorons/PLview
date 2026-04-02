@@ -121,7 +121,7 @@ else:
     # We use a trick: display the name but the link is to the profile
     # LinkColumn will display the cell value unless display_text is set.
     # To keep it clean, we'll construct the full URL.
-    top5["Profile"] = top5["Name"].apply(lambda x: f"/Athletes?name={urllib.parse.quote(x)}")
+    top5["Profile"] = top5["Name"].apply(lambda x: f"/athletes?name={urllib.parse.quote(x)}")
     
     # Reorder to put Profile first or replace Name
     cols = ["Profile"] + [c for c in top5.columns if c not in ["Name", "Profile"]]
@@ -133,8 +133,8 @@ else:
             "Profile": st.column_config.LinkColumn(
                 "Athlete Name",
                 help="Click to view athlete profile",
-                validate=r"^/Athletes\?name=.*",
-                display_text=r"/Athletes\?name=(.*)" # Shows the decoded name parts if simple, but might show %20
+                validate=r"^/athletes\?name=.*",
+                display_text=r"/athletes\?name=(.*)" # Shows the decoded name parts if simple, but might show %20
             )
         },
         use_container_width=True
