@@ -312,5 +312,4 @@ elif active == "strength_index_calculator":
         else:
             st.warning("Please check your bodyweight/total values.")
         
-    
-#st.write(f"📊 **Summary:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
+st.markdown("---")
