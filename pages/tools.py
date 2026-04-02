@@ -106,36 +106,72 @@ if active == "lift_distributions":
         "🏆 Total": "TotalKg",
     }
 
+    # --- 1. Selection & Global Controls ---
+    st.markdown("### 📊 Distribution Explorer")
+    ctrl_c1, ctrl_c2 = st.columns([1, 3])
+    with ctrl_c1:
+        color_choice = st.selectbox(
+            "🎨 Color bars by:",
+            ["None (Solid)", "Age Class", "Weight Class", "Equipment"],
+            index=0,
+            help="Segment the histogram by a specific category."
+        )
+
+    # Map the choice to actual column names
+    color_map = {
+        "None (Solid)": None,
+        "Age Class": "AgeClass",
+        "Weight Class": "WeightClassKg",
+        "Equipment": "Equipment"
+    }
+    color_col = color_map[color_choice]
+
     for label, col in lift_cols.items():
         st.subheader(label)
         c1, c2 = st.columns(2)
+        
+        # Prepare data copies and handle NaNs for coloring
+        m_plot_df = malesdf[malesdf[col] > 0].copy()
+        f_plot_df = femalesdf[femalesdf[col] > 0].copy()
+        
+        if color_col:
+            m_plot_df[color_col] = m_plot_df[color_col].fillna("Unknown")
+            f_plot_df[color_col] = f_plot_df[color_col].fillna("Unknown")
+
         with c1:
             fig_m = px.histogram(
-                malesdf[malesdf[col] > 0], x=col,
+                m_plot_df, x=col,
+                color=color_col,
                 title=f"{label} Distribution (Males)",
                 template="plotly_dark",
-                color_discrete_sequence=["#42a5f5"],
+                color_discrete_sequence=["#42a5f5"] if not color_col else px.colors.qualitative.Prism,
                 histnorm="probability",
+                barmode="stack" if color_col else "relative"
             )
             fig_m.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 margin=dict(l=20, r=20, t=50, b=20),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1) if color_col else None
             )
             fig_m.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_m, use_container_width=True)
+
         with c2:
             fig_f = px.histogram(
-                femalesdf[femalesdf[col] > 0], x=col,
+                f_plot_df, x=col,
+                color=color_col,
                 title=f"{label} Distribution (Females)",
                 template="plotly_dark",
-                color_discrete_sequence=["#ef5350"],
+                color_discrete_sequence=["#ef5350"] if not color_col else px.colors.qualitative.Prism,
                 histnorm="probability",
+                barmode="stack" if color_col else "relative"
             )
             fig_f.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 margin=dict(l=20, r=20, t=50, b=20),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1) if color_col else None
             )
             fig_f.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_f, use_container_width=True)
