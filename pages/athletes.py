@@ -214,6 +214,86 @@ if selected_name:
                 }
             )
             st.caption(f"Benchmarks based on **{len(category_df)}** athletes in the **{athlete_wc}kg {athlete_equip}** category.")
+            
+            # --- Progress Gauges (Percentile & Record Progress) ---
+            st.write("") # Spacer
+            
+            # Extract relevant totals for benchmarking
+            athlete_best_total = athlete_df["TotalKg"].max()
+            
+            # Clean category totals (remove 0/NaN) for accurate percentile calculation
+            cat_totals = category_df[category_df["TotalKg"] > 0]["TotalKg"].sort_values()
+            
+            if not cat_totals.empty:
+                # 1. Percentile Rank Calculation
+                # (How many people are you stronger than?)
+                rank = (cat_totals < athlete_best_total).sum()
+                percentile = (rank / len(cat_totals)) * 100
+                top_percent = 100 - percentile
+
+                # 2. % of Record Calculation
+                record_total = cat_totals.max()
+                progress_to_record = (athlete_best_total / record_total) * 100 if record_total > 0 else 0
+
+                # --- Create Percentile Gauge ---
+                fig_percentile = go.Figure(go.Indicator(
+                    mode = "gauge+number",
+                    value = percentile,
+                    number = {'suffix': "%", 'font': {'size': 24}},
+                    title = {'text': "Percentile Standing", 'font': {'size': 14, 'color': '#9a9ab0'}},
+                    gauge = {
+                        'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "gray"},
+                        'bar': {'color': "#42a5f5"}, # Blue
+                        'bgcolor': "rgba(0,0,0,0)",
+                        'steps': [
+                            {'range': [0, 50], 'color': 'rgba(66, 165, 245, 0.05)'},
+                            {'range': [50, 90], 'color': 'rgba(66, 165, 245, 0.1)'},
+                            {'range': [90, 100], 'color': 'rgba(56, 142, 60, 0.3)'} # Green for top 10%
+                        ],
+                        'threshold': {
+                            'line': {'color': "white", 'width': 2},
+                            'thickness': 0.75,
+                            'value': percentile
+                        }
+                    }
+                ))
+
+                # --- Create Record Progress Gauge ---
+                fig_record = go.Figure(go.Indicator(
+                    mode = "gauge+number",
+                    value = progress_to_record,
+                    number = {'suffix': "%", 'font': {'size': 24}},
+                    title = {'text': "Progress to Record", 'font': {'size': 14, 'color': '#9a9ab0'}},
+                    gauge = {
+                        'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "gray"},
+                        'bar': {'color': "#ffd54f"}, # Gold
+                        'bgcolor': "rgba(0,0,0,0)",
+                        'steps': [
+                            {'range': [0, 80], 'color': 'rgba(255, 213, 79, 0.05)'},
+                            {'range': [80, 100], 'color': 'rgba(255, 213, 79, 0.2)'}
+                        ],
+                    }
+                ))
+
+                # Common Gauge Layout
+                for fig in [fig_percentile, fig_record]:
+                    fig.update_layout(
+                        height=160,
+                        margin=dict(l=20, r=20, t=40, b=0),
+                        paper_bgcolor="rgba(0,0,0,0)",
+                        font={'color': "#f0f0f5", 'family': "Inter"}
+                    )
+
+                st.plotly_chart(fig_percentile, use_container_width=True)
+                st.plotly_chart(fig_record, use_container_width=True)
+
+                # Summary Text
+                if top_percent <= 1:
+                    st.success(f"⭐ **Top 1%** of Category")
+                elif top_percent <= 10:
+                    st.info(f"💪 **Top {int(top_percent)}%** of Category")
+                else:
+                    st.write(f"📊 You are stronger than **{percentile:.1f}%** of lifters in this category.")
     else:
         st.info("Not enough data in this category to calculate relative strength benchmarks.")
 
