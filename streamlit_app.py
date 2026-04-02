@@ -62,7 +62,7 @@ def inject_custom_css():
 
         /* Hero Text Styles (used in home.py) */
         .hero-title {
-            font-size: 3.5rem !important;
+            font-size: 5.0rem !important;
             font-weight: 800 !important;
             letter-spacing: -1px;
             line-height: 1.15;
