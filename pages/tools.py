@@ -62,16 +62,16 @@ femalesdf = pd.DataFrame(females_data)
 
 # ── Sub-page definitions ──────────────────────────────────────────────
 TOOLS_PAGES = [
-    {"key": "lift_distributions", "label": "📊 Lift Distributions"},
-    {"key": "1v1", "label": "⚔️ 1v1 Strength Comparison"},
-    {"key": "weight_class", "label": "⚖️ Weight Class Evaluator"},
-    {"key": "trend_calculator", "label": "📈 Trend Calculator"},
-    {"key": "pattern_discoverer", "label": "🔍 Pattern Discoverer"},
+    {"key": "lift_distributions", "label": "📊 Lift Distributions"}, # 1
+    {"key": "1v1", "label": "⚔️ 1v1 Strength Comparison"}, # 2
+    {"key": "weight_class", "label": "⚖️ Weight Class Evaluator"}, # 3
+    {"key": "trend_calculator", "label": "📈 Trend Calculator"}, # 4
+    {"key": "pattern_discoverer", "label": "🔍 Pattern Discoverer"}, # 5
     #{"key": "relative_lifts", "label": "💪 Relative Lifts"},
-    {"key": "freak_finder", "label": "🤯 Strength Freaks Finder"},
-    {"key": "geo_strength", "label": "🌍 Geographical Strength"},
-    {"key": "twin_finder", "label": "🫂 Find Your PL Twin!"},
-    {"key": "strength_index_calculator", "label": "🧮 Strength Index Calculator"},
+    {"key": "freak_finder", "label": "🤯 Strength Freaks Finder"}, # 6
+    {"key": "geo_strength", "label": "🌍 Geographical Strength"}, # 7
+    {"key": "twin_finder", "label": "🫂 Find Your PL Twin!"}, # 8
+    {"key": "strength_index_calculator", "label": "🧮 Strength Index Calculator"}, # 9
 ]
 
 # Initialise active sub-page (default to first)
@@ -92,6 +92,8 @@ st.markdown("---")
 
 # ── Sub-page content ─────────────────────────────────────────────────
 active = st.session_state["tools_active_page"]
+
+
 
 # ---------- 1. Lift Distributions ----------
 if active == "lift_distributions":
@@ -136,22 +138,42 @@ if active == "lift_distributions":
             fig_f.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_f, use_container_width=True)
 
-# ---------- 2. Placeholder aaaa ----------
-elif active == "aaaa":
-    st.subheader("🔵 Section A")
-    st.info("🚧 **Placeholder content** for the second tool.")
+# ---------- 2. 1v1 Strength Comparison ----------
+elif active == "1v1":
+    st.subheader("⚔️ 1v1 Strength Comparison")
+    st.info("🚧 **Coming soon** — Detailed 1v1 strength comparison.")
 
-# ---------- 3. Placeholder bbbb ----------
-elif active == "bbbb":
-    st.subheader("🟡 Section B")
-    st.info("🚧 **Placeholder content** for the third tool.")
+# ---------- 3. Weight Class Evaluator ----------
+elif active == "weight_class":
+    st.subheader("⚖️ Weight Class Evaluator")
+    st.info("🚧 **Coming soon** — Detailed weight class evaluator.")
 
-# ---------- 4. Placeholder cccc ----------
-elif active == "cccc":
-    st.subheader("🟢 Section C")
-    st.info("🚧 **Placeholder content** for the fourth tool.")
+# ---------- 4. Trend Calculator ----------
+elif active == "trend_calculator":
+    st.subheader("📈 Trend Calculator")
+    st.info("🚧 **Coming soon** — Detailed trend calculator.")
 
-# ---------- 5. Strength Index Calculator ----------
+# ---------- 5. Pattern Discoverer ----------
+elif active == "pattern_discoverer":
+    st.subheader("🔍 Pattern Discoverer")
+    st.info("🚧 **Coming soon** — Detailed pattern discoverer.")
+
+# ---------- 6. Freak Finder ----------
+elif active == "freak_finder":
+    st.subheader("🤯 Strength Freaks Finder")
+    st.info("🚧 **Coming soon** — Detailed freak finder.")
+
+# ---------- 7. Geographical Strength ----------
+elif active == "geo_strength":
+    st.subheader("🌍 Geographical Strength")
+    st.info("🚧 **Coming soon** — Detailed geographical strength.")
+
+# ---------- 8. Find Your PL Twin! ----------
+elif active == "twin_finder":
+    st.subheader("🫂 Find Your PL Twin!")
+    st.info("🚧 **Coming soon** — Detailed twin finder.")
+
+# ---------- 9. Strength Index Calculator ----------
 elif active == "strength_index_calculator":
     st.subheader("🧮 Strength Index Calculator")
-    st.info("🚧 **Coming soon** — Detailed strength index and DOTS/Wilks comparisons.")
+    st.info("🚧 **Coming soon** — Detailed strength index calculator.")
