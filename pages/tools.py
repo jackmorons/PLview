@@ -215,8 +215,39 @@ elif active == "strength_index_calculator":
         total = st.selectbox("Total (kg)", total_options, index=default_t_idx)
 
     st.markdown("---")
-    st.write(f"📊 **Current Selection:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
     
-    # Placeholder for calculation results
-    st.success("Calculations will appear here once the formulas are implemented.")
+    # ── DOTS Calculation ───────────────────────────────────────────
+    # Male: A = -0.000001093, B = 0.0007391293, C = -0.1918759221, D = 24.0900756, E = -307.75076
+    # Female: A = -0.0000010706, B = 0.0005158568, C = -0.1126655495, D = 13.6175032, E = -57.96288
+    # Based on DOTS standard polynomial: f(x) = Ax^4 + Bx^3 + Cx^2 + Dx + E
+    if gender == "Male":
+        A, B, C, D, E = -0.000001093, 0.0007391293, -0.1918759221, 24.0900756, -307.75076
+    else:
+        A, B, C, D, E = -0.0000010706, 0.0005158568, -0.1126655495, 13.6175032, -57.96288
+
+    # Calculate denominator
+    denom = (A * weight**4) + (B * weight**3) + (C * weight**2) + (D * weight) + E
+    
+    # Calculate DOTS
+    if denom > 0:
+        dots_score = total * (500 / denom)
+    else:
+        dots_score = 0.0
+
+    # Display Results
+    res_c1, res_c2 = st.columns([1, 2])
+    with res_c1:
+        st.metric("DOTS Score", f"{dots_score:.2f}")
+    
+    with res_c2:
+        if dots_score > 500:
+            st.success(f"🔥 **Elite Performance!** Your DOTS score of {dots_score:.2f} is world-class.")
+        elif dots_score > 400:
+            st.info(f"💪 **Strong Lift!** You're highly competitive.")
+        elif dots_score > 0:
+            st.write(f"📈 Every kilogram added to your total will boost this score.")
+        else:
+            st.warning("Please check your bodyweight/total values.")
+
+    st.write(f"📊 **Summary:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
     
