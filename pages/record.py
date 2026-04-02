@@ -85,7 +85,7 @@ else:
                 federation = record_row.get("Federation", "—")
                 bodyweight = record_row.get("BodyweightKg", "—")
 
-                athlete_url = f"/Athletes?name={urllib.parse.quote(athlete_name)}"
+                athlete_url = f"/athletes?name={urllib.parse.quote(athlete_name)}"
                 st.metric(label=label, value=f"{record_val} kg")
                 st.caption(f"[**{athlete_name}**]({athlete_url})")
                 st.caption(f"📅 {date}  •  🏢 {federation}")
@@ -97,7 +97,7 @@ else:
     if not valid_total.empty:
         idx_total = valid_total["TotalKg"].idxmax()
         total_row = valid_total.loc[idx_total]
-        total_athlete_url = f"/Athletes?name={urllib.parse.quote(total_row['Name'])}"
+        total_athlete_url = f"/athletes?name={urllib.parse.quote(total_row['Name'])}"
         st.metric(label="🏆 Total", value=f"{total_row['TotalKg']} kg")
         st.caption(
             f"[**{total_row['Name']}**]({total_athlete_url})  •  "
