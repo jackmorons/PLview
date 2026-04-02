@@ -62,6 +62,10 @@ females_data = st.session_state["females_data"]
 malesdf = pd.DataFrame(males_data)
 femalesdf = pd.DataFrame(females_data)
 
+# Combine both datasets for a unified athlete search
+alldf = pd.concat([malesdf, femalesdf], ignore_index=True)
+all_names = sorted(alldf["Name"].dropna().unique().tolist())
+
 # ── Sub-page definitions ──────────────────────────────────────────────
 TOOLS_PAGES = [
     {"key": "lift_distributions", "label": "📊 Statistical Distributions"}, # 1
@@ -240,7 +244,90 @@ if active == "lift_distributions":
 # ---------- 2. 1v1 Strength Comparison ----------
 elif active == "1v1":
     st.subheader("⚔️ 1v1 Strength Comparison")
-    st.info("🚧 **Coming soon** — Detailed 1v1 strength comparison.")
+    st.info("Compare two athletes side-by-side using their personal bests and relative performance metrics.")
+
+    # 1. Athlete Selection Row
+    col_a, col_b = st.columns(2)
+    
+    with col_a:
+        st.markdown("### 🏹 Athlete 1")
+        name1 = st.selectbox("Search for Athlete 1", [""] + all_names, key="1v1_athlete_1", index=0, placeholder="Type to search...")
+    
+    with col_b:
+        st.markdown("### 🛡️ Athlete 2")
+        name2 = st.selectbox("Search for Athlete 2", [""] + all_names, key="1v1_athlete_2", index=0, placeholder="Type to search...")
+
+    st.markdown("---")
+
+    # 2. Data Preparation Function
+    def get_ath_stats(name):
+        if not name: return None
+        ath_df = alldf[alldf["Name"] == name].copy()
+        
+        # PB stats (Best 3 across all historical records)
+        best_sq = ath_df["Best3SquatKg"].max()
+        best_bn = ath_df["Best3BenchKg"].max()
+        best_dl = ath_df["Best3DeadliftKg"].max()
+        best_tot = ath_df["TotalKg"].max()
+        best_dots = ath_df["Dots"].max()
+        
+        # Latest Categorical Stats (using their most recent entry)
+        latest = ath_df.sort_values("Date", ascending=False).iloc[0]
+        wc = latest["WeightClassKg"]
+        sex = "Male" if latest["Sex"] == "M" else "Female"
+        equip = latest["Equipment"]
+        
+        return {
+            "name": name,
+            "sq": best_sq if best_sq > 0 else 0, 
+            "bn": best_bn if best_bn > 0 else 0, 
+            "dl": best_dl if best_dl > 0 else 0, 
+            "tot": best_tot if best_tot > 0 else 0, 
+            "dots": best_dots if best_dots > 0 else 0,
+            "wc": wc, "sex": sex, "equip": equip
+        }
+
+    stats1 = get_ath_stats(name1)
+    stats2 = get_ath_stats(name2)
+
+    # 3. Comparison Rendering
+    disp_a, disp_b = st.columns(2)
+
+    def render_athlete_col(stats, other_stats, column, is_left=True):
+        if not stats:
+            column.info("👈 Select an athlete to start comparison." if is_left else "Select an athlete to start comparison. 👉")
+            return
+        
+        with column:
+            # Styled Header
+            st.markdown(f"""
+                <div style="background-color: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 10px; border-left: 5px solid {'#42a5f5' if is_left else '#ef5350'};">
+                    <h2 style="margin-top: 0; margin-bottom: 5px;">{stats['name']}</h2>
+                    <p style="color: #9a9ab0; margin-bottom: 0;">🧬 {stats['sex']}  •  ⚖️ {stats['wc']}kg  •  ⚙️ {stats['equip']}</p>
+                </div>
+            """, unsafe_allow_html=True)
+            st.write("")
+            
+            # Metrics Grid
+            m_c1, m_c2 = st.columns(2)
+            
+            # Deltas (compared to the other athlete if both selected)
+            d_sq = stats['sq'] - other_stats['sq'] if other_stats else None
+            d_bn = stats['bn'] - other_stats['bn'] if other_stats else None
+            d_dl = stats['dl'] - other_stats['dl'] if other_stats else None
+            d_tot = stats['tot'] - other_stats['tot'] if other_stats else None
+            d_dots = stats['dots'] - other_stats['dots'] if other_stats else None
+
+            m_c1.metric("Best Squat", f"{stats['sq']} kg", delta=f"{d_sq:+.1f} kg" if d_sq is not None else None)
+            m_c1.metric("Best Bench", f"{stats['bn']} kg", delta=f"{d_bn:+.1f} kg" if d_bn is not None else None)
+            m_c2.metric("Best Deadlift", f"{stats['dl']} kg", delta=f"{d_dl:+.1f} kg" if d_dl is not None else None)
+            m_c2.metric("Best Total", f"{stats['tot']} kg", delta=f"{d_tot:+.1f} kg" if d_tot is not None else None)
+            
+            st.divider()
+            st.metric("Best Dots", f"{stats['dots']:.2f}", delta=f"{d_dots:+.2f}" if d_dots is not None else None)
+
+    render_athlete_col(stats1, stats2, disp_a, True)
+    render_athlete_col(stats2, stats1, disp_b, False)
 
 # ---------- 3. Weight Class Evaluator ----------
 elif active == "weight_class":
