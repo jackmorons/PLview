@@ -213,7 +213,7 @@ if selected_name:
                     percentile = (rank / len(cat_totals)) * 100
                     top_percent = 100 - percentile
                     progress_to_record = (athlete_best_total / cat_totals.max()) * 100 if cat_totals.max() > 0 else 0
-
+                    
                     fig_percentile = go.Figure(go.Indicator(
                         mode="gauge+number",
                         value=percentile,
@@ -232,7 +232,10 @@ if selected_name:
                     for f_g in [fig_percentile, fig_record]:
                         f_g.update_layout(height=130, margin=dict(l=15, r=15, t=30, b=0), paper_bgcolor="rgba(0,0,0,0)", font={'color': "#f0f0f5"})
 
+                    st.write("") # Extra spacer to push down next section
                     st.plotly_chart(fig_percentile, use_container_width=True)
+
+                    st.write("") # Extra spacer to push down next section
                     st.plotly_chart(fig_record, use_container_width=True)
                     
                     # Standing Summary
