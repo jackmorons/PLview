@@ -70,7 +70,7 @@ st.header("🧠 About the Project")
 st.info("""
     **PLview** was born from a passion for both brute force and clean data. 
     It was created as a final project for a **Data Visualization University Course**, 
-    proving once and for all that mathematicians can (sometimes) bench press.
+    proving once and for all that engineers can (sometimes) bench press.
 """)
 
 st.write("---")
