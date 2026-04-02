@@ -181,7 +181,7 @@ if active == "lift_distributions":
                 barmode="stack" if color_col else "relative"
             )
             fig_m.update_layout(
-                height=700,
+                height=500,
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 # Increase top margin to give space for title + legend
@@ -216,7 +216,7 @@ if active == "lift_distributions":
                 barmode="stack" if color_col else "relative"
             )
             fig_f.update_layout(
-                height=700,
+                height=500,
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 # Increase top margin to give space for title + legend
