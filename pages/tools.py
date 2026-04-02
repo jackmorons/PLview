@@ -171,8 +171,8 @@ if active == "lift_distributions":
         with c1:
             fig_m = px.histogram(
                 m_plot_df, x=col,
-                y="weight",        # Use weight for global normalization
-                histfunc="sum",    # Sum of weights in a bin = total prob
+                y="weight",        
+                histfunc="sum",    
                 color=color_col,
                 title=f"{label} Distribution (Males)",
                 template="plotly_dark",
@@ -183,8 +183,21 @@ if active == "lift_distributions":
             fig_m.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
-                margin=dict(l=20, r=20, t=50, b=20),
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1) if color_col else None
+                # Increase top margin to give space for title + legend
+                margin=dict(l=20, r=20, t=100, b=20),
+                # Position legend higher and title lower if needed
+                legend=dict(
+                    orientation="h", 
+                    yanchor="bottom", 
+                    y=1.1, # Moved further up from 1.02
+                    xanchor="right", 
+                    x=1.0
+                ) if color_col else None,
+                title=dict(
+                    y=0.95, # Position title slightly lower relative to top margin
+                    x=0.0,
+                    xanchor='left'
+                )
             )
             fig_m.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_m, use_container_width=True)
@@ -192,8 +205,8 @@ if active == "lift_distributions":
         with c2:
             fig_f = px.histogram(
                 f_plot_df, x=col,
-                y="weight",        # Use weight for global normalization
-                histfunc="sum",    # Sum of weights in a bin = total prob
+                y="weight",        
+                histfunc="sum",    
                 color=color_col,
                 title=f"{label} Distribution (Females)",
                 template="plotly_dark",
@@ -204,8 +217,20 @@ if active == "lift_distributions":
             fig_f.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
-                margin=dict(l=20, r=20, t=50, b=20),
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1) if color_col else None
+                # Increase top margin to give space for title + legend
+                margin=dict(l=20, r=20, t=100, b=20),
+                legend=dict(
+                    orientation="h", 
+                    yanchor="bottom", 
+                    y=1.1, # Moved further up from 1.02
+                    xanchor="right", 
+                    x=1.0
+                ) if color_col else None,
+                title=dict(
+                    y=0.95, 
+                    x=0.0,
+                    xanchor='left'
+                )
             )
             fig_f.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_f, use_container_width=True)
