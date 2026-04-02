@@ -309,7 +309,7 @@ if selected_name:
                 x=pr_df["Date"],
                 y=pr_df["Value"],
                 mode="markers",
-                name="New PR! ⭐",
+                name="Personal Records",
                 marker=dict(
                     symbol="star",
                     size=14,
@@ -317,7 +317,7 @@ if selected_name:
                     line=dict(width=1.5, color="white"),
                 ),
                 # Show the lift type in the hover
-                hovertemplate="<b>NEW PR!</b><br>"
+                hovertemplate="<b>Personal Records</b><br>"
             ))
 
         # --- Plot all individual attempt traces ---
