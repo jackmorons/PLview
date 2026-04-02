@@ -235,7 +235,7 @@ elif active == "strength_index_calculator":
         dots_score = 0.0
 
     # Display Results
-    res_c1, res_c2 = st.columns([1, 1, 1, 1])
+    res_c1, res_c2, res_c3, res_c4 = st.columns([1, 1, 1, 1])
     with res_c1:
         st.metric("DOTS Score", f"{dots_score:.2f}")
         if dots_score > 500:
