@@ -316,8 +316,11 @@ if selected_name:
                     color="#ffd54f",
                     line=dict(width=1.5, color="white"),
                 ),
-                # Show the lift type in the hover
-                # hovertemplate="<b>Personal Records</b><br>"
+                hoverlabel=dict(
+                    font_color="#000000", # black text to match the star
+                    bgcolor="rgba(255, 255, 100, 0.9)", # Darker background for contrast
+                    bordercolor="#ffd54f"
+                ),
             ))
 
         # --- Plot all individual attempt traces ---
