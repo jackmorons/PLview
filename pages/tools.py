@@ -134,9 +134,33 @@ if active == "lift_distributions":
         m_plot_df = malesdf[malesdf[col] > 0].copy()
         f_plot_df = femalesdf[femalesdf[col] > 0].copy()
         
+        category_orders = {}
+        color_seq_m = ["#42a5f5"] 
+        color_seq_f = ["#ef5350"]
+
         if color_col:
+            # Handle NaNs
             m_plot_df[color_col] = m_plot_df[color_col].fillna("Unknown")
             f_plot_df[color_col] = f_plot_df[color_col].fillna("Unknown")
+            
+            # Determine global sorted categories to keep colors consistent between Male/Female
+            all_cats = sorted(list(set(m_plot_df[color_col].unique()) | set(f_plot_df[color_col].unique())))
+            
+            # Special sorting for Equipment
+            if color_col == "Equipment":
+                equip_order = ["Raw", "Wraps", "Single-ply", "Multi-ply"]
+                all_cats = [e for e in equip_order if e in all_cats] + [e for e in all_cats if e not in equip_order]
+            
+            category_orders = {color_col: all_cats}
+            
+            # Generate a nice chromatic sequence (Turbo is great for this)
+            n_cats = len(all_cats)
+            if n_cats > 1:
+                color_seq_m = px.colors.sample_colorscale("Turbo", [i/(n_cats-1) for i in range(n_cats)])
+                color_seq_f = color_seq_m # Keep them consistent
+            else:
+                color_seq_m = ["#42a5f5"]
+                color_seq_f = ["#ef5350"]
 
         with c1:
             fig_m = px.histogram(
@@ -144,7 +168,8 @@ if active == "lift_distributions":
                 color=color_col,
                 title=f"{label} Distribution (Males)",
                 template="plotly_dark",
-                color_discrete_sequence=["#42a5f5"] if not color_col else px.colors.qualitative.Prism,
+                color_discrete_sequence=color_seq_m,
+                category_orders=category_orders,
                 histnorm="probability",
                 barmode="stack" if color_col else "relative"
             )
@@ -163,7 +188,8 @@ if active == "lift_distributions":
                 color=color_col,
                 title=f"{label} Distribution (Females)",
                 template="plotly_dark",
-                color_discrete_sequence=["#ef5350"] if not color_col else px.colors.qualitative.Prism,
+                color_discrete_sequence=color_seq_f,
+                category_orders=category_orders,
                 histnorm="probability",
                 barmode="stack" if color_col else "relative"
             )
