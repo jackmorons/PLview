@@ -259,23 +259,27 @@ elif active == "1v1":
 
     st.markdown("---")
 
-    # 2. Data Preparation Function
+    # 2. Data Preparation Function (Enhanced)
     def get_ath_stats(name):
         if not name: return None
         ath_df = alldf[alldf["Name"] == name].copy()
         
-        # PB stats (Best 3 across all historical records)
+        # PB stats
         best_sq = ath_df["Best3SquatKg"].max()
         best_bn = ath_df["Best3BenchKg"].max()
         best_dl = ath_df["Best3DeadliftKg"].max()
         best_tot = ath_df["TotalKg"].max()
         best_dots = ath_df["Dots"].max()
+        best_wilks = ath_df["Wilks"].max()
+        best_gloss = ath_df["Glossbrenner"].max()
+        best_good = ath_df["Goodlift"].max()
         
-        # Latest Categorical Stats (using their most recent entry)
+        # Latest entries
         latest = ath_df.sort_values("Date", ascending=False).iloc[0]
         wc = latest["WeightClassKg"]
         sex = "Male" if latest["Sex"] == "M" else "Female"
         equip = latest["Equipment"]
+        bw = latest["BodyweightKg"]
         
         return {
             "name": name,
@@ -284,7 +288,10 @@ elif active == "1v1":
             "dl": best_dl if best_dl > 0 else 0, 
             "tot": best_tot if best_tot > 0 else 0, 
             "dots": best_dots if best_dots > 0 else 0,
-            "wc": wc, "sex": sex, "equip": equip
+            "wilks": best_wilks if best_wilks > 0 else 0,
+            "gloss": best_gloss if best_gloss > 0 else 0,
+            "good": best_good if best_good > 0 else 0,
+            "wc": wc, "sex": sex, "equip": equip, "bw": bw
         }
 
     stats1 = get_ath_stats(name1)
@@ -328,6 +335,164 @@ elif active == "1v1":
 
     render_athlete_col(stats1, stats2, disp_a, True)
     render_athlete_col(stats2, stats1, disp_b, False)
+
+    # 4. Multi-Chart Dashboard
+    if stats1 and stats2:
+        st.markdown("---")
+        st.subheader("📊 Performance Matchup Dashboard")
+        
+        # --- Row 1: The Radars ---
+        r1_col1, r1_col2 = st.columns(2)
+        
+        with r1_col1:
+            # Radar 1: S/B/D Profile
+            import plotly.graph_objects as go
+            categories_sbd = ['Squat', 'Bench', 'Deadlift']
+            fig_sbd = go.Figure()
+            
+            # Athlete 1 trace
+            fig_sbd.add_trace(go.Scatterpolar(
+                r=[stats1['sq'], stats1['bn'], stats1['dl'], stats1['sq']],
+                theta=categories_sbd + [categories_sbd[0]],
+                fill='toself', name=stats1['name'],
+                line=dict(color='#42a5f5', width=3),
+                fillcolor='rgba(66, 165, 245, 0.2)'
+            ))
+            # Athlete 2 trace
+            fig_sbd.add_trace(go.Scatterpolar(
+                r=[stats2['sq'], stats2['bn'], stats2['dl'], stats2['sq']],
+                theta=categories_sbd + [categories_sbd[0]],
+                fill='toself', name=stats2['name'],
+                line=dict(color='#ef5350', width=3),
+                fillcolor='rgba(239, 83, 80, 0.2)'
+            ))
+            fig_sbd.update_layout(
+                polar=dict(radialaxis=dict(visible=True, gridcolor="rgba(255,255,255,0.1)"), bgcolor="rgba(0,0,0,0)"),
+                template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
+                title=dict(text="S/B/D Strength Profile", x=0.5, xanchor='center'),
+                legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5),
+                height=500
+            )
+            st.plotly_chart(fig_sbd, use_container_width=True)
+
+        with r1_col2:
+            # Radar 2: Coefficients (Normalized to 100 Scale)
+            categories_coeff = ['Dots', 'Wilks', 'Glossbrenner', 'Goodlift']
+            # Normalization factors for visual scaling (Dots/Wilks ~600, Goodlift ~120)
+            norm_map = {'Dots': 600, 'Wilks': 600, 'Glossbrenner': 600, 'Goodlift': 120}
+            
+            def get_norm_r(s):
+                vals = []
+                for c in categories_coeff:
+                    raw = s.get(c.lower() if c != 'Glossbrenner' else 'gloss', 0)
+                    vals.append((raw / norm_map[c]) * 100)
+                return vals + [vals[0]]
+
+            fig_coeff = go.Figure()
+            # Athlete 1 trace
+            fig_coeff.add_trace(go.Scatterpolar(
+                r=get_norm_r(stats1),
+                theta=categories_coeff + [categories_coeff[0]],
+                fill='toself', name=stats1['name'],
+                line=dict(color='#42a5f5', width=3),
+                fillcolor='rgba(66, 165, 245, 0.2)'
+            ))
+            # Athlete 2 trace
+            fig_coeff.add_trace(go.Scatterpolar(
+                r=get_norm_r(stats2),
+                theta=categories_coeff + [categories_coeff[0]],
+                fill='toself', name=stats2['name'],
+                line=dict(color='#ef5350', width=3),
+                fillcolor='rgba(239, 83, 80, 0.2)'
+            ))
+            fig_coeff.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 100], gridcolor="rgba(255,255,255,0.1)"), bgcolor="rgba(0,0,0,0)"),
+                template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
+                title=dict(text="Coefficient Battle (Normalized)", x=0.5, xanchor='center'),
+                legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5),
+                height=500
+            )
+            st.plotly_chart(fig_coeff, use_container_width=True)
+
+        # --- Row 2: Population Heatmap ---
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.subheader("🗺️ Population Positioning Map")
+        st.write("Where do these two stand relative to the ocean of lifters in our database?")
+        
+        fig_heat = px.density_heatmap(
+            alldf[alldf["TotalKg"] > 0], x="BodyweightKg", y="TotalKg",
+            template="plotly_dark",
+            color_continuous_scale="Viridis",
+            nbinsx=50, nbinsy=50,
+            labels={"BodyweightKg": "Bodyweight (kg)", "TotalKg": "Total (kg)"}
+        )
+        # Add Athlete 1 Marker
+        fig_heat.add_trace(go.Scatter(
+            x=[stats1['bw']], y=[stats1['tot']],
+            mode='markers', name=f"🏹 {stats1['name']}",
+            marker=dict(color='#42a5f5', size=16, symbol='star', line=dict(width=2, color='white')),
+            hovertemplate=f"<b>{stats1['name']}</b><br>BW: %{{x}}kg<br>Total: %{{y}}kg<extra></extra>"
+        ))
+        # Add Athlete 2 Marker
+        fig_heat.add_trace(go.Scatter(
+            x=[stats2['bw']], y=[stats2['tot']],
+            mode='markers', name=f"🛡️ {stats2['name']}",
+            marker=dict(color='#ef5350', size=16, symbol='star', line=dict(width=2, color='white')),
+            hovertemplate=f"<b>{stats2['name']}</b><br>BW: %{{x}}kg<br>Total: %{{y}}kg<extra></extra>"
+        ))
+        fig_heat.update_layout(
+            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+            height=600, margin=dict(l=20, r=20, t=20, b=20),
+            coloraxis_showscale=False
+        )
+        st.plotly_chart(fig_heat, use_container_width=True)
+
+        # --- Row 3: Gauges and Efficiency ---
+        r3_col1, r3_col2 = st.columns(2)
+        
+        with r3_col1:
+            st.markdown("<div style='text-align: center; font-weight: bold;'>🏆 Percentile Standing (Dots)</div>", unsafe_allow_html=True)
+            g_c1, g_c2 = st.columns(2)
+            for i, (s, col, color) in enumerate([(stats1, g_c1, '#42a5f5'), (stats2, g_c2, '#ef5350')]):
+                # Calculate percentile
+                all_dots = alldf[alldf["Dots"] > 0]["Dots"].sort_values()
+                rank = (all_dots < s['dots']).sum()
+                percentile = (rank / len(all_dots)) * 100 if not all_dots.empty else 0
+                
+                fig_g = go.Figure(go.Indicator(
+                    mode="gauge+number", value=percentile,
+                    number={'suffix': "%", 'font': {'size': 24, 'color': '#f0f0f5'}},
+                    title={'text': s['name'], 'font': {'size': 16}},
+                    gauge={'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "gray"},
+                           'bar': {'color': color},
+                           'bgcolor': "rgba(0,0,0,0)",
+                           'borderwidth': 2, 'bordercolor': "gray"}
+                ))
+                fig_g.update_layout(height=250, margin=dict(l=30, r=30, t=50, b=20), paper_bgcolor="rgba(0,0,0,0)")
+                col.plotly_chart(fig_g, use_container_width=True)
+
+        with r3_col2:
+            st.markdown("<div style='text-align: center; font-weight: bold;'>💪 Strength Efficiency (Total/BW)</div>", unsafe_allow_html=True)
+            eff1 = stats1['tot'] / stats1['bw'] if stats1['bw'] > 0 else 0
+            eff2 = stats2['tot'] / stats2['bw'] if stats2['bw'] > 0 else 0
+            
+            eff_data = pd.DataFrame({
+                "Athlete": [stats1['name'], stats2['name']],
+                "Ratio": [eff1, eff2],
+                "Color": ['#42a5f5', '#ef5350']
+            })
+            fig_eff = px.bar(
+                eff_data, x="Ratio", y="Athlete", orientation='h',
+                template="plotly_dark", color="Athlete",
+                color_discrete_map={stats1['name']: '#42a5f5', stats2['name']: '#ef5350'},
+                text_auto=".2f"
+            )
+            fig_eff.update_layout(
+                plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+                height=300, margin=dict(l=20, r=20, t=50, b=50),
+                showlegend=False, xaxis_title="Kgs lifted per Kg of bodyweight"
+            )
+            st.plotly_chart(fig_eff, use_container_width=True)
 
 # ---------- 3. Weight Class Evaluator ----------
 elif active == "weight_class":
