@@ -63,14 +63,14 @@ femalesdf = pd.DataFrame(females_data)
 # ── Sub-page definitions ──────────────────────────────────────────────
 TOOLS_PAGES = [
     {"key": "lift_distributions", "label": "📊 Lift Distributions"},
-    {"key": "aaaa", "label": "aaaa"},
+    {"key": "1v1", "label": "⚔️ 1v1"},
     {"key": "bbbb", "label": "bbbb"},
     {"key": "cccc", "label": "cccc"},
     {"key": "dddd", "label": "dddd"},
     {"key": "eeee", "label": "eeee"},
-    {"key": "ffff", "label": "ffff"},
-    {"key": "gggg", "label": "gggg"},
-    {"key": "hhhh", "label": "hhhh"},
+    {"key": "freak_finder", "label": "🤯 Freak Finder"},
+    {"key": "geo_strength", "label": "🌍 Geographical Strength"},
+    {"key": "twin_finder", "label": "🫂 Find Your Twin!"},
     {"key": "strength_index_calculator", "label": "🧮 Strength Index"},
 ]
 
