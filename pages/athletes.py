@@ -187,7 +187,7 @@ if selected_name:
         )
 
         # Create side-by-side layout for Chart and Table
-        rad_cols = st.columns([2, 1])
+        rad_cols = st.columns([2, 1, 0.5])
         
         with rad_cols[0]:
             st.plotly_chart(fig_radar, use_container_width=True)
