@@ -62,7 +62,7 @@ femalesdf = pd.DataFrame(females_data)
 
 # ── Sub-page definitions ──────────────────────────────────────────────
 TOOLS_PAGES = [
-    {"key": "lift_distributions", "label": "📊 Lift Distributions"}, # 1
+    {"key": "lift_distributions", "label": "📊 Statistical Distributions"}, # 1
     {"key": "1v1", "label": "⚔️ 1v1 Strength Comparison"}, # 2
     {"key": "weight_class", "label": "⚖️ Weight Class Evaluator"}, # 3
     {"key": "trend_calculator", "label": "📈 Trend Calculator"}, # 4
