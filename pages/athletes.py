@@ -317,7 +317,7 @@ if selected_name:
                     line=dict(width=1.5, color="white"),
                 ),
                 # Show the lift type in the hover
-                hovertemplate="<b>Personal Records</b><br>"
+                # hovertemplate="<b>Personal Records</b><br>"
             ))
 
         # --- Plot all individual attempt traces ---
