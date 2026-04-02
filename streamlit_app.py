@@ -83,7 +83,7 @@ def inject_custom_css():
         /* Mobile Responsiveness Overrides */
         @media (max-width: 640px) {
             .hero-title {
-                font-size: 3.5rem !important;
+                font-size: 4rem !important;
                 line-height: 1.2 !important;
                 width: 100% !important;
             }
