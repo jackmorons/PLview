@@ -51,6 +51,11 @@ TOOLS_PAGES = [
     {"key": "aaaa", "label": "aaaa"},
     {"key": "bbbb", "label": "bbbb"},
     {"key": "cccc", "label": "cccc"},
+    {"key": "dddd", "label": "dddd"},
+    {"key": "eeee", "label": "eeee"},
+    {"key": "ffff", "label": "ffff"},
+    {"key": "gggg", "label": "gggg"},
+    {"key": "hhhh", "label": "hhhh"},
     {"key": "strength_index_calculator", "label": "🧮 Strength Index"},
 ]
 

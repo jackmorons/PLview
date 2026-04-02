@@ -20,7 +20,7 @@ possible tools:
 
 - in athlete page:
     ✅ radar plot showing the contribution of each lift to the total, showing the relative strength in each lift, and maybe a comparison with the record holders in the same cathegory or the average in the cathegory
-    - add a star on the timeline graph showing the prs
+    ✅ add a star on the timeline graph showing the prs
     ✅ gauge bar showing how strong you are within your cathegory, comparing your lifts to the average and the best in your cathegory
 
 - in tools page:
