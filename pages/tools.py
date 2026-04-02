@@ -67,7 +67,7 @@ TOOLS_PAGES = [
     {"key": "lift_distributions", "label": "📊 Statistical Distributions"}, # 1
     {"key": "1v1", "label": "⚔️ 1v1 Strength Comparison"}, # 2
     {"key": "weight_class", "label": "⚖️ Weight Class Evaluator"}, # 3
-    {"key": "trend_calculator", "label": "📈 Trend Calculator"}, # 4
+    {"key": "entry_calculator", "label": "📈 Competition Entry Calculator"}, # 4
     {"key": "pattern_discoverer", "label": "🔍 Pattern Discoverer"}, # 5
     #{"key": "relative_lifts", "label": "💪 Relative Lifts"},
     {"key": "freak_finder", "label": "🤯 Strength Freaks Finder"}, # 6
@@ -151,9 +151,9 @@ elif active == "weight_class":
     st.info("🚧 **Coming soon** — Detailed weight class evaluator.")
 
 # ---------- 4. Trend Calculator ----------
-elif active == "trend_calculator":
-    st.subheader("📈 Trend Calculator")
-    st.info("🚧 **Coming soon** — Detailed trend calculator.")
+elif active == "entry_calculator":
+    st.subheader("📈 Competition Entry Calculator")
+    st.info("🚧 **Coming soon** — Detailed competition entry calculator.")
 
 # ---------- 5. Pattern Discoverer ----------
 elif active == "pattern_discoverer":
