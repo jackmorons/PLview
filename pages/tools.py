@@ -330,6 +330,48 @@ elif active == "strength_index_calculator":
     with calc_c3:
         rpe = st.slider("RPE", min_value=5.0, max_value=10.0, value=8.0, step=0.5, help="Rate of Perceived Exertion (10 = absolute limit, 9 = 1 rep in tank, etc.)")
 
+    st.markdown("---")
+    
+    # ── Calculation ──────────────────────────────────────────────
+    # Adjust reps based on RPE: Effective Reps = Actual Reps + (10 - RPE)
+    effective_reps = reps + (10.0 - rpe)
+    
+    # Formula: 1RM = Load * (1 + (Effective Reps * 0.025))
+    one_rm = load * (1 + (effective_reps * 0.025))
+    
+    # Display Result
+    res_main, res_chart = st.columns([1, 2])
+    
+    with res_main:
+        st.metric("Estimated 1RM", f"{one_rm:.2f} kg")
+        st.write(f"🎯 **Projected Max:** {round(one_rm * 2) / 2} kg")
+        
+        st.markdown("### 📊 Intensity Table")
+        pcts = [100, 95, 90, 85, 80, 75, 70]
+        rows = []
+        for p in pcts:
+            rows.append({"Percentage (%)": f"{p}%", "Weight (kg)": f"{one_rm * (p/100):.1f}"})
+        st.table(pd.DataFrame(rows))
+        
+    with res_chart:
+        # Mini bar chart for intensities
+        p_vals = [p for p in range(50, 105, 5)]
+        w_vals = [one_rm * (pv/100) for pv in p_vals]
+        
+        fig_1rm = px.bar(
+            x=[f"{pv}%" for pv in p_vals], y=w_vals,
+            title="Projected Max % Breakdown",
+            labels={'x': 'Percentage', 'y': 'Load (kg)'},
+            template="plotly_dark",
+            color=w_vals,
+            color_continuous_scale="Viridis"
+        )
+        fig_1rm.update_layout(
+            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+            coloraxis_showscale=False
+        )
+        st.plotly_chart(fig_1rm, use_container_width=True)
+
 
         
 
