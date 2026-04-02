@@ -157,13 +157,104 @@ elif active == "entry_calculator":
 
 # ---------- 5. Pattern Discoverer ----------
 elif active == "pattern_discoverer":
-    st.subheader("🔍 Pattern Discoverer")
-    st.info("🚧 **Coming soon** — Detailed pattern discoverer.")
+    st.subheader("🔍 Patterns and Trends Discoverer")
+    st.info("🚧 **Coming soon** — Detailed patterns and trends discoverer.")
 
 # ---------- 6. Freak Finder ----------
 elif active == "freak_finder":
     st.subheader("🤯 Strength Freaks Finder")
-    st.info("🚧 **Coming soon** — Detailed freak finder.")
+    st.info("Identify performance outliers. Pair any two metrics to visualize the main distribution (heatmap) and highlight the 'freaks' (scatter) who break the norms.")
+
+    # 1. Selection & Filtering UI
+    filter_c1, filter_c2, filter_c3 = st.columns(3)
+    
+    with filter_c1:
+        freak_gender = st.selectbox("Gender Filter", ["Male", "Female"], key="freak_gender_sel")
+        metric_x = st.selectbox("X-Axis Metric", ["BodyweightKg", "Age", "TotalKg", "Dots", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"], index=0)
+    
+    with filter_c2:
+        # Dynamic Weight Class based on Gender
+        ref_df = malesdf if freak_gender == "Male" else femalesdf
+        all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
+        sel_wc = st.selectbox("Weight Class", ["All"] + all_wc, key="freak_wc_sel")
+        metric_y = st.selectbox("Y-Axis Metric", ["TotalKg", "Dots", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"], index=0)
+
+    with filter_c3:
+        age_range = st.slider("Age Range", 5, 90, (18, 40), key="freak_age_range")
+        freak_threshold = st.slider("Freak Threshold (Top %)", 0.1, 5.0, 1.0, step=0.1, help="Highlight the top X% of performers.")
+
+    # 2. Data Filtering
+    # Apply filters
+    filtered_df = ref_df[
+        (ref_df["Age"] >= age_range[0]) & 
+        (ref_df["Age"] <= age_range[1])
+    ].copy()
+    
+    if sel_wc != "All":
+        filtered_df = filtered_df[filtered_df["WeightClassKg"] == sel_wc]
+    
+    # Ensure metrics are valid and numeric
+    filtered_df = filtered_df.dropna(subset=[metric_x, metric_y])
+    filtered_df = filtered_df[(filtered_df[metric_x] > 0) & (filtered_df[metric_y] > 0)]
+
+    if len(filtered_df) < 5:
+        st.warning(f"⚠️ **Not enough data.** Only {len(filtered_df)} athletes found for this combination. Try broadening your filters.")
+    else:
+        # 3. Identify Freaks (Outliers)
+        # We define freaks as the top X% by the Y metric (usually the strength metric)
+        n_freaks = max(1, int(len(filtered_df) * (freak_threshold / 100)))
+        freaks_df = filtered_df.sort_values(metric_y, ascending=False).head(n_freaks)
+        main_df = filtered_df.drop(freaks_df.index)
+
+        # 4. Combined Visualization
+        # Base: Density Heatmap
+        fig_freak = px.density_heatmap(
+            filtered_df, x=metric_x, y=metric_y,
+            title=f"{metric_y} vs {metric_x} Distribution ({freak_gender})",
+            labels={metric_x: f"{metric_x} (kg/yrs)", metric_y: f"{metric_y} (kg/pts)"},
+            template="plotly_dark",
+            nbinsx=30, nbinsy=30,
+            color_continuous_scale="Viridis"
+        )
+        
+        # Superimpose Scatterplot for Freaks
+        # We add them as a separate trace
+        fig_freak.add_trace(go.Scatter(
+            x=freaks_df[metric_x],
+            y=freaks_df[metric_y],
+            mode='markers',
+            name='🔥 Strength Freaks',
+            marker=dict(
+                color='#ef5350', 
+                size=10, 
+                symbol='star',
+                line=dict(width=1, color='white')
+            ),
+            text=freaks_df["Name"],
+            hovertemplate="<b>%{text}</b><br>" +
+                          f"{metric_x}: %{{x}}<br>" +
+                          f"{metric_y}: %{{y}}<br>" +
+                          "<extra></extra>"
+        ))
+
+        fig_freak.update_layout(
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            coloraxis_showscale=False,
+            height=700,
+            margin=dict(l=20, r=20, t=60, b=20),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0)
+        )
+
+        st.plotly_chart(fig_freak, use_container_width=True)
+        
+        # 5. List of identified freaks
+        with st.expander(f"📋 List of {len(freaks_df)} Identified Freaks"):
+            st.dataframe(
+                freaks_df[["Name", "Age", "BodyweightKg", "TotalKg", "Dots", "WeightClassKg", "Date", "Federation"]].sort_values(metric_y, ascending=False),
+                use_container_width=True,
+                hide_index=True
+            )
 
 # # ---------- 7. Geographical Strength ----------
 # elif active == "geo_strength":
