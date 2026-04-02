@@ -4,6 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 import urllib.parse
+import geopandas as gpd
 
 st.set_page_config(page_title="Tools - PLview", page_icon="⚙️", layout="wide")
 
@@ -70,7 +71,7 @@ TOOLS_PAGES = [
     {"key": "pattern_discoverer", "label": "🔍 Pattern Discoverer"}, # 5
     #{"key": "relative_lifts", "label": "💪 Relative Lifts"},
     {"key": "freak_finder", "label": "🤯 Strength Freaks Finder"}, # 6
-    {"key": "geo_strength", "label": "🌍 Geographical Strength"}, # 7
+    #{"key": "geo_strength", "label": "🌍 Geographical Strength"}, # 7
     {"key": "twin_finder", "label": "🫂 Find Your PL Twin!"}, # 8
     {"key": "strength_index_calculator", "label": "🧮 Strength Index Calculator"}, # 9
 ]
@@ -164,10 +165,10 @@ elif active == "freak_finder":
     st.subheader("🤯 Strength Freaks Finder")
     st.info("🚧 **Coming soon** — Detailed freak finder.")
 
-# ---------- 7. Geographical Strength ----------
-elif active == "geo_strength":
-    st.subheader("🌍 Geographical Strength")
-    st.info("🚧 **Coming soon** — Detailed geographical strength.")
+# # ---------- 7. Geographical Strength ----------
+# elif active == "geo_strength":
+#     st.subheader("🌍 Geographical Strength")
+#     st.info("🚧 **Coming soon** — Detailed geographical strength.")
 
 # ---------- 8. Find Your PL Twin! ----------
 elif active == "twin_finder":
