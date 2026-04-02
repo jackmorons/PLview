@@ -311,5 +311,63 @@ elif active == "strength_index_calculator":
             st.write(f"📈 Every kilogram added to your total will boost this score.")
         else:
             st.warning("Please check your bodyweight/total values.")
+
+# ---------- 10. 1RM Calculator ----------
+elif active == "1rm_calculator":
+    st.subheader("🏋️ 1RM Calculator")
+    st.info("Calculate your projected 1Rep Max using the O'Conner formula with RPE adjustment.")
+    
+    calc_c1, calc_c2, calc_c3 = st.columns(3)
+    
+    with calc_c1:
+        load = st.number_input("Load (kg)", min_value=0.0, max_value=1000.0, value=100.0, step=2.5, help="The weight you lifted.")
+    
+    with calc_c2:
+        reps = st.number_input("Reps", min_value=1, max_value=20, value=5, step=1, help="Number of repetitions performed.")
+    
+    with calc_c3:
+        rpe = st.slider("RPE", min_value=5.0, max_value=10.0, value=8.0, step=0.5, help="Rate of Perceived Exertion (10 = absolute limit, 9 = 1 rep in tank, etc.)")
+
+    st.markdown("---")
+    
+    # ── Calculation ──────────────────────────────────────────────
+    # Adjust reps based on RPE: Effective Reps = Actual Reps + (10 - RPE)
+    effective_reps = reps + (10.0 - rpe)
+    
+    # Formula: 1RM = Load * (1 + (Effective Reps * 0.025))
+    one_rm = load * (1 + (effective_reps * 0.025))
+    
+    # Display Result
+    res_main, res_chart = st.columns([1, 2])
+    
+    with res_main:
+        st.metric("Estimated 1RM", f"{one_rm:.2f} kg")
+        st.write(f"🎯 **Projected Max:** {round(one_rm * 2) / 2} kg")
+        
+        st.markdown("### 📊 Intensity Table")
+        pcts = [100, 95, 90, 85, 80, 75, 70]
+        rows = []
+        for p in pcts:
+            rows.append({"Percentage (%)": f"{p}%", "Weight (kg)": f"{one_rm * (p/100):.1f}"})
+        st.table(pd.DataFrame(rows))
+        
+    with res_chart:
+        # Mini bar chart for intensities
+        p_vals = [p for p in range(50, 105, 5)]
+        w_vals = [one_rm * (pv/100) for pv in p_vals]
+        
+        fig_1rm = px.bar(
+            x=[f"{pv}%" for pv in p_vals], y=w_vals,
+            title="Projected Max % Breakdown",
+            labels={'x': 'Percentage', 'y': 'Load (kg)'},
+            template="plotly_dark",
+            color=w_vals,
+            color_continuous_scale="Viridis"
+        )
+        fig_1rm.update_layout(
+            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+            coloraxis_showscale=False
+        )
+        st.plotly_chart(fig_1rm, use_container_width=True)
         
 st.markdown("---")
