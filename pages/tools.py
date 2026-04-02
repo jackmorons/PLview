@@ -348,24 +348,32 @@ elif active == "1v1":
             # Radar 1: S/B/D Profile
             import plotly.graph_objects as go
             categories_sbd = ['Squat', 'Bench', 'Deadlift']
+            
+            # Data for both athletes
+            r1 = [stats1['sq'], stats1['bn'], stats1['dl'], stats1['sq']]
+            r2 = [stats2['sq'], stats2['bn'], stats2['dl'], stats2['sq']]
+            
+            # Plot the larger one first (so smaller is on top for hover)
+            sum1 = sum(r1)
+            sum2 = sum(r2)
+            
             fig_sbd = go.Figure()
             
-            # Athlete 1 trace
-            fig_sbd.add_trace(go.Scatterpolar(
-                r=[stats1['sq'], stats1['bn'], stats1['dl'], stats1['sq']],
-                theta=categories_sbd + [categories_sbd[0]],
-                fill='toself', name=stats1['name'],
-                line=dict(color='#42a5f5', width=3),
-                fillcolor='rgba(66, 165, 245, 0.2)'
-            ))
-            # Athlete 2 trace
-            fig_sbd.add_trace(go.Scatterpolar(
-                r=[stats2['sq'], stats2['bn'], stats2['dl'], stats2['sq']],
-                theta=categories_sbd + [categories_sbd[0]],
-                fill='toself', name=stats2['name'],
-                line=dict(color='#ef5350', width=3),
-                fillcolor='rgba(239, 83, 80, 0.2)'
-            ))
+            order = [(stats1, r1, '#42a5f5', 'rgba(66, 165, 245, 0.2)'), 
+                     (stats2, r2, '#ef5350', 'rgba(239, 83, 80, 0.2)')]
+            
+            # Sort by sum descending (larger sum comes first in traces)
+            order.sort(key=lambda x: sum(x[1]), reverse=True)
+            
+            for s, r_val, color, f_color in order:
+                fig_sbd.add_trace(go.Scatterpolar(
+                    r=r_val,
+                    theta=categories_sbd + [categories_sbd[0]],
+                    fill='toself', name=s['name'],
+                    line=dict(color=color, width=3),
+                    fillcolor=f_color
+                ))
+
             fig_sbd.update_layout(
                 polar=dict(radialaxis=dict(visible=True, gridcolor="rgba(255,255,255,0.1)"), bgcolor="rgba(0,0,0,0)"),
                 template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
@@ -389,23 +397,27 @@ elif active == "1v1":
                     vals.append((raw / norm_map[c]) * 100)
                 return vals + [vals[0]]
 
+            # Normalized data
+            nr1 = get_norm_r(stats1)
+            nr2 = get_norm_r(stats2)
+            
             fig_coeff = go.Figure()
-            # Athlete 1 trace
-            fig_coeff.add_trace(go.Scatterpolar(
-                r=get_norm_r(stats1),
-                theta=categories_coeff + [categories_coeff[0]],
-                fill='toself', name=stats1['name'],
-                line=dict(color='#42a5f5', width=3),
-                fillcolor='rgba(66, 165, 245, 0.2)'
-            ))
-            # Athlete 2 trace
-            fig_coeff.add_trace(go.Scatterpolar(
-                r=get_norm_r(stats2),
-                theta=categories_coeff + [categories_coeff[0]],
-                fill='toself', name=stats2['name'],
-                line=dict(color='#ef5350', width=3),
-                fillcolor='rgba(239, 83, 80, 0.2)'
-            ))
+            
+            order_coeff = [(stats1, nr1, '#42a5f5', 'rgba(66, 165, 245, 0.2)'), 
+                           (stats2, nr2, '#ef5350', 'rgba(239, 83, 80, 0.2)')]
+            
+            # Plot the larger one first
+            order_coeff.sort(key=lambda x: sum(x[1]), reverse=True)
+            
+            for s, r_val, color, f_color in order_coeff:
+                fig_coeff.add_trace(go.Scatterpolar(
+                    r=r_val,
+                    theta=categories_coeff + [categories_coeff[0]],
+                    fill='toself', name=s['name'],
+                    line=dict(color=color, width=3),
+                    fillcolor=f_color
+                ))
+
             fig_coeff.update_layout(
                 polar=dict(radialaxis=dict(visible=True, range=[0, 100], gridcolor="rgba(255,255,255,0.1)"), bgcolor="rgba(0,0,0,0)"),
                 template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
