@@ -16,7 +16,7 @@ Main structure of the project:
 possible tools:
 
 - in records page:
-    - link the athletes to their athlete page
+    ✅ link the athletes to their athlete page
 
 - in athlete page:
     - radar plot showing the contribution of each lift to the total, showing the relative strength in each lift, and maybe a comparison with the record holders in the same cathegory or the average in the cathegory
