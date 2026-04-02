@@ -217,25 +217,31 @@ if selected_name:
                     fig_percentile = go.Figure(go.Indicator(
                         mode="gauge+number",
                         value=percentile,
-                        number={'suffix': "%", 'font': {'size': 20}},
-                        title={'text': "Percentile", 'font': {'size': 12, 'color': '#9a9ab0'}},
+                        number={'suffix': "%", 'font': {'size': 24}},
                         gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#42a5f5"}, 'bgcolor': "rgba(0,0,0,0)"}
                     ))
                     fig_record = go.Figure(go.Indicator(
                         mode="gauge+number",
                         value=progress_to_record,
-                        number={'suffix': "%", 'font': {'size': 20}},
-                        title={'text': "% of Record", 'font': {'size': 12, 'color': '#9a9ab0'}},
+                        number={'suffix': "%", 'font': {'size': 24}},
                         gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#ffd54f"}, 'bgcolor': "rgba(0,0,0,0)"}
                     ))
 
+                    # Adjust height and margins for compact sidebar look
                     for f_g in [fig_percentile, fig_record]:
-                        f_g.update_layout(height=130, margin=dict(l=15, r=15, t=30, b=0), paper_bgcolor="rgba(0,0,0,0)", font={'color': "#f0f0f5"})
+                        f_g.update_layout(
+                            height=120, 
+                            margin=dict(l=10, r=10, t=10, b=10), 
+                            paper_bgcolor="rgba(0,0,0,0)", 
+                            font={'color': "#f0f0f5"}
+                        )
 
-                    st.write("") # Extra spacer to push down next section
+                    st.markdown("<br>", unsafe_allow_html=True) # Spacer
+                    
+                    st.write("📊 **Percentile Standing**")
                     st.plotly_chart(fig_percentile, use_container_width=True)
 
-                    st.write("") # Extra spacer to push down next section
+                    st.write("🏆 **Progress to Record**")
                     st.plotly_chart(fig_record, use_container_width=True)
                     
                     # Standing Summary
