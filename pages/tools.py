@@ -68,7 +68,7 @@ TOOLS_PAGES = [
     {"key": "1v1", "label": "⚔️ 1v1 Strength Comparison"}, # 2
     {"key": "weight_class", "label": "⚖️ Weight Class Evaluator"}, # 3
     {"key": "entry_calculator", "label": "📈 Competition Entry Calculator"}, # 4
-    {"key": "pattern_discoverer", "label": "🔍 Pattern Discoverer"}, # 5
+    {"key": "pattern_discoverer", "label": "🔍 Patterns and Trends Discoverer"}, # 5
     #{"key": "relative_lifts", "label": "💪 Relative Lifts"},
     {"key": "freak_finder", "label": "🤯 Strength Freaks Finder"}, # 6
     #{"key": "geo_strength", "label": "🌍 Geographical Strength"}, # 7
