@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
+import urllib.parse
 
 st.set_page_config(page_title="Tools - PLview", page_icon="⚙️", layout="wide")
 
@@ -171,7 +172,130 @@ elif active == "geo_strength":
 # ---------- 8. Find Your PL Twin! ----------
 elif active == "twin_finder":
     st.subheader("🫂 Find Your PL Twin!")
-    st.info("🚧 **Coming soon** — Detailed twin finder.")
+    st.info("Find the athlete in our database with the most similar performance profile to yours.")
+
+    # 1. Inputs
+    input_c1, input_c2, input_c3 = st.columns(3)
+    with input_c1:
+        u_gender = st.selectbox("Gender", ["Male", "Female"], key="twin_gender")
+        u_equip = st.selectbox("Equipment", ["Raw", "Wraps", "Single-ply", "Multi-ply"], key="twin_equip")
+    with input_c2:
+        u_bw = st.number_input("Bodyweight (kg)", min_value=30.0, max_value=250.0, value=82.5, step=0.5)
+        u_squat = st.number_input("Best Squat (kg)", min_value=0.0, max_value=600.0, value=180.0, step=2.5)
+    with input_c3:
+        u_bench = st.number_input("Best Bench (kg)", min_value=0.0, max_value=400.0, value=120.0, step=2.5)
+        u_deadlift = st.number_input("Best Deadlift (kg)", min_value=0.0, max_value=500.0, value=220.0, step=2.5)
+
+    if st.button("🔍 Find My Twin", type="primary", use_container_width=True):
+        # 2. Logic
+        with st.spinner("Searching the database for your match..."):
+            # Select dataset
+            ref_df = malesdf if u_gender == "Male" else femalesdf
+            
+            # Pre-filter for performance: +/- 15kg bodyweight to narrow down
+            # If no matches found, we can expand, but for this dataset it's usually fine.
+            candidates = ref_df[
+                (ref_df["BodyweightKg"] >= u_bw - 15) & 
+                (ref_df["BodyweightKg"] <= u_bw + 15) &
+                (ref_df["Equipment"] == u_equip)
+            ].copy()
+
+            if candidates.empty:
+                # Fallback to just Equipment if strictly limited BW fails
+                candidates = ref_df[ref_df["Equipment"] == u_equip].copy()
+
+            if not candidates.empty:
+                # Calculate Euclidean Distance
+                # stats: Squat, Bench, Deadlift
+                candidates["dist"] = np.sqrt(
+                    (candidates["Best3SquatKg"] - u_squat)**2 +
+                    (candidates["Best3BenchKg"] - u_bench)**2 +
+                    (candidates["Best3DeadliftKg"] - u_deadlift)**2 +
+                    (candidates["BodyweightKg"] - u_bw)**2
+                )
+                
+                # Get the top match
+                twin = candidates.sort_values("dist").iloc[0]
+                twin_name = twin["Name"]
+                
+                st.success(f"🎉 **Found your twin!** Your closest match is **{twin_name}**.")
+                
+                # 3. Visualization (Radar Plot)
+                # Following athletes.py style
+                categories = ['Squat', 'Bench Press', 'Deadlift']
+                
+                # Category stats for benchmarks (same as athletes.py)
+                cat_wc = twin["WeightClassKg"]
+                category_df = ref_df[
+                    (ref_df["WeightClassKg"] == cat_wc) & 
+                    (ref_df["Equipment"] == u_equip)
+                ].copy()
+
+                avg_squat = category_df["Best3SquatKg"].mean()
+                avg_bench = category_df["Best3BenchKg"].mean()
+                avg_deadlift = category_df["Best3DeadliftKg"].mean()
+                rec_squat = category_df["Best3SquatKg"].max()
+                rec_bench = category_df["Best3BenchKg"].max()
+                rec_deadlift = category_df["Best3DeadliftKg"].max()
+
+                fig_twin = go.Figure()
+
+                # Trace 1: Category Average
+                fig_twin.add_trace(go.Scatterpolar(
+                    r=[avg_squat, avg_bench, avg_deadlift, avg_squat],
+                    theta=categories + [categories[0]],
+                    fill='toself',
+                    fillcolor='rgba(66, 165, 245, 0.05)',
+                    name='Category Avg',
+                    line=dict(color='rgba(66, 165, 245, 0.4)', width=1, dash='dash'),
+                ))
+
+                # Trace 2: User (You)
+                fig_twin.add_trace(go.Scatterpolar(
+                    r=[u_squat, u_bench, u_deadlift, u_squat],
+                    theta=categories + [categories[0]],
+                    fill='toself',
+                    fillcolor='rgba(239, 83, 80, 0.2)',
+                    name='You',
+                    line=dict(color='#ef5350', width=3),
+                ))
+
+                # Trace 3: Twin
+                fig_twin.add_trace(go.Scatterpolar(
+                    r=[twin["Best3SquatKg"], twin["Best3BenchKg"], twin["Best3DeadliftKg"], twin["Best3SquatKg"]],
+                    theta=categories + [categories[0]],
+                    fill='toself',
+                    fillcolor='rgba(255, 213, 79, 0.3)',
+                    name=f'Twin: {twin_name}',
+                    line=dict(color='#ffd54f', width=4),
+                    marker=dict(symbol="star", size=8)
+                ))
+
+                fig_twin.update_layout(
+                    polar=dict(
+                        radialaxis=dict(visible=True, range=[0, max(u_squat, u_bench, u_deadlift, twin["Best3DeadliftKg"]) * 1.15], gridcolor="rgba(255,255,255,0.1)"),
+                        angularaxis=dict(gridcolor="rgba(255,255,255,0.1)"),
+                        bgcolor="rgba(0,0,0,0)"
+                    ),
+                    template="plotly_dark",
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    legend=dict(orientation="h", yanchor="bottom", y=-0.05, xanchor="center", x=0.5)
+                )
+
+                v_c1, v_c2 = st.columns([2, 1])
+                with v_c1:
+                    st.plotly_chart(fig_twin, use_container_width=True)
+                with v_c2:
+                    st.markdown("### 🧬 Twin Profile")
+                    st.write(f"**Name:** [{twin_name}](athletes?name={urllib.parse.quote_plus(twin_name)})")
+                    st.write(f"**Bodyweight:** {twin['BodyweightKg']} kg")
+                    st.write(f"**S/B/D:** {twin['Best3SquatKg']}/{twin['Best3BenchKg']}/{twin['Best3DeadliftKg']}")
+                    st.write(f"**Total:** {twin['TotalKg']} kg")
+                    st.write(f"**Dots:** {twin['Dots']:.2f}")
+                    st.metric("Similarity Score", f"{max(0, 100 - twin['dist']):.1f}%", help="Calculated based on lift parity.")
+            else:
+                st.warning("No athletes found for this equipment category. Try relaxing your filters.")
 
 # ---------- 9. Strength Index Calculator ----------
 elif active == "strength_index_calculator":

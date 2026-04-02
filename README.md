@@ -31,7 +31,7 @@ possible tools:
     ------ find your twin!!, find the athlete with the most similar performance to yours
     ------ average total by country (plotted on a map - maybe using geopandas)
     ------ freak finder - search for outliers, any athlete that is an outlier in any metric, far from the average, maybe combining an heatmap with a scatter plot
-    - 
+    ✅ index and 1RM calculator, calculate your projected 1Rep Max using the O'Conner formula with RPE adjustment
 
 
 
