@@ -235,11 +235,9 @@ elif active == "strength_index_calculator":
         dots_score = 0.0
 
     # Display Results
-    res_c1, res_c2 = st.columns([1, 2])
+    res_c1, res_c2 = st.columns([1, 1, 1, 1])
     with res_c1:
         st.metric("DOTS Score", f"{dots_score:.2f}")
-    
-    with res_c2:
         if dots_score > 500:
             st.success(f"🔥 **Elite Performance!** Your DOTS score of {dots_score:.2f} is world-class.")
         elif dots_score > 400:
@@ -248,6 +246,5 @@ elif active == "strength_index_calculator":
             st.write(f"📈 Every kilogram added to your total will boost this score.")
         else:
             st.warning("Please check your bodyweight/total values.")
-
     st.write(f"📊 **Summary:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
     
