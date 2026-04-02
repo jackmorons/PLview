@@ -835,19 +835,24 @@ elif active == "pattern_discoverer":
     if "sandbox_y" not in st.session_state: st.session_state["sandbox_y"] = "Total"
     if "sandbox_z" not in st.session_state: st.session_state["sandbox_z"] = "None"
     if "sandbox_color" not in st.session_state: st.session_state["sandbox_color"] = "Equipment"
+    if "sandbox_dim" not in st.session_state: st.session_state["sandbox_dim"] = "2D"
 
     if p_c1.button("📈 The Age Peak", use_container_width=True):
         st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Age", "Total", "None"
-        st.session_state["sandbox_color"] = "Equipment"
+        st.session_state["sandbox_color"], st.session_state["sandbox_dim"] = "Equipment", "2D"
+        st.rerun()
     if p_c2.button("⚖️ SBD Balance", use_container_width=True):
         st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Squat", "Deadlift", "None"
-        st.session_state["sandbox_color"] = "Sex"
+        st.session_state["sandbox_color"], st.session_state["sandbox_dim"] = "Sex", "2D"
+        st.rerun()
     if p_c3.button("📦 3D Strength Cube", use_container_width=True):
         st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Squat", "Bench", "Deadlift"
-        st.session_state["sandbox_color"] = "Sex"
+        st.session_state["sandbox_color"], st.session_state["sandbox_dim"] = "Sex", "3D"
+        st.rerun()
     if p_c4.button("🧬 Relative Strength", use_container_width=True):
         st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Bodyweight", "Dots", "None"
-        st.session_state["sandbox_color"] = "Equipment"
+        st.session_state["sandbox_color"], st.session_state["sandbox_dim"] = "Equipment", "2D"
+        st.rerun()
 
     st.markdown("---")
 
@@ -856,7 +861,8 @@ elif active == "pattern_discoverer":
         ctrl_c1, ctrl_c2, ctrl_c3, ctrl_c4 = st.columns(4)
         
         with ctrl_c1:
-            dim_mode = st.radio("Dimensions", ["2D", "3D"], horizontal=True)
+            dim_mode = st.radio("Dimensions", ["2D", "3D"], index=["2D", "3D"].index(st.session_state["sandbox_dim"]), horizontal=True)
+            st.session_state["sandbox_dim"] = dim_mode # Sync back if manually changed
             x_ax = st.selectbox("X-Axis", list(axes_options.keys()), index=list(axes_options.keys()).index(st.session_state["sandbox_x"]))
         
         with ctrl_c2:
