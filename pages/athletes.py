@@ -192,8 +192,8 @@ if selected_name:
                 st.write("") # Spacer
                 comparison_data = {
                     "Lift": categories,
-                    "You": [f"{val_squat} kg", f"{val_bench} kg", f"{val_deadlift} kg"],
-                    "Avg": [f"{round(avg_squat, 1)} kg", f"{round(avg_bench, 1)} kg", f"{round(avg_deadlift, 1)} kg"],
+                    "Athlete": [f"{val_squat} kg", f"{val_bench} kg", f"{val_deadlift} kg"],
+                    "Average": [f"{round(avg_squat, 1)} kg", f"{round(avg_bench, 1)} kg", f"{round(avg_deadlift, 1)} kg"],
                     "Record": [f"{rec_squat} kg", f"{rec_bench} kg", f"{rec_deadlift} kg"]
                 }
                 st.dataframe(
@@ -202,7 +202,7 @@ if selected_name:
                     use_container_width=True,
                     column_config={"Lift": "Lift", "You": "You", "Avg": "Average", "Record": "Record"}
                 )
-                st.caption(f"Based on **{len(category_df)}** athletes: **{athlete_wc}kg {athlete_equip}**.")
+                # st.caption(f"Based on **{len(category_df)}** athletes: **{athlete_wc}kg {athlete_equip}**.")
                 
                 # --- Small Gauges in the sidebar ---
                 athlete_best_total = athlete_df["TotalKg"].max()
@@ -240,6 +240,8 @@ if selected_name:
                     elif top_percent <= 10: st.info(f"💪 Top {int(top_percent)}%!")
         else:
             st.info("Not enough category data for benchmarks.")
+        st.caption(f"Based on **{len(category_df)}** athletes: **{athlete_wc}kg {athlete_equip}**.")
+                
 
     st.write("") # Extra spacer to push down next section
     st.write("") 
