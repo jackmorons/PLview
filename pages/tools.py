@@ -176,4 +176,47 @@ elif active == "twin_finder":
 # ---------- 9. Strength Index Calculator ----------
 elif active == "strength_index_calculator":
     st.subheader("🧮 Strength Index Calculator")
-    st.info("🚧 **Coming soon** — Detailed strength index calculator.")
+    # Dots;Wilks;Glossbrenner;Goodlift
+    st.info("Insert your athlete data to calculate your strength indexes (Dots, Wilks, etc.).")
+
+    input_cols = st.columns(4)
+    
+    with input_cols[0]:
+        gender = st.selectbox("Gender", ["Male", "Female"], help="Select your gender for coefficient calculation.")
+    
+    with input_cols[1]:
+        # Age range from 5 to 100
+        age_options = list(range(5, 101))
+        age = st.selectbox("Age", age_options, index=20, help="Your current age.")
+    
+    with input_cols[2]:
+        # Weight from 40 to 250 with delta 0.1
+        # Use np.linspace for precise step counts or np.arange with round
+        weight_range = np.arange(40.0, 250.1, 0.1)
+        weight_options = [round(x, 1) for x in weight_range]
+        # Default to a common weight like 80.0
+        try:
+            default_w_idx = weight_options.index(80.0)
+        except ValueError:
+            default_w_idx = 0
+            
+        weight = st.selectbox("Bodyweight (kg)", weight_options, index=default_w_idx)
+    
+    with input_cols[3]:
+        # Total from 0 to 1500 with delta 2.5
+        total_range = np.arange(0.0, 1502.5, 2.5)
+        total_options = [round(x, 1) for x in total_range]
+        # Default to a common total like 400.0
+        try:
+            default_t_idx = total_options.index(400.0)
+        except ValueError:
+            default_t_idx = 0
+            
+        total = st.selectbox("Total (kg)", total_options, index=default_t_idx)
+
+    st.markdown("---")
+    st.write(f"📊 **Current Selection:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
+    
+    # Placeholder for calculation results
+    st.success("Calculations will appear here once the formulas are implemented.")
+    
