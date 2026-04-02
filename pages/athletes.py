@@ -276,6 +276,7 @@ if selected_name:
 
     if not chart_source.empty:
         import plotly.graph_objects as go
+        fig = go.Figure()
         # --- Identify PRs (Personal Records) ---
         pr_markers = []
         # Main lift columns from the dataframe
