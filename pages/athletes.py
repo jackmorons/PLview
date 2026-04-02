@@ -230,7 +230,7 @@ if selected_name:
                     # Adjust height and margins for compact sidebar look
                     for f_g in [fig_percentile, fig_record]:
                         f_g.update_layout(
-                            height=120, 
+                            height=125, 
                             margin=dict(l=10, r=10, t=10, b=10), 
                             paper_bgcolor="rgba(0,0,0,0)", 
                             font={'color': "#f0f0f5"}
