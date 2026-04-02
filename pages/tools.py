@@ -259,14 +259,13 @@ elif active == "strength_index_calculator":
     glossbrenner_score = total * gb_coeff
 
     # ── Goodlift Calculation ──────────────────────────────────────
-    # Men: A=751.22, B=175.508, C=0.01242
-    # Women: A=521.628, B=157.78, C=0.01812
+    # Men: A=1199.72839, B=1025.18162, C=0.00921
+    # Women: A=610.32796, B=1045.59282, C=0.03048
     if gender == "Male":
-        ag, bg, cg = 751.22, 175.508, 0.01242
+        ag, bg, cg = 1199.72839, 1025.18162, 0.00921
     else:
-        ag, bg, cg = 521.628, 157.78, 0.01812
+        ag, bg, cg = 610.32796, 1045.59282, 0.03048
     
-    import numpy as np
     gl_denom = ag - bg * np.exp(-cg * weight)
     goodlift_score = total * (100 / gl_denom) if gl_denom > 0 else 0.0
 
