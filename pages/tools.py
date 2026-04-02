@@ -512,10 +512,158 @@ elif active == "weight_class":
     st.subheader("⚖️ Weight Class Evaluator")
     st.info("🚧 **Coming soon** — Detailed weight class evaluator.")
 
-# ---------- 4. Trend Calculator ----------
+# ---------- 4. Trend Calculator (Entry Calculator) ----------
 elif active == "entry_calculator":
-    st.subheader("📈 Competition Entry Calculator")
-    st.info("🚧 **Coming soon** — Detailed competition entry calculator.")
+    st.subheader("📈 Trend-Based Entry Calculator")
+    st.write("Plan your competition attempts based on successful 3-for-3 trends from lifters in your specific category.")
+
+    # 1. Inputs & Filters
+    input_c1, input_c2, input_c3 = st.columns(3)
+    
+    with input_c1:
+        calc_gender = st.selectbox("Gender", ["Male", "Female"], key="trend_gen")
+        calc_lift = st.selectbox("Lift", ["Squat", "Bench", "Deadlift"], key="trend_lift")
+    
+    with input_c2:
+        ref_df = malesdf if calc_gender == "Male" else femalesdf
+        all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
+        calc_wc = st.selectbox("Weight Class", all_wc, index=min(len(all_wc)-1, 5), key="trend_wc")
+        calc_goal = st.number_input("Target 3rd Lift (kg)", min_value=20.0, max_value=600.0, value=200.0, step=2.5)
+
+    with input_c3:
+        all_equip = sorted(ref_df["Equipment"].dropna().unique().tolist())
+        calc_equip = st.selectbox("Equipment", all_equip, key="trend_equip")
+        calc_buffer = st.slider("Aggressiveness", 0.0, 1.0, 0.5, help="Higher = closer attempts, Lower = safer opener.")
+
+    # 2. Logic: Find successful 3/3 trends
+    lift_cols = {
+        "Squat": ["Squat1Kg", "Squat2Kg", "Squat3Kg"],
+        "Bench": ["Bench1Kg", "Bench2Kg", "Bench3Kg"],
+        "Deadlift": ["Deadlift1Kg", "Deadlift2Kg", "Deadlift3Kg"]
+    }
+    c1, c2, c3 = lift_cols[calc_lift]
+    
+    # Filter for category
+    cat_df = ref_df[
+        (ref_df["WeightClassKg"] == calc_wc) & 
+        (ref_df["Equipment"] == calc_equip)
+    ].copy()
+    
+    # Filter for successful 3/3 (increasing positive attempts)
+    trend_df = cat_df[(cat_df[c1] > 0) & (cat_df[c2] > cat_df[c1]) & (cat_df[c3] > cat_df[c2])].copy()
+    
+    if len(trend_df) < 10:
+        st.warning(f"⚠️ **Low sample size ({len(trend_df)} athletes).** Recommendations may be less accurate. Try a broader category if possible.")
+    
+    if not trend_df.empty:
+        # Calculate Ratios
+        trend_df["r1"] = trend_df[c1] / trend_df[c3]
+        trend_df["r2"] = trend_df[c2] / trend_df[c3]
+        
+        # Use quantiles based on aggressiveness buffer
+        # 0.5 aggressiveness = median. Higher = higher quantile (closer to 3rd).
+        q1 = 0.45 + (calc_buffer * 0.1)  # Range 0.45 - 0.55
+        q2 = 0.94 + (calc_buffer * 0.04) # Range 0.94 - 0.98 (relative to r1/r2 space)
+        
+        # Simpler: just use median and allow the slider to shift them slightly
+        med1 = trend_df["r1"].median() * (0.98 + (calc_buffer * 0.04))
+        med2 = trend_df["r2"].median() * (0.99 + (calc_buffer * 0.02))
+        
+        rec1 = round((calc_goal * med1) / 2.5) * 2.5
+        rec2 = round((calc_goal * med2) / 2.5) * 2.5
+        
+        # Ensure they are strictly increasing
+        if rec2 >= calc_goal: rec2 = calc_goal - 2.5
+        if rec1 >= rec2: rec1 = rec2 - 5.0
+
+        # 3. Display Recommendations
+        st.markdown("---")
+        res_c1, res_c2, res_c3 = st.columns(3)
+        res_c1.metric("1st Attempt (Opener)", f"{rec1} kg", help="Safe weight you can do for a double.")
+        res_c2.metric("2nd Attempt", f"{rec2} kg", help="A transition catch weight to prepare for the 3rd.")
+        res_c3.metric("3rd Attempt (Goal)", f"{calc_goal} kg", delta=f"{calc_goal-rec2:+.1f} kg jump")
+
+        # 4. Visualizations
+        st.markdown("---")
+        chart_c1, chart_c2 = st.columns([2, 1])
+        
+        with chart_c1:
+            # Attempt Path Chart
+            fig_path = go.Figure()
+            # The Goal Path
+            path_x = ["1st", "2nd", "3rd"]
+            path_y = [rec1, rec2, calc_goal]
+            
+            fig_path.add_trace(go.Scatter(
+                x=path_x, y=path_y,
+                mode='lines+markers+text',
+                text=[f"{v}kg" for v in path_y],
+                textposition="top center",
+                line=dict(color='#388e3c', width=4, shape='spline'),
+                marker=dict(size=12, symbol='hexagon', line=dict(width=2, color='white')),
+                name="Your Path"
+            ))
+            
+            # Add shaded area for "Normal Range" based on category std dev
+            std1 = trend_df["r1"].std() * calc_goal
+            std2 = trend_df["r2"].std() * calc_goal
+            
+            fig_path.add_trace(go.Scatter(
+                x=path_x + path_x[::-1],
+                y=[rec1-std1, rec2-std2, calc_goal] + [calc_goal, rec2+std2, rec1+std1][::-1],
+                fill='toself',
+                fillcolor='rgba(56, 142, 60, 0.1)',
+                line=dict(color='rgba(255,255,255,0)'),
+                hoverinfo="skip",
+                showlegend=True,
+                name="Population Norm (±1 SD)"
+            ))
+            
+            fig_path.update_layout(
+                title=f"The {calc_lift} Path to Success",
+                template="plotly_dark",
+                plot_bgcolor="rgba(0,0,0,0)",
+                paper_bgcolor="rgba(0,0,0,0)",
+                yaxis_title="Weight (kg)",
+                height=500,
+                margin=dict(l=20, r=20, t=60, b=20)
+            )
+            st.plotly_chart(fig_path, use_container_width=True)
+
+        with chart_c2:
+            # Jump Distribution (2nd to 3rd)
+            trend_df["jump_2_3"] = trend_df[c3] - trend_df[c2]
+            fig_dist = px.histogram(
+                trend_df, x="jump_2_3",
+                title="Common 2nd → 3rd Jumps",
+                labels={"jump_2_3": "Jump Size (kg)"},
+                template="plotly_dark",
+                color_discrete_sequence=['#f9a825'],
+                nbins=20
+            )
+            # Highlight user's jump
+            user_jump = calc_goal - rec2
+            fig_dist.add_vline(x=user_jump, line_dash="dash", line_color="#ef5350", 
+                              annotation_text="Your Jump", annotation_position="top right")
+            
+            fig_dist.update_layout(
+                plot_bgcolor="rgba(0,0,0,0)",
+                paper_bgcolor="rgba(0,0,0,0)",
+                showlegend=False,
+                height=500,
+                margin=dict(l=20, r=20, t=60, b=20)
+            )
+            st.plotly_chart(fig_dist, use_container_width=True)
+            
+        with st.expander("📚 Why these numbers?"):
+            st.write(f"""
+                Based on **{len(trend_df)}** successful 3-for-3 performances in the **{calc_gender} {calc_wc}kg {calc_equip}** category:
+                - The median opener is **{(trend_df['r1'].median()*100):.1f}%** of the 3rd attempt.
+                - The median 2nd attempt is **{(trend_df['r2'].median()*100):.1f}%** of the 3rd attempt.
+                - Your recommended jumps take into account the typical distribution of successful lifters in your weight class.
+            """)
+    else:
+        st.error("No successful 3-for-3 data found for this specific category. Please try a different Equipment or Weight Class.")
 
 # ---------- 5. Pattern Discoverer ----------
 elif active == "pattern_discoverer":
