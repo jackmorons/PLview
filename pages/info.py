@@ -18,7 +18,7 @@ col1, col2 = st.columns([1, 2])
 
 with col1:
     # Humor: No creatine was used (Actually, it was)
-    st.image("https://avatars.githubusercontent.com/u/32766860?s=200&v=4", width=200)
+    st.image("https://gitlab.com/uploads/-/system/project/avatar/6722790/favicon.png", width=200)
 
 with col2:
     st.subheader("Data Source: OpenPowerlifting")
@@ -79,7 +79,7 @@ st.write("---")
 st.header("✉️ Get in Touch")
 st.write("Found a bug? Have a feature request? Or just want to brag about your new PR?")
 
-c1, c2 = st.columns(4)
+c1, c2 = st.columns(2)
 
 with c1:
     st.markdown("#### 📧 Email (Muscles)")
