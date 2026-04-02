@@ -635,6 +635,7 @@ elif active == "entry_calculator":
             trend_df["jump_2_3"] = trend_df[c3] - trend_df[c2]
             fig_dist = px.histogram(
                 trend_df, x="jump_2_3",
+                histnorm="probability", # Make it relative
                 title="Common 2nd → 3rd Jumps",
                 labels={"jump_2_3": "Jump Size (kg)"},
                 template="plotly_dark",
@@ -646,6 +647,7 @@ elif active == "entry_calculator":
             fig_dist.add_vline(x=user_jump, line_dash="dash", line_color="#ef5350", 
                               annotation_text="Your Jump", annotation_position="top right")
             
+            fig_dist.update_yaxes(title_text="Probability")
             fig_dist.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)",
                 paper_bgcolor="rgba(0,0,0,0)",
