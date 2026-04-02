@@ -321,7 +321,7 @@ if selected_name:
                     bgcolor="rgba(255, 213, 79, 0.9)", # Yellow background
                     bordercolor="#000000"
                 ),
-                hovertemplate="<b>Personal Record(%{customdata})</b><br>%{y} kg<br>%{x|%Y-%m-%d}<extra></extra>",
+                hovertemplate="<b>Personal Record (%{customdata})</b><br>%{y} kg<br>%{x|%Y-%m-%d}<extra></extra>",
                 customdata=pr_df["Type"]
             ))
 
