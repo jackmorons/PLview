@@ -71,7 +71,7 @@ TOOLS_PAGES = [
     {"key": "freak_finder", "label": "🤯 Strength Freaks Finder"},
     {"key": "geo_strength", "label": "🌍 Geographical Strength"},
     {"key": "twin_finder", "label": "🫂 Find Your PL Twin!"},
-    {"key": "strength_index_calculator", "label": "🧮 Strength Index"},
+    {"key": "strength_index_calculator", "label": "🧮 Strength Index Calculator"},
 ]
 
 # Initialise active sub-page (default to first)
