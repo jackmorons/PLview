@@ -83,6 +83,106 @@ if selected_name:
                 st.metric(label=label, value=f"{best_val} kg")
                 st.caption(f"📅 {best_row.get('Date', '—')}  •  🏢 {best_row.get('Federation', '—')}")
 
+    # --- Radar Chart ---
+    st.markdown("---")
+    st.subheader("📊 Relative Strength")
+    st.write("This chart compares your personal bests against the category average and records for your weight class and equipment.")
+
+    # Get athlete's category context from their history
+    # Using the most frequent weight class and equipment or the latest?
+    # Let's use the most recent competition's context.
+    latest_entry = athlete_df.iloc[0]
+    athlete_wc = latest_entry["WeightClassKg"]
+    athlete_equip = latest_entry["Equipment"]
+    athlete_sex_val = latest_entry["Sex"] # "M" or "F"
+
+    # Reference data for benchmarks
+    ref_df = malesdf if athlete_sex_val == "M" else femalesdf
+    category_df = ref_df[
+        (ref_df["WeightClassKg"] == athlete_wc) & 
+        (ref_df["Equipment"] == athlete_equip)
+    ].copy()
+
+    if not category_df.empty:
+        # Personal Bests for the radar
+        val_squat = athlete_df["Best3SquatKg"].max()
+        val_bench = athlete_df["Best3BenchKg"].max()
+        val_deadlift = athlete_df["Best3DeadliftKg"].max()
+
+        # Category Benchmarks
+        avg_squat = category_df["Best3SquatKg"].mean()
+        avg_bench = category_df["Best3BenchKg"].mean()
+        avg_deadlift = category_df["Best3DeadliftKg"].mean()
+
+        rec_squat = category_df["Best3SquatKg"].max()
+        rec_bench = category_df["Best3BenchKg"].max()
+        rec_deadlift = category_df["Best3DeadliftKg"].max()
+
+        categories = ['Squat', 'Bench Press', 'Deadlift']
+
+        import plotly.graph_objects as go
+        fig_radar = go.Figure()
+
+        # Add traces
+        # Note: We append the first value to the end to 'close' the radar line
+        fig_radar.add_trace(go.Scatterpolar(
+            r=[val_squat, val_bench, val_deadlift, val_squat],
+            theta=categories + [categories[0]],
+            fill='toself',
+            name='You',
+            line=dict(color='#ef5350', width=3),
+            marker=dict(size=8),
+            hovertemplate="You: %{r} kg<extra></extra>"
+        ))
+        
+        fig_radar.add_trace(go.Scatterpolar(
+            r=[avg_squat, avg_bench, avg_deadlift, avg_squat],
+            theta=categories + [categories[0]],
+            fill='toself',
+            name='Category Average',
+            line=dict(color='#42a5f5', width=2, dash='dash'),
+            marker=dict(size=6),
+            hovertemplate="Average: %{r:.1f} kg<extra></extra>"
+        ))
+        
+        fig_radar.add_trace(go.Scatterpolar(
+            r=[rec_squat, rec_bench, rec_deadlift, rec_squat],
+            theta=categories + [categories[0]],
+            fill='toself',
+            name='Category Record',
+            line=dict(color='#ffd54f', width=2, dash='dot'),
+            marker=dict(size=6),
+            hovertemplate="Record: %{r} kg<extra></extra>"
+        ))
+
+        fig_radar.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, max(rec_squat, rec_deadlift, rec_bench, val_squat, val_deadlift) * 1.15],
+                    gridcolor="rgba(255,255,255,0.1)",
+                    labelalias=None,
+                ),
+                angularaxis=dict(
+                    gridcolor="rgba(255,255,255,0.1)",
+                    linecolor="rgba(255,255,255,0.2)",
+                ),
+                bgcolor="rgba(0,0,0,0)"
+            ),
+            showlegend=True,
+            template="plotly_dark",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            margin=dict(l=80, r=80, t=40, b=40),
+            legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5)
+        )
+
+        st.plotly_chart(fig_radar, use_container_width=True)
+        st.caption(f"Benchmarks based on **{len(category_df)}** athletes in the **{athlete_wc}kg {athlete_equip}** category.")
+    else:
+        st.info("Not enough data in this category to calculate relative strength benchmarks.")
+
+
     # --- Progress Chart ---
     st.markdown("---")
     st.subheader("📈 Lifts Over Time")
