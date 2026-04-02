@@ -331,8 +331,51 @@ if selected_name:
 
     if not chart_source.empty:
         import plotly.graph_objects as go
-        fig = go.Figure()
+        # --- Identify PRs (Personal Records) ---
+        pr_markers = []
+        # Main lift columns from the dataframe
+        main_lifts = {
+            "Squat": "Best3SquatKg",
+            "Bench": "Best3BenchKg",
+            "Deadlift": "Best3DeadliftKg",
+            "Total": "TotalKg"
+        }
 
+        for display_name, col in main_lifts.items():
+            if col not in chart_source.columns:
+                continue
+            
+            # Cumulative max to identify PR points
+            running_max = -1 
+            for _, row in chart_source.iterrows():
+                val = row[col]
+                if val > running_max and val > 0:
+                    running_max = val
+                    pr_markers.append({
+                        "Date": row["Date"],
+                        "Value": val,
+                        "Type": display_name
+                    })
+        
+        if pr_markers:
+            pr_df = pd.DataFrame(pr_markers)
+            fig.add_trace(go.Scatter(
+                x=pr_df["Date"],
+                y=pr_df["Value"],
+                mode="markers",
+                name="New PR! ⭐",
+                marker=dict(
+                    symbol="star",
+                    size=14,
+                    color="#ffd54f",
+                    line=dict(width=1.5, color="white"),
+                ),
+                # Show the lift type in the hover
+                hovertemplate="<b>NEW PR! (%{customdata})</b><br>%{y} kg<br>%{x|%Y-%m-%d}<extra></extra>",
+                customdata=pr_df["Type"]
+            ))
+
+        # --- Plot all individual attempt traces ---
         for label, col in lift_columns.items():
             if col not in chart_source.columns:
                 continue

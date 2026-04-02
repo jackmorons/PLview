@@ -19,9 +19,9 @@ possible tools:
     ✅ link the athletes to their athlete page
 
 - in athlete page:
-    - radar plot showing the contribution of each lift to the total, showing the relative strength in each lift, and maybe a comparison with the record holders in the same cathegory or the average in the cathegory
+    ✅ radar plot showing the contribution of each lift to the total, showing the relative strength in each lift, and maybe a comparison with the record holders in the same cathegory or the average in the cathegory
     - add a star on the timeline graph showing the prs
-    - gauge bar showing how strong you are within your cathegory, comparing your lifts to the average and the best in your cathegory
+    ✅ gauge bar showing how strong you are within your cathegory, comparing your lifts to the average and the best in your cathegory
 
 - in tools page:
     - create a tool to show where to move in the weight cathegories, showing similar weight athletes and a heatmap of their lifts - maybe showing where others sit within a specified weight range, or where the athlete would sit when cutting weight
