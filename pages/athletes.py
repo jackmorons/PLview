@@ -238,10 +238,10 @@ if selected_name:
 
                     st.markdown("<br>", unsafe_allow_html=True) # Spacer
                     
-                    st.write("📊 **Percentile Standing**")
+                    st.markdown("<div style='text-align: center; font-weight: bold;'>📊 Percentile Standing</div>", unsafe_allow_html=True)
                     st.plotly_chart(fig_percentile, use_container_width=True)
 
-                    st.write("🏆 **Progress to Record**")
+                    st.markdown("<div style='text-align: center; font-weight: bold;'>🏆 Progress to Record</div>", unsafe_allow_html=True)
                     st.plotly_chart(fig_record, use_container_width=True)
                     
                     # Standing Summary
