@@ -85,10 +85,12 @@ def inject_custom_css():
             .hero-title {
                 font-size: 2.2rem !important;
                 line-height: 1.2 !important;
+                width: 100% !important;
             }
             .block-container {
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+                max-width: 100% !important;
             }
         }
 
