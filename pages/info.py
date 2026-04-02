@@ -17,8 +17,8 @@ st.header("🗄️ The Data Engine")
 col1, col2 = st.columns([1, 2])
 
 with col1:
-    # Humor: No creatine was used
-    st.image("https://www.openpowerlifting.org/static/openpowerlifting.svg", width=200)
+    # Humor: No creatine was used (Actually, it was)
+    st.image("https://avatars.githubusercontent.com/u/32766860?s=200&v=4", width=200)
 
 with col2:
     st.subheader("Data Source: OpenPowerlifting")
@@ -79,23 +79,20 @@ st.write("---")
 st.header("✉️ Get in Touch")
 st.write("Found a bug? Have a feature request? Or just want to brag about your new PR?")
 
-c1, c2, c3, c4 = st.columns(4)
+c1, c2 = st.columns(4)
 
 with c1:
-    st.markdown("#### 📧 Email (Lead)")
+    st.markdown("#### 📧 Email (Muscles)")
     st.code("placeholder.one@example.com")
-
-with c2:
-    st.markdown("#### 📧 Email (Dev)")
-    st.code("placeholder.two@example.com")
-
-with c3:
     st.markdown("#### 🔗 LinkedIn")
     st.markdown("[Visit Profile One](https://www.linkedin.com/in/placeholder1/)")
 
-with c4:
+with c2:
+    st.markdown("#### 📧 Email (Brain)")
+    st.code("placeholder.two@example.com")
     st.markdown("#### 🔗 LinkedIn")
     st.markdown("[Visit Profile Two](https://www.linkedin.com/in/placeholder2/)")
 
+
 st.markdown("<br><br>", unsafe_allow_html=True)
-st.caption("PLview v1.0.0 | Powered by Python, Streamlit, and 100% Pure Data.")
+st.caption("PLview v1.0.0 | Powered by Python, Streamlit, Creatine and 100% Pure Data.")
