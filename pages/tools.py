@@ -294,6 +294,14 @@ elif active == "strength_index_calculator":
             st.warning("Please check your bodyweight/total values.")
     with res_c3:
         st.metric("Glossbrenner Score", f"{glossbrenner_score:.2f}")
+        if glossbrenner_score > 500:
+            st.success(f"🔥 **Elite Performance!** Your Glossbrenner score of {glossbrenner_score:.2f} is world-class.")
+        elif glossbrenner_score > 400:
+            st.info(f"💪 **Strong Lift!** You're highly competitive.")
+        elif glossbrenner_score > 0:
+            st.write(f"📈 Every kilogram added to your total will boost this score.")
+        else:
+            st.warning("Please check your bodyweight/total values.")
     with res_c4:
         st.metric("Goodlift Score", f"{goodlift_score:.2f}")
         
