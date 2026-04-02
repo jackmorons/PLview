@@ -241,6 +241,56 @@ if active == "lift_distributions":
             fig_f.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_f, use_container_width=True)
 
+    # ── Scientific Discovery: The Correlation Matrix ─────────────────
+    st.markdown("---")
+    st.subheader("🔬 The Correlation Matrix: Scientific Insights")
+    st.write("Understand the mathematical relationship between different variables. A score of **1.0** represents a perfect positive relationship, while **0.0** represents no relationship.")
+
+    # Selection of variables for correlation
+    corr_vars = [
+        "BodyweightKg", "Age", "Best3SquatKg", 
+        "Best3BenchKg", "Best3DeadliftKg", "TotalKg", "Dots"
+    ]
+    # Human-readable labels
+    corr_labels = [
+        "Bodyweight", "Age", "Squat", 
+        "Bench", "Deadlift", "Total", "Dots"
+    ]
+    
+    # Calculate the Correlation Matrix (using global alldf for broad sample)
+    # We drop NAs and ensure columns are numeric
+    corr_df = alldf[corr_vars].dropna()
+    corr_matrix = corr_df.corr()
+
+    # Create Heatmap
+    fig_corr = px.imshow(
+        corr_matrix,
+        x=corr_labels,
+        y=corr_labels,
+        color_continuous_scale="RdBu_r", # Red-Blue diverging scale
+        range_color=[-1, 1],
+        text_auto=".2f", # Show coefficients in cells
+        aspect="auto",
+        template="plotly_dark",
+        title="Metric Correlation Heatmap"
+    )
+    
+    fig_corr.update_layout(
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=600,
+        margin=dict(l=20, r=20, t=60, b=20)
+    )
+    
+    st.plotly_chart(fig_corr, use_container_width=True)
+    
+    with st.expander("📚 How to read this 'Scientific' Discovery?"):
+        st.write("""
+            - **Strong Positive (Red)**: Close to 1.0. This means as one goes up, the other usually goes up (e.g., Squat vs Total).
+            - **Weak/No Correlation (White)**: Close to 0.0. This means the variables are independent (e.g., Age has a very weak correlation with Bodyweight).
+            - **Insights**: Notice how **Bench Press** often has a lower correlation with **Deadlift** than **Squat** does. This statistically demonstrates that deadlifting depends more on lower-body 'squat' patterns than upper-body 'bench' patterns!
+        """)
+
 # ---------- 2. 1v1 Strength Comparison ----------
 elif active == "1v1":
     st.subheader("⚔️ 1v1 Strength Comparison")
