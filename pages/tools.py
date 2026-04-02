@@ -255,7 +255,6 @@ elif active == "strength_index_calculator":
             st.write(f"📈 Every kilogram added to your total will boost this score.")
         else:
             st.warning("Please check your bodyweight/total values.")
-    st.write(f"📊 **Summary:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
     with res_c2:
         st.metric("Wilks Score", f"{wilks_score:.2f}")
         if wilks_score > 500:
@@ -267,4 +266,4 @@ elif active == "strength_index_calculator":
         else:
             st.warning("Please check your bodyweight/total values.")
     
-    st.write(f"📊 **Summary:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
+#st.write(f"📊 **Summary:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
