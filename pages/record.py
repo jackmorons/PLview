@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import urllib.parse
 
 st.header("Records")
 st.write("Discover all-time records across weight classes, federations, and events.")
@@ -84,8 +85,9 @@ else:
                 federation = record_row.get("Federation", "—")
                 bodyweight = record_row.get("BodyweightKg", "—")
 
+                athlete_url = f"/Athletes?name={urllib.parse.quote(athlete_name)}"
                 st.metric(label=label, value=f"{record_val} kg")
-                st.caption(f"**{athlete_name}**")
+                st.caption(f"[**{athlete_name}**]({athlete_url})")
                 st.caption(f"📅 {date}  •  🏢 {federation}")
                 st.caption(f"⚖️ BW: {bodyweight} kg")
 
@@ -95,9 +97,10 @@ else:
     if not valid_total.empty:
         idx_total = valid_total["TotalKg"].idxmax()
         total_row = valid_total.loc[idx_total]
+        total_athlete_url = f"/Athletes?name={urllib.parse.quote(total_row['Name'])}"
         st.metric(label="🏆 Total", value=f"{total_row['TotalKg']} kg")
         st.caption(
-            f"**{total_row['Name']}**  •  "
+            f"[**{total_row['Name']}**]({total_athlete_url})  •  "
             f"S: {total_row['Best3SquatKg']} / B: {total_row['Best3BenchKg']} / D: {total_row['Best3DeadliftKg']}  •  "
             f"📅 {total_row.get('Date', '—')}  •  🏢 {total_row.get('Federation', '—')}"
         )
@@ -113,4 +116,26 @@ else:
         .reset_index(drop=True)
     )
     top5.index = top5.index + 1  # 1-indexed ranking
-    st.dataframe(top5, use_container_width=True)
+    
+    # Construct Athlete URLs for the table
+    # We use a trick: display the name but the link is to the profile
+    # LinkColumn will display the cell value unless display_text is set.
+    # To keep it clean, we'll construct the full URL.
+    top5["Profile"] = top5["Name"].apply(lambda x: f"/Athletes?name={urllib.parse.quote(x)}")
+    
+    # Reorder to put Profile first or replace Name
+    cols = ["Profile"] + [c for c in top5.columns if c not in ["Name", "Profile"]]
+    top5_display = top5[cols].copy()
+    
+    st.dataframe(
+        top5_display,
+        column_config={
+            "Profile": st.column_config.LinkColumn(
+                "Athlete Name",
+                help="Click to view athlete profile",
+                validate=r"^/Athletes\?name=.*",
+                display_text=r"/Athletes\?name=(.*)" # Shows the decoded name parts if simple, but might show %20
+            )
+        },
+        use_container_width=True
+    )
