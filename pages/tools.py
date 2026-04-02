@@ -510,7 +510,147 @@ elif active == "1v1":
 # ---------- 3. Weight Class Evaluator ----------
 elif active == "weight_class":
     st.subheader("⚖️ Weight Class Evaluator")
-    st.info("🚧 **Coming soon** — Detailed weight class evaluator.")
+    st.write("Analyze your competitiveness across different weight categories. Simulate weight cuts and discover where you sit in the global rankings.")
+
+    # 1. Simulation Inputs
+    with st.container():
+        input_c1, input_c2, input_c3 = st.columns(3)
+        
+        with input_c1:
+            eval_gender = st.selectbox("Gender", ["Male", "Female"], key="eval_gen")
+            # Get available classes for this gender
+            ref_df = malesdf if eval_gender == "Male" else femalesdf
+            all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
+            
+            eval_curr_bw = st.number_input("Current Bodyweight (kg)", min_value=30.0, max_value=250.0, value=90.0, step=0.1)
+        
+        with input_c2:
+            eval_curr_tot = st.number_input("Current Total (kg)", min_value=0.0, max_value=1500.0, value=500.0, step=2.5)
+            # Find current class automatically
+            curr_class_idx = 0
+            for i, wc in enumerate(all_wc):
+                if eval_curr_bw <= wc:
+                    curr_class_idx = i
+                    break
+            else: curr_class_idx = len(all_wc) - 1 # SHW
+            
+            eval_target_wc = st.selectbox("Target Weight Class", all_wc, index=max(0, curr_class_idx-1))
+
+        with input_c3:
+            st.write("🔮 **The 'Trust Me Bro' Speculator**")
+            eval_retention = st.slider("Expected Strength Retention (%)", 80.0, 100.0, 95.0, help="Speculative guess on how much strength you'll keep after the cut.")
+            eval_projected_tot = eval_curr_tot * (eval_retention / 100.0)
+            st.caption(f"Projected Total: **{eval_projected_tot:.1f} kg**")
+
+    # 2. Analytical Logic
+    # Filter populations
+    curr_wc_val = all_wc[curr_class_idx]
+    curr_pop = ref_df[ref_df["WeightClassKg"] == curr_wc_val]["TotalKg"].dropna()
+    target_pop = ref_df[ref_df["WeightClassKg"] == eval_target_wc]["TotalKg"].dropna()
+
+    def get_percentile(val, pop):
+        if pop.empty: return 0.0
+        return (pop < val).sum() / len(pop) * 100
+
+    curr_pct = get_percentile(eval_curr_tot, curr_pop)
+    target_pct = get_percentile(eval_projected_tot, target_pop)
+
+    # Dots calculation logic (reused from index calculator)
+    def calc_dots(w, t, g):
+        if g == "Male": A, B, C, D, E = -0.000001093, 0.0007391293, -0.1918759221, 24.0900756, -307.75076
+        else: A, B, C, D, E = -0.0000010706, 0.0005158568, -0.1126655495, 13.6175032, -57.96288
+        denom = (A * w**4) + (B * w**3) + (C * w**2) + (D * w) + E
+        return t * (500 / denom) if denom > 0 else 0.0
+
+    curr_dots = calc_dots(eval_curr_bw, eval_curr_tot, eval_gender)
+    target_dots = calc_dots(eval_target_wc, eval_projected_tot, eval_gender)
+
+    # 3. Standings Comparison Dashboard
+    st.markdown("---")
+    stand_c1, stand_c2 = st.columns(2)
+    
+    with stand_c1:
+        st.markdown(f"### 📍 Current Standings ({curr_wc_val}kg)")
+        st.metric("Percentile Standing", f"{curr_pct:.1f}%", help="Higher is better. 90% means you are stronger than 90% of the class.")
+        st.metric("Dots Score", f"{curr_dots:.2f}")
+        
+    with stand_c2:
+        st.markdown(f"### 🎯 Projected Standings ({eval_target_wc}kg)")
+        pct_delta = target_pct - curr_pct
+        st.metric("Percentile Standing", f"{target_pct:.1f}%", delta=f"{pct_delta:+.1f}%", delta_color="normal")
+        dots_delta = target_dots - curr_dots
+        st.metric("Dots Score", f"{target_dots:.2f}", delta=f"{dots_delta:+.2f}")
+
+    if target_pct > curr_pct:
+        st.success(f"📈 **Strategic Advantage!** Moving to the **{eval_target_wc}kg** class could improve your competitive standing by **{pct_delta:.1f}%**.")
+    else:
+        st.warning(f"📉 **Diminishing Returns.** Strength loss might outweigh the weight class advantage. Staying at **{curr_wc_val}kg** currently keeps you higher in the rankings.")
+
+    # 4. Visualizations
+    st.markdown("---")
+    viz_c1, viz_c2 = st.columns([2, 1])
+    
+    with viz_c1:
+        # Population Heatmap
+        st.markdown("### 🗺️ The Ocean of Lifters")
+        st.write("Where you sit relative to every lifter in the database.")
+        fig_map = px.density_heatmap(
+            ref_df[ref_df["TotalKg"] > 100], x="BodyweightKg", y="TotalKg",
+            template="plotly_dark", color_continuous_scale="Viridis",
+            nbinsx=40, nbinsy=40,
+            labels={"BodyweightKg": "Bodyweight (kg)", "TotalKg": "Total (kg)"}
+        )
+        # Add Markers
+        fig_map.add_trace(go.Scatter(
+            x=[eval_curr_bw, eval_target_wc], 
+            y=[eval_curr_tot, eval_projected_tot],
+            mode='markers+lines',
+            name='The Cut Path',
+            marker=dict(color=['#42a5f5', '#ef5350'], size=[16, 20], symbol=['circle', 'star'], line=dict(width=2, color='white')),
+            text=["Now", "Projected"],
+            hovertemplate="<b>%{text}</b><br>BW: %{x}kg<br>Total: %{y}kg<extra></extra>"
+        ))
+        fig_map.update_layout(
+            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+            height=600, margin=dict(l=20, r=20, t=20, b=20),
+            coloraxis_showscale=False
+        )
+        st.plotly_chart(fig_map, use_container_width=True)
+
+    with viz_c2:
+        # Category Comparison Chart
+        st.markdown("### ⚖️ Category Depth")
+        # Comparative Stats Table
+        def get_pop_stats(pop):
+            if pop.empty: return [0, 0, 0]
+            return [pop.quantile(0.99), pop.quantile(0.9), pop.median()]
+        
+        curr_stats = get_pop_stats(curr_pop)
+        target_stats = get_pop_stats(target_pop)
+        
+        comp_data = pd.DataFrame({
+            "Tier": ["Top 1%", "Top 10%", "Median"],
+            f"{curr_wc_val}kg": [f"{s:.1f}kg" for s in curr_stats],
+            f"{eval_target_wc}kg": [f"{s:.1f}kg" for s in target_stats]
+        })
+        st.table(comp_data.set_index("Tier"))
+        
+        # Benchmarks chart
+        bar_data = pd.DataFrame({
+            "Metric": ["Top 10%", "Median"] * 2,
+            "Total (kg)": [curr_stats[1], curr_stats[2], target_stats[1], target_stats[2]],
+            "Class": [f"{curr_wc_val}kg"] * 2 + [f"{eval_target_wc}kg"] * 2
+        })
+        fig_bar = px.bar(
+            bar_data, x="Metric", y="Total (kg)", color="Class",
+            barmode="group", template="plotly_dark",
+            color_discrete_map={f"{curr_wc_val}kg": "#42a5f5", f"{eval_target_wc}kg": "#ef5350"}
+        )
+        fig_bar.update_layout(
+            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+            height=300, showlegend=False, margin=dict(l=10, r=10, t=10, b=10)
+        )
+        st.plotly_chart(fig_bar, use_container_width=True)
 
 # ---------- 4. Trend Calculator (Entry Calculator) ----------
 elif active == "entry_calculator":
