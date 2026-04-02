@@ -64,7 +64,7 @@ femalesdf = pd.DataFrame(females_data)
 TOOLS_PAGES = [
     {"key": "lift_distributions", "label": "📊 Lift Distributions"},
     {"key": "1v1", "label": "⚔️ 1v1 Comparison"},
-    {"key": "bbbb", "label": "bbbb"},
+    {"key": "weight_class", "label": "⚖️ Weight Class Evaluator"},
     {"key": "cccc", "label": "cccc"},
     {"key": "dddd", "label": "dddd"},
     {"key": "eeee", "label": "eeee"},
