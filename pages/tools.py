@@ -67,7 +67,7 @@ TOOLS_PAGES = [
     {"key": "weight_class", "label": "⚖️ Weight Class Evaluator"},
     {"key": "trend_calculator", "label": "📈 Trend Calculator"},
     {"key": "pattern_discoverer", "label": "🔍 Pattern Discoverer"},
-    {"key": "relative_lifts", "label": "💪 Relative Lifts"},
+    #{"key": "relative_lifts", "label": "💪 Relative Lifts"},
     {"key": "freak_finder", "label": "🤯 Strength Freaks Finder"},
     {"key": "geo_strength", "label": "🌍 Geographical Strength"},
     {"key": "twin_finder", "label": "🫂 Find Your Twin!"},
