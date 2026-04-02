@@ -123,36 +123,42 @@ if selected_name:
         import plotly.graph_objects as go
         fig_radar = go.Figure()
 
-        # Add traces
-        # Note: We append the first value to the end to 'close' the radar line
-        fig_radar.add_trace(go.Scatterpolar(
-            r=[val_squat, val_bench, val_deadlift, val_squat],
-            theta=categories + [categories[0]],
-            fill='toself',
-            name='You',
-            line=dict(color='#ef5350', width=3),
-            marker=dict(size=8),
-            hovertemplate="You: %{r} kg<extra></extra>"
-        ))
+        # Add traces in specific order for layering (back to front)
         
-        fig_radar.add_trace(go.Scatterpolar(
-            r=[avg_squat, avg_bench, avg_deadlift, avg_squat],
-            theta=categories + [categories[0]],
-            fill='toself',
-            name='Category Average',
-            line=dict(color='#42a5f5', width=2, dash='dash'),
-            marker=dict(size=6),
-            hovertemplate="Average: %{r:.1f} kg<extra></extra>"
-        ))
-        
+        # 1. Category Record (Background)
         fig_radar.add_trace(go.Scatterpolar(
             r=[rec_squat, rec_bench, rec_deadlift, rec_squat],
             theta=categories + [categories[0]],
             fill='toself',
+            fillcolor='rgba(255, 213, 79, 0.1)', # Faded gold
             name='Category Record',
-            line=dict(color='#ffd54f', width=2, dash='dot'),
-            marker=dict(size=6),
+            line=dict(color='rgba(255, 213, 79, 0.4)', width=2, dash='dot'),
+            marker=dict(size=4),
             hovertemplate="Record: %{r} kg<extra></extra>"
+        ))
+        
+        # 2. Category Average (Middle)
+        fig_radar.add_trace(go.Scatterpolar(
+            r=[avg_squat, avg_bench, avg_deadlift, avg_squat],
+            theta=categories + [categories[0]],
+            fill='toself',
+            fillcolor='rgba(66, 165, 245, 0.1)', # Faded blue
+            name='Category Average',
+            line=dict(color='rgba(66, 165, 245, 0.6)', width=2, dash='dash'),
+            marker=dict(size=4),
+            hovertemplate="Average: %{r:.1f} kg<extra></extra>"
+        ))
+
+        # 3. You (Athlete - Foreground)
+        fig_radar.add_trace(go.Scatterpolar(
+            r=[val_squat, val_bench, val_deadlift, val_squat],
+            theta=categories + [categories[0]],
+            fill='toself',
+            fillcolor='rgba(239, 83, 80, 0.3)', # more vibrant red
+            name='You',
+            line=dict(color='#ef5350', width=4),
+            marker=dict(size=10, symbol='diamond'),
+            hovertemplate="You: %{r} kg<extra></extra>"
         ))
 
         fig_radar.update_layout(
