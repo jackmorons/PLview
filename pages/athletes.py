@@ -83,222 +83,167 @@ if selected_name:
                 st.metric(label=label, value=f"{best_val} kg")
                 st.caption(f"📅 {best_row.get('Date', '—')}  •  🏢 {best_row.get('Federation', '—')}")
 
-    # --- Radar Chart ---
+    # --- Radar Chart & Comparative Metrics ---
     st.markdown("---")
-    st.subheader("📊 Relative Strength")
-    st.write("This chart compares your personal bests against the category average and records for your weight class and equipment.")
+    
+    with st.container():
+        st.subheader("📊 Relative Strength Dashboard")
+        st.write("Compare your results against your category (same Sex, Weight Class, and Equipment).")
 
-    # Get athlete's category context from their history
-    # Using the most frequent weight class and equipment or the latest?
-    # Let's use the most recent competition's context.
-    latest_entry = athlete_df.iloc[0]
-    athlete_wc = latest_entry["WeightClassKg"]
-    athlete_equip = latest_entry["Equipment"]
-    athlete_sex_val = latest_entry["Sex"] # "M" or "F"
+        # Get athlete's category context from their history
+        latest_entry = athlete_df.iloc[0]
+        athlete_wc = latest_entry["WeightClassKg"]
+        athlete_equip = latest_entry["Equipment"]
+        athlete_sex_val = latest_entry["Sex"]
 
-    # Reference data for benchmarks
-    ref_df = malesdf if athlete_sex_val == "M" else femalesdf
-    category_df = ref_df[
-        (ref_df["WeightClassKg"] == athlete_wc) & 
-        (ref_df["Equipment"] == athlete_equip)
-    ].copy()
+        # Reference data for benchmarks
+        ref_df = malesdf if athlete_sex_val == "M" else femalesdf
+        category_df = ref_df[
+            (ref_df["WeightClassKg"] == athlete_wc) & 
+            (ref_df["Equipment"] == athlete_equip)
+        ].copy()
 
-    if not category_df.empty:
-        # Personal Bests for the radar
-        val_squat = athlete_df["Best3SquatKg"].max()
-        val_bench = athlete_df["Best3BenchKg"].max()
-        val_deadlift = athlete_df["Best3DeadliftKg"].max()
+        if not category_df.empty:
+            # Personal Bests for the radar
+            val_squat = athlete_df["Best3SquatKg"].max()
+            val_bench = athlete_df["Best3BenchKg"].max()
+            val_deadlift = athlete_df["Best3DeadliftKg"].max()
 
-        # Category Benchmarks
-        avg_squat = category_df["Best3SquatKg"].mean()
-        avg_bench = category_df["Best3BenchKg"].mean()
-        avg_deadlift = category_df["Best3DeadliftKg"].mean()
+            # Category Benchmarks
+            avg_squat = category_df["Best3SquatKg"].mean()
+            avg_bench = category_df["Best3BenchKg"].mean()
+            avg_deadlift = category_df["Best3DeadliftKg"].mean()
 
-        rec_squat = category_df["Best3SquatKg"].max()
-        rec_bench = category_df["Best3BenchKg"].max()
-        rec_deadlift = category_df["Best3DeadliftKg"].max()
+            rec_squat = category_df["Best3SquatKg"].max()
+            rec_bench = category_df["Best3BenchKg"].max()
+            rec_deadlift = category_df["Best3DeadliftKg"].max()
 
-        categories = ['Squat', 'Bench Press', 'Deadlift']
+            categories = ['Squat', 'Bench Press', 'Deadlift']
 
-        import plotly.graph_objects as go
-        fig_radar = go.Figure()
+            import plotly.graph_objects as go
+            fig_radar = go.Figure()
 
-        # Add traces in specific order for layering (back to front)
-        
-        # 1. Category Record (Background)
-        fig_radar.add_trace(go.Scatterpolar(
-            r=[rec_squat, rec_bench, rec_deadlift, rec_squat],
-            theta=categories + [categories[0]],
-            fill='toself',
-            fillcolor='rgba(255, 213, 79, 0.1)', # Faded gold
-            name='Category Record',
-            line=dict(color='rgba(255, 213, 79, 0.4)', width=2, dash='dot'),
-            marker=dict(size=4),
-            hovertemplate="Record: %{r} kg<extra></extra>"
-        ))
-        
-        # 2. Category Average (Middle)
-        fig_radar.add_trace(go.Scatterpolar(
-            r=[avg_squat, avg_bench, avg_deadlift, avg_squat],
-            theta=categories + [categories[0]],
-            fill='toself',
-            fillcolor='rgba(66, 165, 245, 0.1)', # Faded blue
-            name='Category Average',
-            line=dict(color='rgba(66, 165, 245, 0.6)', width=2, dash='dash'),
-            marker=dict(size=4),
-            hovertemplate="Average: %{r:.1f} kg<extra></extra>"
-        ))
+            # Add traces in specific order for layering (back to front)
+            # 1. Category Record (Background)
+            fig_radar.add_trace(go.Scatterpolar(
+                r=[rec_squat, rec_bench, rec_deadlift, rec_squat],
+                theta=categories + [categories[0]],
+                fill='toself',
+                fillcolor='rgba(255, 213, 79, 0.1)',
+                name='Category Record',
+                line=dict(color='rgba(255, 213, 79, 0.4)', width=2, dash='dot'),
+                marker=dict(size=4),
+                hovertemplate="Record: %{r} kg<extra></extra>"
+            ))
+            
+            # 2. Category Average (Middle)
+            fig_radar.add_trace(go.Scatterpolar(
+                r=[avg_squat, avg_bench, avg_deadlift, avg_squat],
+                theta=categories + [categories[0]],
+                fill='toself',
+                fillcolor='rgba(66, 165, 245, 0.1)',
+                name='Category Average',
+                line=dict(color='rgba(66, 165, 245, 0.6)', width=2, dash='dash'),
+                marker=dict(size=4),
+                hovertemplate="Average: %{r:.1f} kg<extra></extra>"
+            ))
 
-        # 3. You (Athlete - Foreground)
-        fig_radar.add_trace(go.Scatterpolar(
-            r=[val_squat, val_bench, val_deadlift, val_squat],
-            theta=categories + [categories[0]],
-            fill='toself',
-            fillcolor='rgba(239, 83, 80, 0.3)', # more vibrant red
-            name='You',
-            line=dict(color='#ef5350', width=4),
-            marker=dict(size=10, symbol='diamond'),
-            hovertemplate="You: %{r} kg<extra></extra>"
-        ))
+            # 3. You (Athlete - Foreground)
+            fig_radar.add_trace(go.Scatterpolar(
+                r=[val_squat, val_bench, val_deadlift, val_squat],
+                theta=categories + [categories[0]],
+                fill='toself',
+                fillcolor='rgba(239, 83, 80, 0.3)',
+                name='You',
+                line=dict(color='#ef5350', width=4),
+                marker=dict(size=10, symbol='diamond'),
+                hovertemplate="You: %{r} kg<extra></extra>"
+            ))
 
-        fig_radar.update_layout(
-            polar=dict(
-                radialaxis=dict(
-                    visible=True,
-                    range=[0, max(rec_squat, rec_deadlift, rec_bench, val_squat, val_deadlift) * 1.15],
-                    gridcolor="rgba(255,255,255,0.1)",
-                    labelalias=None,
-                    angle=-90, # Move labels downwards
-                    tickangle=0 # Keep text readable
+            fig_radar.update_layout(
+                polar=dict(
+                    radialaxis=dict(
+                        visible=True,
+                        range=[0, max(rec_squat, rec_deadlift, rec_bench, val_squat, val_deadlift) * 1.15],
+                        gridcolor="rgba(255,255,255,0.1)",
+                        angle=-90,
+                        tickangle=0
+                    ),
+                    angularaxis=dict(gridcolor="rgba(255,255,255,0.1)", linecolor="rgba(255,255,255,0.2)"),
+                    bgcolor="rgba(0,0,0,0)"
                 ),
-                angularaxis=dict(
-                    gridcolor="rgba(255,255,255,0.1)",
-                    linecolor="rgba(255,255,255,0.2)",
-                ),
-                bgcolor="rgba(0,0,0,0)"
-            ),
-            showlegend=True,
-            template="plotly_dark",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            height=600, # Increased height to match table + gauges
-            margin=dict(l=20, r=20, t=20, b=20), # Tightened margins
-            legend=dict(orientation="h", yanchor="bottom", y=-0.05, xanchor="center", x=0.5)
-        )
-
-        # Create side-by-side layout for Chart and Table
-        rad_cols = st.columns([2, 1, 0.25])
-        
-        with rad_cols[0]:
-            st.plotly_chart(fig_radar, use_container_width=True)
-        
-        with rad_cols[1]:
-            st.write("") # Spacer
-            st.write("") # Spacer
-            # Create a comparison table
-            comparison_data = {
-                "Lift": categories,
-                "You": [f"{val_squat} kg", f"{val_bench} kg", f"{val_deadlift} kg"],
-                "Avg": [f"{round(avg_squat, 1)} kg", f"{round(avg_bench, 1)} kg", f"{round(avg_deadlift, 1)} kg"],
-                "Record": [f"{rec_squat} kg", f"{rec_bench} kg", f"{rec_deadlift} kg"]
-            }
-            comparison_df = pd.DataFrame(comparison_data)
-            st.dataframe(
-                comparison_df, 
-                hide_index=True, 
-                use_container_width=True,
-                column_config={
-                    "Lift": st.column_config.TextColumn("Lift"),
-                    "You": st.column_config.TextColumn("You", help="Your Personal Bests"),
-                    "Avg": st.column_config.TextColumn("Average", help="Category Average"),
-                    "Record": st.column_config.TextColumn("Record", help="Category Record")
-                }
+                showlegend=True,
+                template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                height=600,
+                margin=dict(l=20, r=20, t=20, b=20),
+                legend=dict(orientation="h", yanchor="bottom", y=-0.05, xanchor="center", x=0.5)
             )
-            st.caption(f"Benchmarks based on **{len(category_df)}** athletes in the **{athlete_wc}kg {athlete_equip}** category.")
+
+            # --- Columns for side-by-side view ---
+            rad_cols = st.columns([2, 1])
             
-            # --- Progress Gauges (Percentile & Record Progress) ---
-            st.write("") # Spacer
+            with rad_cols[0]:
+                st.plotly_chart(fig_radar, use_container_width=True)
             
-            # Extract relevant totals for benchmarking
-            athlete_best_total = athlete_df["TotalKg"].max()
-            
-            # Clean category totals (remove 0/NaN) for accurate percentile calculation
-            cat_totals = category_df[category_df["TotalKg"] > 0]["TotalKg"].sort_values()
-            
-            if not cat_totals.empty:
-                # 1. Percentile Rank Calculation
-                # (How many people are you stronger than?)
-                rank = (cat_totals < athlete_best_total).sum()
-                percentile = (rank / len(cat_totals)) * 100
-                top_percent = 100 - percentile
+            with rad_cols[1]:
+                # Ensure the table is visible
+                st.write("") # Spacer
+                comparison_data = {
+                    "Lift": categories,
+                    "You": [f"{val_squat} kg", f"{val_bench} kg", f"{val_deadlift} kg"],
+                    "Avg": [f"{round(avg_squat, 1)} kg", f"{round(avg_bench, 1)} kg", f"{round(avg_deadlift, 1)} kg"],
+                    "Record": [f"{rec_squat} kg", f"{rec_bench} kg", f"{rec_deadlift} kg"]
+                }
+                st.dataframe(
+                    pd.DataFrame(comparison_data), 
+                    hide_index=True, 
+                    use_container_width=True,
+                    column_config={"Lift": "Lift", "You": "You", "Avg": "Average", "Record": "Record"}
+                )
+                st.caption(f"Based on **{len(category_df)}** athletes: **{athlete_wc}kg {athlete_equip}**.")
+                
+                # --- Small Gauges in the sidebar ---
+                athlete_best_total = athlete_df["TotalKg"].max()
+                cat_totals = category_df[category_df["TotalKg"] > 0]["TotalKg"].sort_values()
+                
+                if not cat_totals.empty:
+                    rank = (cat_totals < athlete_best_total).sum()
+                    percentile = (rank / len(cat_totals)) * 100
+                    top_percent = 100 - percentile
+                    progress_to_record = (athlete_best_total / cat_totals.max()) * 100 if cat_totals.max() > 0 else 0
 
-                # 2. % of Record Calculation
-                record_total = cat_totals.max()
-                progress_to_record = (athlete_best_total / record_total) * 100 if record_total > 0 else 0
+                    fig_percentile = go.Figure(go.Indicator(
+                        mode="gauge+number",
+                        value=percentile,
+                        number={'suffix': "%", 'font': {'size': 20}},
+                        title={'text': "Percentile", 'font': {'size': 12, 'color': '#9a9ab0'}},
+                        gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#42a5f5"}, 'bgcolor': "rgba(0,0,0,0)"}
+                    ))
+                    fig_record = go.Figure(go.Indicator(
+                        mode="gauge+number",
+                        value=progress_to_record,
+                        number={'suffix': "%", 'font': {'size': 20}},
+                        title={'text': "% of Record", 'font': {'size': 12, 'color': '#9a9ab0'}},
+                        gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#ffd54f"}, 'bgcolor': "rgba(0,0,0,0)"}
+                    ))
 
-                # --- Create Percentile Gauge ---
-                fig_percentile = go.Figure(go.Indicator(
-                    mode = "gauge+number",
-                    value = percentile,
-                    number = {'suffix': "%", 'font': {'size': 24}},
-                    title = {'text': "Percentile Standing", 'font': {'size': 14, 'color': '#9a9ab0'}},
-                    gauge = {
-                        'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "gray"},
-                        'bar': {'color': "#42a5f5"}, # Blue
-                        'bgcolor': "rgba(0,0,0,0)",
-                        'steps': [
-                            {'range': [0, 50], 'color': 'rgba(66, 165, 245, 0.05)'},
-                            {'range': [50, 90], 'color': 'rgba(66, 165, 245, 0.1)'},
-                            {'range': [90, 100], 'color': 'rgba(56, 142, 60, 0.3)'} # Green for top 10%
-                        ],
-                        'threshold': {
-                            'line': {'color': "white", 'width': 2},
-                            'thickness': 0.75,
-                            'value': percentile
-                        }
-                    }
-                ))
+                    for f_g in [fig_percentile, fig_record]:
+                        f_g.update_layout(height=130, margin=dict(l=15, r=15, t=30, b=0), paper_bgcolor="rgba(0,0,0,0)", font={'color': "#f0f0f5"})
 
-                # --- Create Record Progress Gauge ---
-                fig_record = go.Figure(go.Indicator(
-                    mode = "gauge+number",
-                    value = progress_to_record,
-                    number = {'suffix': "%", 'font': {'size': 24}},
-                    title = {'text': "Progress to Record", 'font': {'size': 14, 'color': '#9a9ab0'}},
-                    gauge = {
-                        'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "gray"},
-                        'bar': {'color': "#ffd54f"}, # Gold
-                        'bgcolor': "rgba(0,0,0,0)",
-                        'steps': [
-                            {'range': [0, 80], 'color': 'rgba(255, 213, 79, 0.05)'},
-                            {'range': [80, 100], 'color': 'rgba(255, 213, 79, 0.2)'}
-                        ],
-                    }
-                ))
+                    st.plotly_chart(fig_percentile, use_container_width=True)
+                    st.plotly_chart(fig_record, use_container_width=True)
+                    
+                    # Standing Summary
+                    if top_percent <= 1: st.success("⭐ Top 1%!")
+                    elif top_percent <= 10: st.info(f"💪 Top {int(top_percent)}%!")
+        else:
+            st.info("Not enough category data for benchmarks.")
 
-                # Common Gauge Layout
-                for fig in [fig_percentile, fig_record]:
-                    fig.update_layout(
-                        height=160,
-                        margin=dict(l=20, r=20, t=40, b=0),
-                        paper_bgcolor="rgba(0,0,0,0)",
-                        font={'color': "#f0f0f5", 'family': "Inter"}
-                    )
-
-                st.plotly_chart(fig_percentile, use_container_width=True)
-                st.plotly_chart(fig_record, use_container_width=True)
-
-                # Summary Text
-                if top_percent <= 1:
-                    st.success(f"⭐ **Top 1%** of Category")
-                elif top_percent <= 10:
-                    st.info(f"💪 **Top {int(top_percent)}%** of Category")
-                else:
-                    st.write(f"📊 You are stronger than **{percentile:.1f}%** of lifters in this category.")
-    else:
-        st.info("Not enough data in this category to calculate relative strength benchmarks.")
-
-
+    st.write("") # Extra spacer to push down next section
+    st.write("") 
+    
     # --- Progress Chart ---
     st.markdown("---")
     st.subheader("📈 Lifts Over Time")
