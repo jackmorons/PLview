@@ -168,6 +168,8 @@ if selected_name:
                     range=[0, max(rec_squat, rec_deadlift, rec_bench, val_squat, val_deadlift) * 1.15],
                     gridcolor="rgba(255,255,255,0.1)",
                     labelalias=None,
+                    angle=-90, # Move labels downwards
+                    tickangle=0 # Keep text readable
                 ),
                 angularaxis=dict(
                     gridcolor="rgba(255,255,255,0.1)",
@@ -183,8 +185,35 @@ if selected_name:
             legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5)
         )
 
-        st.plotly_chart(fig_radar, use_container_width=True)
-        st.caption(f"Benchmarks based on **{len(category_df)}** athletes in the **{athlete_wc}kg {athlete_equip}** category.")
+        # Create side-by-side layout for Chart and Table
+        rad_cols = st.columns([2, 1])
+        
+        with rad_cols[0]:
+            st.plotly_chart(fig_radar, use_container_width=True)
+        
+        with rad_cols[1]:
+            st.write("") # Spacer
+            st.write("") # Spacer
+            # Create a comparison table
+            comparison_data = {
+                "Lift": categories,
+                "You": [f"{val_squat} kg", f"{val_bench} kg", f"{val_deadlift} kg"],
+                "Avg": [f"{round(avg_squat, 1)} kg", f"{round(avg_bench, 1)} kg", f"{round(avg_deadlift, 1)} kg"],
+                "Record": [f"{rec_squat} kg", f"{rec_bench} kg", f"{rec_deadlift} kg"]
+            }
+            comparison_df = pd.DataFrame(comparison_data)
+            st.dataframe(
+                comparison_df, 
+                hide_index=True, 
+                use_container_width=True,
+                column_config={
+                    "Lift": st.column_config.TextColumn("Lift"),
+                    "You": st.column_config.TextColumn("You", help="Your Personal Bests"),
+                    "Avg": st.column_config.TextColumn("Average", help="Category Average"),
+                    "Record": st.column_config.TextColumn("Record", help="Category Record")
+                }
+            )
+            st.caption(f"Benchmarks based on **{len(category_df)}** athletes in the **{athlete_wc}kg {athlete_equip}** category.")
     else:
         st.info("Not enough data in this category to calculate relative strength benchmarks.")
 
