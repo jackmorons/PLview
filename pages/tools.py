@@ -250,10 +250,28 @@ elif active == "freak_finder":
         
         # 5. List of identified freaks
         with st.expander(f"📋 List of {len(freaks_df)} Identified Freaks"):
-            show_cols = ["Name", "Age", "BodyweightKg", "TotalKg", "Dots", "WeightClassKg", "Date", "Federation"]
-            # Ensure metric_y is in show_cols if we sort by it, or sort first
+            # Prepare display dataframe
+            display_df = freaks_df.sort_values(metric_y, ascending=False).copy()
+            
+            # Create clickable link column
+            display_df["Profile"] = display_df["Name"].apply(lambda n: f"/athletes?name={urllib.parse.quote_plus(n)}")
+            
+            # Select columns to show (including the metrics chosen for X and Y)
+            show_cols = ["Profile", "Age", "BodyweightKg", "TotalKg", "Dots", "WeightClassKg", "Date", "Federation"]
+            # Add metric_x/y if they aren't already in the list
+            for m in [metric_x, metric_y]:
+                if m not in show_cols:
+                    show_cols.insert(1, m)
+            
             st.dataframe(
-                freaks_df.sort_values(metric_y, ascending=False)[show_cols],
+                display_df[show_cols],
+                column_config={
+                    "Profile": st.column_config.LinkColumn(
+                        "Athlete Name",
+                        help="Click to view full athlete profile",
+                        display_text=r"/athletes\?name=(.*)" # Simple regex to show name (will still be url-encoded in some views but cleaner)
+                    )
+                },
                 use_container_width=True,
                 hide_index=True
             )
