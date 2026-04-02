@@ -80,6 +80,18 @@ def inject_custom_css():
             margin-bottom: 2rem;
         }
 
+        /* Mobile Responsiveness Overrides */
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2.2rem !important;
+                line-height: 1.2 !important;
+            }
+            .block-container {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+        }
+
         /* Fixed Footer */
         .footer {
             position: fixed;
