@@ -217,13 +217,13 @@ if selected_name:
                     fig_percentile = go.Figure(go.Indicator(
                         mode="gauge+number",
                         value=percentile,
-                        number={'suffix': "%", 'font': {'size': 20}},
+                        number={'suffix': "%", 'font': {'size': 25}},
                         gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#42a5f5"}, 'bgcolor': "rgba(0,0,0,0)"}
                     ))
                     fig_record = go.Figure(go.Indicator(
                         mode="gauge+number",
                         value=progress_to_record,
-                        number={'suffix': "%", 'font': {'size': 20}},
+                        number={'suffix': "%", 'font': {'size': 25}},
                         gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#ffd54f"}, 'bgcolor': "rgba(0,0,0,0)"}
                     ))
 
