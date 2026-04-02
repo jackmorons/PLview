@@ -28,6 +28,21 @@ st.markdown("""
     div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(5) button[kind="primary"] {
         background-color: #f0f0f5 !important; color: #1a1a24 !important; border: none !important;
     }
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(6) button[kind="primary"] {
+        background-color: #d32f2f !important; color: white !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(7) button[kind="primary"] {
+        background-color: #1976d2 !important; color: white !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(8) button[kind="primary"] {
+        background-color: #f9a825 !important; color: white !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(9) button[kind="primary"] {
+        background-color: #388e3c !important; color: white !important; border: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(10) button[kind="primary"] {
+        background-color: #f0f0f5 !important; color: #1a1a24 !important; border: none !important;
+    }
     
     /* Subtle hover effect for inactive buttons */
     div[data-testid="stColumn"] button[kind="secondary"]:hover {
