@@ -181,11 +181,11 @@ if active == "lift_distributions":
                 barmode="stack" if color_col else "relative"
             )
             fig_m.update_layout(
-                height=450,
+                height=600,
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 # Increase top margin to give space for title + legend
-                margin=dict(l=20, r=20, t=150, b=20),
+                margin=dict(l=20, r=20, t=200, b=20),
                 # Position legend higher and title lower if needed
                 legend=dict(
                     orientation="h", 
@@ -216,11 +216,11 @@ if active == "lift_distributions":
                 barmode="stack" if color_col else "relative"
             )
             fig_f.update_layout(
-                height=450,
+                height=600,
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 # Increase top margin to give space for title + legend
-                margin=dict(l=20, r=20, t=150, b=20),
+                margin=dict(l=20, r=20, t=200, b=20),
                 legend=dict(
                     orientation="h", 
                     yanchor="bottom", 
