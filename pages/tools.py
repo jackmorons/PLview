@@ -807,10 +807,126 @@ elif active == "entry_calculator":
     else:
         st.error("No successful 3-for-3 data found for this specific category. Please try a different Equipment or Weight Class.")
 
-# ---------- 5. Pattern Discoverer ----------
+# ---------- 5. Pattern Discoverer (Sandbox) ----------
 elif active == "pattern_discoverer":
-    st.subheader("🔍 Patterns and Trends Discoverer")
-    st.info("🚧 **Coming soon** — Detailed patterns and trends discoverer.")
+    st.subheader("🔍 Pattern Discoverer Sandbox")
+    st.write("The ultimate playground for curious lifters. Plot and outplot any combination of metrics to discover hidden trends in the sport.")
+
+    # 1. Axis & Metric Definitions
+    axes_options = {
+        "Bodyweight": "BodyweightKg",
+        "Age": "Age",
+        "Squat": "Best3SquatKg",
+        "Bench": "Best3BenchKg",
+        "Deadlift": "Best3DeadliftKg",
+        "Total": "TotalKg",
+        "Dots": "Dots",
+        "Wilks": "Wilks",
+        "Glossbrenner": "Glossbrenner",
+        "Goodlift": "Goodlift"
+    }
+    
+    # 2. Discovery Presets (Quick Access)
+    st.markdown("### 💡 Quick Discoveries")
+    p_c1, p_c2, p_c3, p_c4 = st.columns(4)
+    
+    # Preset initialisation
+    if "sandbox_x" not in st.session_state: st.session_state["sandbox_x"] = "Age"
+    if "sandbox_y" not in st.session_state: st.session_state["sandbox_y"] = "Total"
+    if "sandbox_z" not in st.session_state: st.session_state["sandbox_z"] = "None"
+    if "sandbox_color" not in st.session_state: st.session_state["sandbox_color"] = "Equipment"
+
+    if p_c1.button("📈 The Age Peak", use_container_width=True):
+        st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Age", "Total", "None"
+        st.session_state["sandbox_color"] = "Equipment"
+    if p_c2.button("⚖️ SBD Balance", use_container_width=True):
+        st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Squat", "Deadlift", "None"
+        st.session_state["sandbox_color"] = "Sex"
+    if p_c3.button("📦 3D Strength Cube", use_container_width=True):
+        st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Squat", "Bench", "Deadlift"
+        st.session_state["sandbox_color"] = "Sex"
+    if p_c4.button("🧬 Relative Strength", use_container_width=True):
+        st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Bodyweight", "Dots", "None"
+        st.session_state["sandbox_color"] = "Equipment"
+
+    st.markdown("---")
+
+    # 3. Sandbox Controls
+    with st.expander("🛠️ Customise Your Sandbox", expanded=True):
+        ctrl_c1, ctrl_c2, ctrl_c3, ctrl_c4 = st.columns(4)
+        
+        with ctrl_c1:
+            dim_mode = st.radio("Dimensions", ["2D", "3D"], horizontal=True)
+            x_ax = st.selectbox("X-Axis", list(axes_options.keys()), index=list(axes_options.keys()).index(st.session_state["sandbox_x"]))
+        
+        with ctrl_c2:
+            y_ax = st.selectbox("Y-Axis", list(axes_options.keys()), index=list(axes_options.keys()).index(st.session_state["sandbox_y"]))
+        
+        with ctrl_c3:
+            if dim_mode == "3D":
+                z_options = list(axes_options.keys())
+                z_idx = z_options.index(st.session_state["sandbox_z"]) if st.session_state["sandbox_z"] in z_options else 2
+                z_ax = st.selectbox("Z-Axis", z_options, index=z_idx)
+            else:
+                z_ax = None
+                st.write("") # Spacer
+                st.info("Switch to 3D to enable Z-Axis.")
+        
+        with ctrl_c4:
+            color_by = st.selectbox("Color By", ["Sex", "Equipment", "AgeClass", "WeightClassKg"], index=["Sex", "Equipment", "AgeClass", "WeightClassKg"].index(st.session_state["sandbox_color"]))
+
+    # 4. Data Preparation & Filtering
+    filter_data = alldf.dropna(subset=[axes_options[x_ax], axes_options[y_ax]])
+    if z_ax: filter_data = filter_data.dropna(subset=[axes_options[z_ax]])
+    
+    # Performance Sampling
+    limit = 5000 if dim_mode == "3D" else 15000
+    if len(filter_data) > limit:
+        st.warning(f"⚡ **Performance Optimisation**: Plotting a random sample of {limit} athletes from the {len(filter_data)} available.")
+        plot_df = filter_data.sample(limit, random_state=42)
+    else:
+        plot_df = filter_data
+    
+    # 5. Visualization Logic
+    st.markdown("---")
+    
+    if dim_mode == "2D":
+        # Calculate Pearson Correlation
+        corr = plot_df[axes_options[x_ax]].corr(plot_df[axes_options[y_ax]])
+        st.write(f"🔬 **Correlation Analysis**: The relationship between **{x_ax}** and **{y_ax}** has a Pearson coefficient of **{corr:.2f}**.")
+        
+        fig_sb = px.scatter(
+            plot_df, x=axes_options[x_ax], y=axes_options[y_ax],
+            color=color_by,
+            template="plotly_dark",
+            render_mode='webgl', # Performance high-five
+            title=f"{y_ax} vs {x_ax} Discovery",
+            labels={axes_options[x_ax]: f"{x_ax} (kg/yrs)", axes_options[y_ax]: f"{y_ax} (kg/pts)"},
+            hover_name="Name",
+            hover_data=["Age", "BodyweightKg", "TotalKg", "Dots"]
+        )
+        # Add regression line if correlated
+        # fig_sb.add_trace(go.Scatter(...)) # Optional, but can clutter
+    else:
+        fig_sb = px.scatter_3d(
+            plot_df, x=axes_options[x_ax], y=axes_options[y_ax], z=axes_options[z_ax],
+            color=color_by,
+            template="plotly_dark",
+            title=f"3D Analysis: {z_ax} | {y_ax} | {x_ax}",
+            labels={axes_options[x_ax]: x_ax, axes_options[y_ax]: y_ax, axes_options[z_ax]: z_ax},
+            hover_name="Name",
+            height=800
+        )
+        fig_sb.update_layout(margin=dict(l=0, r=0, t=30, b=0))
+
+    fig_sb.update_layout(
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+    st.plotly_chart(fig_sb, use_container_width=True)
+    
+    st.info("💡 **Pro-Tip**: Click and drag to rotate 3D plots. Use the legend to toggle specific groups on and off.")
 
 # ---------- 6. Freak Finder ----------
 elif active == "freak_finder":
