@@ -313,14 +313,16 @@ if selected_name:
                 marker=dict(
                     symbol="star",
                     size=14,
-                    color="#000000",
+                    # color="#000000",
                     line=dict(width=1.5, color="white"),
                 ),
                 hoverlabel=dict(
-                    font_color="#000000", # black text to match the star
-                    bgcolor="rgba(255, 255, 100, 0.9)", # Darker background for contrast
-                    bordercolor="#ffd54f"
+                    font_color="#000000",
+                    bgcolor="rgba(255, 213, 79, 0.9)", # Yellow background
+                    bordercolor="#000000"
                 ),
+                hovertemplate="<b>NEW PR! (%{customdata})</b><br>%{y} kg<br>%{x|%Y-%m-%d}<extra></extra>",
+                customdata=pr_df["Type"]
             ))
 
         # --- Plot all individual attempt traces ---
