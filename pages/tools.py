@@ -243,6 +243,33 @@ elif active == "strength_index_calculator":
     wilks_denom = aw + (bw * weight) + (cw * weight**2) + (dw * weight**3) + (ew * weight**4) + (fw * weight**5)
     wilks_score = total * (500 / wilks_denom) if wilks_denom > 0 else 0.0
 
+    # ── Glossbrenner Calculation ──────────────────────────────────
+    def get_glossbrenner_coeff(w, g):
+        suffix = "M" if g == "Male" else "F"
+        path = f"datasets/Glossbrenner_{suffix}.csv"
+        try:
+            df_gb = pd.read_csv(path)
+            # Find closest weight
+            idx = (df_gb['Weight'] - w).abs().idxmin()
+            return df_gb.loc[idx, 'Coefficient']
+        except Exception:
+            return 0.0
+
+    gb_coeff = get_glossbrenner_coeff(weight, gender)
+    glossbrenner_score = total * gb_coeff
+
+    # ── Goodlift Calculation ──────────────────────────────────────
+    # Men: A=751.22, B=175.508, C=0.01242
+    # Women: A=521.628, B=157.78, C=0.01812
+    if gender == "Male":
+        ag, bg, cg = 751.22, 175.508, 0.01242
+    else:
+        ag, bg, cg = 521.628, 157.78, 0.01812
+    
+    import numpy as np
+    gl_denom = ag - bg * np.exp(-cg * weight)
+    goodlift_score = total * (100 / gl_denom) if gl_denom > 0 else 0.0
+
     # Display Results
     res_c1, res_c2, res_c3, res_c4 = st.columns([1, 1, 1, 1])
     with res_c1:
