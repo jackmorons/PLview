@@ -234,6 +234,15 @@ elif active == "strength_index_calculator":
     else:
         dots_score = 0.0
 
+    # ── Wilks Calculation ───────────────────────────────────────────
+    if gender == "Male":
+        aw, bw, cw, dw, ew, fw = -216.0475144, 16.2606339, -0.002388645, -0.00113732, 7.01863e-6, -1.291e-8
+    else:
+        aw, bw, cw, dw, ew, fw = 594.31747775582, -27.23842536447, 0.82112226871, -0.00930733913, 4.731582e-5, -9.054e-8
+
+    wilks_denom = aw + (bw * weight) + (cw * weight**2) + (dw * weight**3) + (ew * weight**4) + (fw * weight**5)
+    wilks_score = total * (500 / wilks_denom) if wilks_denom > 0 else 0.0
+
     # Display Results
     res_c1, res_c2, res_c3, res_c4 = st.columns([1, 1, 1, 1])
     with res_c1:
@@ -247,4 +256,15 @@ elif active == "strength_index_calculator":
         else:
             st.warning("Please check your bodyweight/total values.")
     st.write(f"📊 **Summary:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
+    with res_c2:
+        st.metric("Wilks Score", f"{wilks_score:.2f}")
+        if wilks_score > 500:
+            st.success(f"🔥 **Elite Performance!** Your Wilks score of {wilks_score:.2f} is world-class.")
+        elif wilks_score > 400:
+            st.info(f"💪 **Strong Lift!** You're highly competitive.")
+        elif wilks_score > 0:
+            st.write(f"📈 Every kilogram added to your total will boost this score.")
+        else:
+            st.warning("Please check your bodyweight/total values.")
     
+    st.write(f"📊 **Summary:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
