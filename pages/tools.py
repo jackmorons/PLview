@@ -293,7 +293,34 @@ elif active == "twin_finder":
                     st.write(f"**S/B/D:** {twin['Best3SquatKg']}/{twin['Best3BenchKg']}/{twin['Best3DeadliftKg']}")
                     st.write(f"**Total:** {twin['TotalKg']} kg")
                     st.write(f"**Dots:** {twin['Dots']:.2f}")
-                    st.metric("Similarity Score", f"{max(0, 100 - twin['dist']):.1f}%", help="Calculated based on lift parity.")
+                # --- 4. Grouped Bar Chart ---
+                st.markdown("---")
+                st.subheader("📊 Direct Strength Comparison")
+                
+                bar_data = pd.DataFrame({
+                    "Lift": ["Squat", "Bench", "Deadlift", "Total"] * 2,
+                    "Weight (kg)": [
+                        u_squat, u_bench, u_deadlift, u_squat + u_bench + u_deadlift,
+                        twin["Best3SquatKg"], twin["Best3BenchKg"], twin["Best3DeadliftKg"], twin["TotalKg"]
+                    ],
+                    "Athlete": ["You"] * 4 + [twin_name] * 4
+                })
+
+                fig_bar = px.bar(
+                    bar_data, x="Lift", y="Weight (kg)", color="Athlete",
+                    barmode="group",
+                    template="plotly_dark",
+                    color_discrete_map={"You": "#ef5350", twin_name: "#ffd54f"},
+                    text_auto=".1f"
+                )
+                fig_bar.update_layout(
+                    plot_bgcolor="rgba(0,0,0,0)", 
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    xaxis_title="",
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                )
+                st.plotly_chart(fig_bar, use_container_width=True)
+
             else:
                 st.warning("No athletes found for this equipment category. Try relaxing your filters.")
 
