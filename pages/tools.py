@@ -250,8 +250,10 @@ elif active == "freak_finder":
         
         # 5. List of identified freaks
         with st.expander(f"📋 List of {len(freaks_df)} Identified Freaks"):
+            show_cols = ["Name", "Age", "BodyweightKg", "TotalKg", "Dots", "WeightClassKg", "Date", "Federation"]
+            # Ensure metric_y is in show_cols if we sort by it, or sort first
             st.dataframe(
-                freaks_df[["Name", "Age", "BodyweightKg", "TotalKg", "Dots", "WeightClassKg", "Date", "Federation"]].sort_values(metric_y, ascending=False),
+                freaks_df.sort_values(metric_y, ascending=False)[show_cols],
                 use_container_width=True,
                 hide_index=True
             )
