@@ -88,8 +88,8 @@ def inject_custom_css():
                 width: 100% !important;
             }
             .block-container {
-                padding-left: 0.25rem !important;
-                padding-right: 0.25rem !important;
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
                 max-width: 100% !important;
             }
         }
