@@ -289,8 +289,8 @@ elif active == "1v1":
             "tot": best_tot if best_tot > 0 else 0, 
             "dots": best_dots if best_dots > 0 else 0,
             "wilks": best_wilks if best_wilks > 0 else 0,
-            "gloss": best_gloss if best_gloss > 0 else 0,
-            "good": best_good if best_good > 0 else 0,
+            "glossbrenner": best_gloss if best_gloss > 0 else 0,
+            "goodlift": best_good if best_good > 0 else 0,
             "wc": wc, "sex": sex, "equip": equip, "bw": bw
         }
 
@@ -370,7 +370,7 @@ elif active == "1v1":
                 polar=dict(radialaxis=dict(visible=True, gridcolor="rgba(255,255,255,0.1)"), bgcolor="rgba(0,0,0,0)"),
                 template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
                 title=dict(text="S/B/D Strength Profile", x=0.5, xanchor='center'),
-                legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5),
+                legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5), # Repositioned lower
                 height=500
             )
             st.plotly_chart(fig_sbd, use_container_width=True)
@@ -384,7 +384,8 @@ elif active == "1v1":
             def get_norm_r(s):
                 vals = []
                 for c in categories_coeff:
-                    raw = s.get(c.lower() if c != 'Glossbrenner' else 'gloss', 0)
+                    # Using consistent keys
+                    raw = s.get(c.lower(), 0)
                     vals.append((raw / norm_map[c]) * 100)
                 return vals + [vals[0]]
 
@@ -409,7 +410,7 @@ elif active == "1v1":
                 polar=dict(radialaxis=dict(visible=True, range=[0, 100], gridcolor="rgba(255,255,255,0.1)"), bgcolor="rgba(0,0,0,0)"),
                 template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
                 title=dict(text="Coefficient Battle (Normalized)", x=0.5, xanchor='center'),
-                legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5),
+                legend=dict(orientation="h", yanchor="top", y=-0.2, xanchor="center", x=0.5), # Repositioned lower
                 height=500
             )
             st.plotly_chart(fig_coeff, use_container_width=True)
