@@ -317,8 +317,7 @@ if selected_name:
                     line=dict(width=1.5, color="white"),
                 ),
                 # Show the lift type in the hover
-                hovertemplate="<b>NEW PR! (%{customdata})</b><br>%{y} kg<br>%{x|%Y-%m-%d}<extra></extra>",
-                customdata=pr_df["Type"]
+                hovertemplate="<b>NEW PR!</b><br>"
             ))
 
         # --- Plot all individual attempt traces ---
