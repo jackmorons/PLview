@@ -896,6 +896,17 @@ elif active == "pattern_discoverer":
     # 5. Visualization Logic
     st.markdown("---")
     
+    # ── Category Sorting & Chromatic Colors ───────────────────────
+    cat_order = sorted(plot_df[color_by].dropna().unique().tolist())
+    # Special sorting for Weight Classes if numeric (they are usually numeric strings or floats)
+    if color_by == "WeightClassKg":
+        try:
+            cat_order = sorted(cat_order, key=float)
+        except: pass
+    
+    # Sample a sequential color scale for discrete categories to get a "gradient" look
+    color_seq = px.colors.sample_colorscale("Turbo", [i/(len(cat_order)-1) if len(cat_order) > 1 else 0 for i in range(len(cat_order))])
+
     if dim_mode == "2D":
         # Calculate Pearson Correlation
         corr = plot_df[axes_options[x_ax]].corr(plot_df[axes_options[y_ax]])
@@ -904,6 +915,8 @@ elif active == "pattern_discoverer":
         fig_sb = px.scatter(
             plot_df, x=axes_options[x_ax], y=axes_options[y_ax],
             color=color_by,
+            category_orders={color_by: cat_order},
+            color_discrete_sequence=color_seq,
             template="plotly_dark",
             render_mode='webgl', # Performance high-five
             title=f"{y_ax} vs {x_ax} Discovery",
@@ -911,12 +924,12 @@ elif active == "pattern_discoverer":
             hover_name="Name",
             hover_data=["Age", "BodyweightKg", "TotalKg", "Dots"]
         )
-        # Add regression line if correlated
-        # fig_sb.add_trace(go.Scatter(...)) # Optional, but can clutter
     else:
         fig_sb = px.scatter_3d(
             plot_df, x=axes_options[x_ax], y=axes_options[y_ax], z=axes_options[z_ax],
             color=color_by,
+            category_orders={color_by: cat_order},
+            color_discrete_sequence=color_seq,
             template="plotly_dark",
             title=f"3D Analysis: {z_ax} | {y_ax} | {x_ax}",
             labels={axes_options[x_ax]: x_ax, axes_options[y_ax]: y_ax, axes_options[z_ax]: z_ax},
