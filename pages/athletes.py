@@ -313,7 +313,7 @@ if selected_name:
                 marker=dict(
                     symbol="star",
                     size=14,
-                    color="#ffd54f",
+                    color="#000000",
                     line=dict(width=1.5, color="white"),
                 ),
                 hoverlabel=dict(
