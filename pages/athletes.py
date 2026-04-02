@@ -238,9 +238,10 @@ if selected_name:
                     # Standing Summary
                     if top_percent <= 1: st.success("⭐ Top 1%!")
                     elif top_percent <= 10: st.info(f"💪 Top {int(top_percent)}%!")
+                    st.caption(f"Based on **{len(category_df)}** athletes: **{athlete_wc}kg {athlete_equip}**.")
         else:
             st.info("Not enough category data for benchmarks.")
-        st.caption(f"Based on **{len(category_df)}** athletes: **{athlete_wc}kg {athlete_equip}**.")
+        
                 
 
     st.write("") # Extra spacer to push down next section
