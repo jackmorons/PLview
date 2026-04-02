@@ -344,7 +344,6 @@ elif active == "strength_index_calculator":
     
     with res_main:
         st.metric("Estimated 1RM", f"{one_rm:.2f} kg")
-        st.write(f"🎯 **Projected Max:** {round(one_rm * 2) / 2} kg")
         
         st.markdown("### 📊 Intensity Table")
         pcts = [100, 95, 90, 85, 80, 75, 70]
