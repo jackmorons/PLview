@@ -181,8 +181,9 @@ if selected_name:
             template="plotly_dark",
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            margin=dict(l=80, r=80, t=40, b=40),
-            legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5)
+            height=600, # Increased height to match table + gauges
+            margin=dict(l=20, r=20, t=20, b=20), # Tightened margins
+            legend=dict(orientation="h", yanchor="bottom", y=-0.05, xanchor="center", x=0.5)
         )
 
         # Create side-by-side layout for Chart and Table
