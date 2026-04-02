@@ -83,13 +83,13 @@ def inject_custom_css():
         /* Mobile Responsiveness Overrides */
         @media (max-width: 640px) {
             .hero-title {
-                font-size: 2.2rem !important;
+                font-size: 3rem !important;
                 line-height: 1.2 !important;
                 width: 100% !important;
             }
             .block-container {
-                padding-left: 0.5rem !important;
-                padding-right: 0.5rem !important;
+                padding-left: 0.2rem !important;
+                padding-right: 0.2rem !important;
                 max-width: 100% !important;
             }
         }
