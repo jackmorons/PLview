@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import urllib.parse
 
 st.header("Athletes")
 st.write("Search and explore athlete profiles, competition history, and personal bests.")
@@ -21,6 +22,14 @@ st.subheader("🔍 Athlete Search")
 
 # Get sorted unique names for the dropdown
 all_names = sorted(alldf["Name"].dropna().unique().tolist())
+
+# --- Handle Query Parameters ---
+if "name" in st.query_params:
+    name_from_url = st.query_params["name"]
+    if name_from_url in all_names:
+        # Avoid overriding if already set manually in this session (optional choice)
+        # But for direct links, we usually want to force it.
+        st.session_state["athlete_search"] = name_from_url
 
 selected_name = st.selectbox(
     "Search for an athlete",
