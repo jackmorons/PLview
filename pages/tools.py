@@ -303,6 +303,14 @@ elif active == "strength_index_calculator":
             st.warning("Please check your bodyweight/total values.")
     with res_c4:
         st.metric("Goodlift Score", f"{goodlift_score:.2f}")
+        if goodlift_score > 120:
+            st.success(f"🔥 **Elite Performance!** Your Goodlift score of {goodlift_score:.2f} is world-class.")
+        elif goodlift_score > 90:
+            st.info(f"💪 **Strong Lift!** You're highly competitive.")
+        elif goodlift_score > 0:
+            st.write(f"📈 Every kilogram added to your total will boost this score.")
+        else:
+            st.warning("Please check your bodyweight/total values.")
         
     
 #st.write(f"📊 **Summary:** {gender} • {age} years • {weight} kg BW • {total} kg Total")
