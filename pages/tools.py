@@ -130,6 +130,18 @@ if active == "lift_distributions":
     }
     color_col = color_map[color_choice]
 
+    with ctrl_c2:
+        with st.expander("🔦 Highlight & Filter", expanded=False):
+            f_c1, f_c2, f_c3 = st.columns(3)
+            with f_c1:
+                all_equip = sorted(alldf["Equipment"].dropna().unique().tolist())
+                h_equip = st.multiselect("Highlight Equipment", all_equip, default=all_equip, help="Keep only selected equipment types.")
+            with f_c2:
+                all_age = sorted(alldf["AgeClass"].dropna().unique().tolist())
+                h_age = st.multiselect("Highlight Age Class", all_age, default=all_age, help="Keep only selected age classes.")
+            with f_c3:
+                h_action = st.radio("Action for Excluded", ["Grey-out", "Remove"], horizontal=True, help="'Grey-out' keeps points visible but desaturated. 'Remove' hides them completely.")
+
     for label, col in lift_cols.items():
         st.subheader(label)
         c1, c2 = st.columns(2)
