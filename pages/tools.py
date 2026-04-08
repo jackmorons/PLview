@@ -130,8 +130,8 @@ if active == "lift_distributions":
     }
     color_col = color_map[color_choice]
 
-    st.markdown("##### 🔦 Highlight & Filter")
-    filter_expander = st.expander("", expanded=False)
+    # st.markdown("##### 🔦 Highlight & Filter")
+    filter_expander = st.expander("🔦 Highlight & Filter", expanded=False)
     with filter_expander:
         f_c1, f_c2, f_c3 = st.columns(3)
         with f_c1:
