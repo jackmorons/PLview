@@ -131,9 +131,9 @@ if active == "lift_distributions":
     color_col = color_map[color_choice]
 
     with ctrl_c2:
-        filter_expander = st.expander("🔦 Highlight & Filter", expanded=False)
+        st.write("### 🔦 Highlight & Filter")
+        filter_expander = st.expander("", expanded=False)
         with filter_expander:
-            st.write("### 🔦 Highlight & Filter")
             f_c1, f_c2, f_c3 = st.columns(3)
             with f_c1:
                 all_equip = sorted(alldf["Equipment"].dropna().unique().tolist())
