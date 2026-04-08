@@ -146,109 +146,118 @@ if active == "lift_distributions":
         st.subheader(label)
         c1, c2 = st.columns(2)
         
-        # Prepare data copies and handle NaNs for coloring
+        # Prepare data copies and handle NaNs
         m_plot_df = malesdf[malesdf[col] > 0].copy()
         f_plot_df = femalesdf[femalesdf[col] > 0].copy()
-        
+
+        # --- Apply Filtering & Categorization ---
+        def apply_dist_filter(df, color_c, h_eq, h_ag, h_act):
+            if df.empty: return df, color_c
+            mask = df["Equipment"].isin(h_eq) & df["AgeClass"].isin(h_ag)
+            if h_act == "Remove":
+                return df[mask].copy(), color_c
+            else:
+                # Grey-out logic
+                res_df = df.copy()
+                if color_c:
+                    res_df["display_cat"] = res_df[color_c].astype(str)
+                    res_df.loc[~mask, "display_cat"] = " Others"
+                else:
+                    res_df["display_cat"] = "Selected"
+                    res_df.loc[~mask, "display_cat"] = " Others"
+                return res_df, "display_cat"
+
+        m_plot_df, m_color_col = apply_dist_filter(m_plot_df, color_col, h_equip, h_age, h_action)
+        f_plot_df, f_color_col = apply_dist_filter(f_plot_df, color_col, h_equip, h_age, h_action)
+
         # --- FIX: Custom Weight Normalization to ensure total probability = 1 ---
-        # When using 'color' with histnorm='probability', Plotly normalizes per group.
-        # To normalize across the *entire* population, we use weights.
+        # To normalize across the entire population (including 'Others'), we use weights.
         m_plot_df["weight"] = 1.0 / len(m_plot_df) if not m_plot_df.empty else 1.0
         f_plot_df["weight"] = 1.0 / len(f_plot_df) if not f_plot_df.empty else 1.0
 
-        category_orders = {}
-        color_seq_m = ["#42a5f5"] 
-        color_seq_f = ["#ef5350"]
-
-        if color_col:
-            # Handle NaNs
-            m_plot_df[color_col] = m_plot_df[color_col].fillna("Unknown")
-            f_plot_df[color_col] = f_plot_df[color_col].fillna("Unknown")
+        # --- Color Logic ---
+        def get_color_configs(df, c_col, is_male):
+            if not c_col:
+                return ["#42a5f5" if is_male else "#ef5350"], {}, None
             
-            # Determine global sorted categories
-            all_cats = sorted(list(set(m_plot_df[color_col].unique()) | set(f_plot_df[color_col].unique())))
+            # Handle sorting
+            all_cats = sorted([str(c) for c in df[c_col].unique()])
             
-            # Special sorting for Equipment
-            if color_col == "Equipment":
+            # Special sorting for Equipment if it's the color base
+            if c_col == "Equipment" or (c_col == "display_cat" and color_col == "Equipment"):
                 equip_order = ["Raw", "Wraps", "Single-ply", "Multi-ply"]
                 all_cats = [e for e in equip_order if e in all_cats] + [e for e in sorted(set(all_cats) - set(equip_order))]
             
-            category_orders = {color_col: all_cats}
+            # Ensure " Others" is at the end
+            if " Others" in all_cats:
+                all_cats.remove(" Others")
+                all_cats.append(" Others")
             
-            # Generate chromatic sequence
-            n_cats = len(all_cats)
-            if n_cats > 1:
-                color_seq_m = px.colors.sample_colorscale("Turbo", [i/(n_cats-1) for i in range(n_cats)])
-                color_seq_f = color_seq_m
+            n_cats_real = len([c for c in all_cats if c != " Others"])
+            
+            # Generate chromatic sequence for real categories
+            if n_cats_real > 1:
+                base_colors = px.colors.sample_colorscale("Turbo", [i/(n_cats_real-1) for i in range(n_cats_real)])
             else:
-                color_seq_m = ["#42a5f5"]
-                color_seq_f = ["#ef5350"]
+                base_colors = ["#42a5f5" if is_male else "#ef5350"]
+            
+            # Map colors
+            c_map = {}
+            color_idx = 0
+            for cat in all_cats:
+                if cat == " Others":
+                    c_map[cat] = "rgba(200, 200, 200, 0.2)"
+                elif cat == "Selected":
+                    c_map[cat] = "#42a5f5" if is_male else "#ef5350"
+                else:
+                    c_map[cat] = base_colors[color_idx]
+                    color_idx += 1
+            
+            return None, {c_col: all_cats}, c_map
+
+        m_seq, m_cat_orders, m_map = get_color_configs(m_plot_df, m_color_col, True)
+        f_seq, f_cat_orders, f_map = get_color_configs(f_plot_df, f_color_col, False)
 
         with c1:
             fig_m = px.histogram(
-                m_plot_df, x=col,
-                y="weight",        
-                histfunc="sum",    
-                color=color_col,
+                m_plot_df, x=col, y="weight", histfunc="sum",
+                color=m_color_col,
                 title=f"{label} Distribution (Males)",
                 template="plotly_dark",
-                color_discrete_sequence=color_seq_m,
-                category_orders=category_orders,
-                barmode="stack" if color_col else "relative"
+                color_discrete_sequence=m_seq,
+                color_discrete_map=m_map,
+                category_orders=m_cat_orders,
+                barmode="stack" if m_color_col else "relative"
             )
             fig_m.update_layout(
                 height=600,
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
-                # Increase top margin to give space for title + legend
                 margin=dict(l=20, r=20, t=200, b=20),
-                # Position legend higher and title lower if needed
-                legend=dict(
-                    orientation="h", 
-                    yanchor="bottom", 
-                    y=1.1, # Moved further up from 1.02
-                    xanchor="right", 
-                    x=1.0
-                ) if color_col else None,
-                title=dict(
-                    y=0.95, # Position title slightly lower relative to top margin
-                    x=0.0,
-                    xanchor='left'
-                )
+                legend=dict(orientation="h", yanchor="bottom", y=1.1, xanchor="right", x=1.0) if m_color_col else None,
+                title=dict(y=0.95, x=0, xanchor='left')
             )
             fig_m.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_m, use_container_width=True)
 
         with c2:
             fig_f = px.histogram(
-                f_plot_df, x=col,
-                y="weight",        
-                histfunc="sum",    
-                color=color_col,
+                f_plot_df, x=col, y="weight", histfunc="sum",
+                color=f_color_col,
                 title=f"{label} Distribution (Females)",
                 template="plotly_dark",
-                color_discrete_sequence=color_seq_f,
-                category_orders=category_orders,
-                barmode="stack" if color_col else "relative"
+                color_discrete_sequence=f_seq,
+                color_discrete_map=f_map,
+                category_orders=f_cat_orders,
+                barmode="stack" if f_color_col else "relative"
             )
             fig_f.update_layout(
                 height=600,
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
-                # Increase top margin to give space for title + legend
                 margin=dict(l=20, r=20, t=200, b=20),
-                legend=dict(
-                    orientation="h", 
-                    yanchor="bottom", 
-                    y=1.1, # Moved further up from 1.02
-                    xanchor="right", 
-                    x=1.0
-                ) if color_col else None,
-                title=dict(
-                    y=0.95, 
-                    x=0.0,
-                    xanchor='left'
-                )
+                legend=dict(orientation="h", yanchor="bottom", y=1.1, xanchor="right", x=1.0) if f_color_col else None,
+                title=dict(y=0.95, x=0, xanchor='left')
             )
             fig_f.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_f, use_container_width=True)
