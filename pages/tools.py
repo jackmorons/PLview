@@ -931,10 +931,36 @@ elif active == "pattern_discoverer":
         with ctrl_c4:
             color_by = st.selectbox("Color By", ["Sex", "Equipment", "AgeClass", "WeightClassKg"], index=["Sex", "Equipment", "AgeClass", "WeightClassKg"].index(st.session_state["sandbox_color"]))
 
+        st.markdown("---")
+        st.markdown("##### 🔦 Highlight & Filter")
+        f_c1, f_c2, f_c3 = st.columns([1, 1, 1])
+        with f_c1:
+            h_sex = st.multiselect("Highlight Sex", ["M", "F"], default=["M", "F"], help="Keep only selected genders.")
+        with f_c2:
+            all_equip = sorted(alldf["Equipment"].dropna().unique().tolist())
+            h_equip = st.multiselect("Highlight Equipment", all_equip, default=all_equip, help="Keep only selected equipment types.")
+        with f_c3:
+            h_action = st.radio("Action for Excluded", ["Grey-out", "Remove"], horizontal=True, help="'Grey-out' keeps points visible but desaturated. 'Remove' hides them completely.")
+
     # 4. Data Preparation & Filtering
     filter_data = alldf.dropna(subset=[axes_options[x_ax], axes_options[y_ax]])
     if z_ax: filter_data = filter_data.dropna(subset=[axes_options[z_ax]])
     
+    # Apply Highlight/Filter Logic
+    mask = filter_data["Sex"].isin(h_sex) & filter_data["Equipment"].isin(h_equip)
+    
+    if h_action == "Remove":
+        filter_data = filter_data[mask]
+        display_col = color_by
+    else:
+        # Grey-out logic: create a specialized display column
+        # We use a leading space to ensure " Others" stays at the end of sorted lists
+        filter_data["display_cat"] = filter_data.apply(
+            lambda row: str(row[color_by]) if (row["Sex"] in h_sex and row["Equipment"] in h_equip) else " Others", 
+            axis=1
+        )
+        display_col = "display_cat"
+
     # Performance Sampling
     limit = 5000 if dim_mode == "3D" else 15000
     if len(filter_data) > limit:
@@ -947,25 +973,48 @@ elif active == "pattern_discoverer":
     st.markdown("---")
     
     # ── Category Sorting & Chromatic Colors ───────────────────────
-    cat_order = sorted(plot_df[color_by].dropna().unique().tolist())
-    # Special sorting for Weight Classes if numeric (they are usually numeric strings or floats)
+    cat_order = sorted(plot_df[display_col].dropna().unique().tolist())
+    # Special sorting for Weight Classes if numeric
     if color_by == "WeightClassKg":
         try:
-            cat_order = sorted(cat_order, key=float)
+            # Sort everything except " Others"
+            pure_cats = [c for c in cat_order if c != " Others"]
+            pure_cats = sorted(pure_cats, key=float)
+            if " Others" in cat_order:
+                cat_order = pure_cats + [" Others"]
+            else:
+                cat_order = pure_cats
         except: pass
     
-    # Sample a sequential color scale for discrete categories to get a "gradient" look
-    color_seq = px.colors.sample_colorscale("Turbo", [i/(len(cat_order)-1) if len(cat_order) > 1 else 0 for i in range(len(cat_order))])
+    # Sample a sequential color scale
+    # If " Others" is present, we handle it separately
+    base_cats = [c for c in cat_order if c != " Others"]
+    n_base = len(base_cats)
+    
+    if n_base > 1:
+        color_seq = px.colors.sample_colorscale("Turbo", [i/(n_base-1) for i in range(n_base)])
+    elif n_base == 1:
+        color_seq = [px.colors.sample_colorscale("Turbo", [0.5])[0]]
+    else:
+        color_seq = []
+
+    if " Others" in cat_order:
+        # Add a desaturated grey for " Others"
+        color_seq.append("rgba(200, 200, 200, 0.2)")
 
     if dim_mode == "2D":
         # Calculate Pearson Correlation
-        corr = plot_df[axes_options[x_ax]].corr(plot_df[axes_options[y_ax]])
-        st.write(f"🔬 **Correlation Analysis**: The relationship between **{x_ax}** and **{y_ax}** has a Pearson coefficient of **{corr:.2f}**.")
+        # Only use highlights for correlation if in Grey-out mode? Or full data? 
+        # Typically correlation usually refers to the plotted sample.
+        corr_df = plot_df[plot_df[display_col] != " Others"] if " Others" in plot_df.columns else plot_df
+        if not corr_df.empty:
+            corr = corr_df[axes_options[x_ax]].corr(corr_df[axes_options[y_ax]])
+            st.write(f"🔬 **Correlation Analysis**: The relationship between **{x_ax}** and **{y_ax}** (highlighted points) has a Pearson coefficient of **{corr:.2f}**.")
         
         fig_sb = px.scatter(
             plot_df, x=axes_options[x_ax], y=axes_options[y_ax],
-            color=color_by,
-            category_orders={color_by: cat_order},
+            color=display_col,
+            category_orders={display_col: cat_order},
             color_discrete_sequence=color_seq,
             template="plotly_dark",
             render_mode='webgl', # Performance high-five
@@ -977,8 +1026,8 @@ elif active == "pattern_discoverer":
     else:
         fig_sb = px.scatter_3d(
             plot_df, x=axes_options[x_ax], y=axes_options[y_ax], z=axes_options[z_ax],
-            color=color_by,
-            category_orders={color_by: cat_order},
+            color=display_col,
+            category_orders={display_col: cat_order},
             color_discrete_sequence=color_seq,
             template="plotly_dark",
             title=f"3D Analysis: {z_ax} | {y_ax} | {x_ax}",
@@ -995,7 +1044,7 @@ elif active == "pattern_discoverer":
     )
     st.plotly_chart(fig_sb, use_container_width=True)
     
-    st.info("💡 **Pro-Tip**: Click and drag to rotate 3D plots. Use the legend to toggle specific groups on and off.")
+    st.info("💡 **Pro-Tip**: Click and drag to rotate 3D plots. Use the legend to toggle specific groups on and off. **Others** represents points excluded by your filters.")
 
 # ---------- 6. Freak Finder ----------
 elif active == "freak_finder":
