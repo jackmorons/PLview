@@ -56,20 +56,14 @@ st.markdown("""
 
 st.markdown("---")
 
-if "males_data" not in st.session_state or "females_data" not in st.session_state:
-    # import data from csv files as dictionaries
-    males_data = pd.read_csv("datasets/OP_Males.csv", sep=";")
-    females_data = pd.read_csv("datasets/OP_Females.csv", sep=";")
-    if st.session_state.get("males_data") is None:
-        st.session_state["males_data"] = males_data
-    if st.session_state.get("females_data") is None:
-        st.session_state["females_data"] = females_data
-else:
-    # read data stored at beginning
-    males_data = st.session_state["males_data"]
-    females_data = st.session_state["females_data"]
-    malesdf = pd.DataFrame(males_data)
-    femalesdf = pd.DataFrame(females_data)
+# --- Load data from session state ---
+if "males_data" not in st.session_state:
+    st.session_state["males_data"] = pd.read_csv("datasets/OP_Males.csv", sep=";")
+if "females_data" not in st.session_state:
+    st.session_state["females_data"] = pd.read_csv("datasets/OP_Females.csv", sep=";")
+
+malesdf = st.session_state["males_data"]
+femalesdf = st.session_state["females_data"]
 
 # Combine both datasets for a unified athlete search
 alldf = pd.concat([malesdf, femalesdf], ignore_index=True)
