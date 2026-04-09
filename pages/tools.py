@@ -1140,7 +1140,7 @@ elif active == "pattern_discoverer":
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
             ))
         else:
-            if color_by == "Sex":
+            if color_by == "Sex" or color_by == "WeightClassKg":
                 fig_sb.add_trace(go.Scatter3d(
                     x=[u_x], y=[u_y], z=[u_z],
                     mode='markers',
