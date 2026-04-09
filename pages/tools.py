@@ -1116,13 +1116,14 @@ elif active == "pattern_discoverer":
     # --- Add User Point (Always on Top) ---
     if u_sq + u_bn + u_dl > 0:
         if dim_mode == "2D":
-            fig_sb.add_trace(go.Scatter(
+            # Using Scattergl to match the WebGL engine of the main plot
+            fig_sb.add_trace(go.Scattergl(
                 x=[u_x], y=[u_y],
                 mode='markers',
                 name='YOU',
                 marker=dict(
-                    color='#00e676', # Neon Green
-                    size=18,
+                    color='#FF1744',
+                    size=22,
                     symbol='star',
                     line=dict(width=2, color='white')
                 ),
@@ -1134,8 +1135,8 @@ elif active == "pattern_discoverer":
                 mode='markers',
                 name='YOU',
                 marker=dict(
-                    color='#00e676', # Neon Green
-                    size=10,
+                    color='#FF1744',
+                    size=12,
                     symbol='star',
                     line=dict(width=1, color='white')
                 ),
