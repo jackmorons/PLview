@@ -1060,16 +1060,26 @@ elif active == "pattern_discoverer":
     base_cats = [c for c in cat_order if c != " Others"]
     n_base = len(base_cats)
     
-    if n_base > 1:
-        color_seq = px.colors.sample_colorscale("Turbo", [i/(n_base-1) for i in range(n_base)])
-    elif n_base == 1:
-        color_seq = [px.colors.sample_colorscale("Turbo", [0.5])[0]]
-    else:
+    # --- Custom Gender Coloring Sync ---
+    if color_by == "Sex":
+        # Force sync with the app's main color scheme (Male=Blue, Female=Red)
         color_seq = []
+        for cat in cat_order:
+            if cat == "M": color_seq.append("#42a5f5")
+            elif cat == "F": color_seq.append("#ef5350")
+            else: color_seq.append("rgba(200, 200, 200, 0.2)") # Others
+    else:
+        # Standard dynamic Turbo scale for Equipment, WeightClass, AgeClass
+        if n_base > 1:
+            color_seq = px.colors.sample_colorscale("Turbo", [i/(n_base-1) for i in range(n_base)])
+        elif n_base == 1:
+            color_seq = [px.colors.sample_colorscale("Turbo", [0.5])[0]]
+        else:
+            color_seq = []
 
-    if " Others" in cat_order:
-        # Add a desaturated grey for " Others"
-        color_seq.append("rgba(200, 200, 200, 0.2)")
+        if " Others" in cat_order:
+            # Add a desaturated grey for " Others"
+            color_seq.append("rgba(200, 200, 200, 0.2)")
 
     if dim_mode == "2D":
         # Calculate Pearson Correlation
