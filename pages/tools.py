@@ -1140,7 +1140,7 @@ elif active == "pattern_discoverer":
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
             ))
         else:
-            if color_by == "Sex" or color_by == "WeightClassKg":
+            if color_by == "Sex": #or color_by == "WeightClassKg":
                 fig_sb.add_trace(go.Scatter3d(
                     x=[u_x], y=[u_y], z=[u_z],
                     mode='markers',
@@ -1148,7 +1148,7 @@ elif active == "pattern_discoverer":
                     marker=dict(
                     color='#39FF14',
                     size=14,
-                    symbol='diamond',
+                    symbol='cross',
                     line=dict(width=3, color='purple')
                 ),
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
@@ -1161,7 +1161,7 @@ elif active == "pattern_discoverer":
                     marker=dict(
                     color='#FF1744',
                     size=14,
-                    symbol='diamond',
+                    symbol='cross',
                     line=dict(width=3, color='white')
                 ),
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
