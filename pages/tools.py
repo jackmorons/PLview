@@ -1123,9 +1123,9 @@ elif active == "pattern_discoverer":
                 name='YOU',
                 marker=dict(
                     color='#FF1744',
-                    size=22,
+                    size=14,
                     symbol='star',
-                    line=dict(width=2, color='white')
+                    line=dict(width=1.5, color='white')
                 ),
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
             ))
@@ -1136,7 +1136,7 @@ elif active == "pattern_discoverer":
                 name='YOU',
                 marker=dict(
                     color='#FF1744',
-                    size=12,
+                    size=7,
                     symbol='star',
                     line=dict(width=1, color='white')
                 ),
