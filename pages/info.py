@@ -86,13 +86,13 @@ with c1:
     st.markdown("#### 📧 Email (Muscles)")
     st.code("niccolo.marino@mail.polimi.it")
     st.markdown("#### 🔗 LinkedIn")
-    st.markdown("[Visit Profile One](https://www.linkedin.com/in/placeholder1/)")
+    st.markdown("[Visit Profile One](https://www.linkedin.com/in/niccol%C3%B2-marino-a26190267/)")
 
 with c2:
     st.markdown("#### 📧 Email (Brain)")
     st.code("giacomogiovanni.moroni@mail.polimi.it")
     st.markdown("#### 🔗 LinkedIn")
-    st.markdown("[Visit Profile Two](https://www.linkedin.com/in/placeholder2/)")
+    st.markdown("[Visit Profile Two](https://www.linkedin.com/in/giacomogiovanni-moroni/)")
 
 
 st.markdown("<br><br>", unsafe_allow_html=True)
