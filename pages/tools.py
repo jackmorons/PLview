@@ -912,7 +912,7 @@ elif active == "pattern_discoverer":
         st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Age", "Total", "None"
         st.session_state["sandbox_color"], st.session_state["sandbox_dim"] = "Equipment", "2D"
         st.rerun()
-    if p_c2.button("⚖️ SBD Balance", use_container_width=True):
+    if p_c2.button("⚖️ Squat-Deadlift Balance", use_container_width=True):
         st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Squat", "Deadlift", "None"
         st.session_state["sandbox_color"], st.session_state["sandbox_dim"] = "Sex", "2D"
         st.rerun()
