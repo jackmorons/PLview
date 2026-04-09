@@ -1278,10 +1278,10 @@ elif active == "freak_finder":
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0)
         )
 
-        st.plotly_chart(fig_freak, use_container_width=True)
-
         # --- Add User Point (Always on Top) ---
         if u_sq + u_bn + u_dl > 0:
+            u_x = u_metrics.get(metric_x, 0)
+            u_y = u_metrics.get(metric_y, 0)
             # Using Scattergl to match the WebGL engine of the main plot
             fig_freak.add_trace(go.Scattergl(
                 x=[u_x], y=[u_y],
@@ -1293,9 +1293,10 @@ elif active == "freak_finder":
                     symbol='star',
                     line=dict(width=1.5, color='white')
                 ),
-                hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
+                hovertemplate=f"<b>YOU</b><br>{metric_x}: %{{x}}<br>{metric_y}: %{{y}}<extra></extra>"
             ))
-            st.plotly_chart(fig_freak, use_container_width=True)
+        
+        st.plotly_chart(fig_freak, use_container_width=True)
 
         
         # 5. List of identified freaks
