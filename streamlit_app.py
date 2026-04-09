@@ -17,7 +17,20 @@ def inject_custom_css():
         /* Hide the default Streamlit sidebar and header */
         [data-testid="collapsedControl"] { display: none; }
         section[data-testid="stSidebar"] { display: none; }
-        header {visibility: hidden;}
+        /* Radial gradient background */
+        .stApp {
+            background: radial-gradient(circle at 50% 50%, #1e1e2b 0%, #0e0e12 60%, #050505 100%);
+            background-attachment: fixed;
+        }
+
+        /* Custom horizontal rule for a more elegant look */
+        hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
+            margin-top: 2rem !important;
+            margin-bottom: 2rem !important;
+        }
         
         /* Reduce top/bottom padding of main content */
         .block-container {
@@ -102,10 +115,11 @@ def inject_custom_css():
             width: 100%;
             text-align: center;
             padding: .8rem;
-            background-color: #1a1a24;
+            background: rgba(14, 14, 18, 0.85);
+            backdrop-filter: blur(8px);
             color: #5e5e73;
             font-size: 0.85rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             z-index: 999998;
         }
         .disk-bar2 {
