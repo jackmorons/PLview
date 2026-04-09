@@ -1140,18 +1140,32 @@ elif active == "pattern_discoverer":
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
             ))
         else:
-            fig_sb.add_trace(go.Scatter3d(
-                x=[u_x], y=[u_y], z=[u_z],
-                mode='markers',
-                name='YOU',
-                marker=dict(
+            if color_by == "Sex":
+                fig_sb.add_trace(go.Scatter3d(
+                    x=[u_x], y=[u_y], z=[u_z],
+                    mode='markers',
+                    name='YOU',
+                    marker=dict(
+                    color='#39FF14',
+                    size=14,
+                    symbol='diamond',
+                    line=dict(width=3, color='white')
+                ),
+                hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
+                ))
+            else:
+                fig_sb.add_trace(go.Scatter3d(
+                    x=[u_x], y=[u_y], z=[u_z],
+                    mode='markers',
+                    name='YOU',
+                    marker=dict(
                     color='#FF1744',
                     size=14,
                     symbol='diamond',
                     line=dict(width=3, color='white')
                 ),
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
-            ))
+                ))
     st.plotly_chart(fig_sb, use_container_width=True)
     
     st.info("💡 **Pro-Tip**: Click and drag to rotate 3D plots. Use the legend to toggle specific groups on and off. **Others** represents points excluded by your filters.")
