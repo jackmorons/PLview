@@ -130,7 +130,7 @@ if selected_name:
                 theta=categories + [categories[0]],
                 fill='toself',
                 fillcolor='rgba(255, 213, 79, 0.1)',
-                name='Category Record',
+                name='Category Record (raw/equipped)',
                 line=dict(color='rgba(255, 213, 79, 0.4)', width=2, dash='dot'),
                 marker=dict(size=4),
                 hovertemplate="Record: %{r} kg<extra></extra>"
