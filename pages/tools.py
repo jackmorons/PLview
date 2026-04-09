@@ -820,7 +820,7 @@ elif active == "entry_calculator":
             
             fig_path.add_trace(go.Scatter(
                 x=path_x + path_x[::-1],
-                y=[rec1-std1, rec2-std2, calc_goal] + [calc_goal, rec2+std2, rec1+std1][::-1],
+                y=[rec1-std1, rec2-std2, calc_goal] + [calc_goal, rec2+std2, rec1+std1],
                 fill='toself',
                 fillcolor='rgba(56, 142, 60, 0.1)',
                 line=dict(color='rgba(255,255,255,0)'),
