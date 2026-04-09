@@ -1275,7 +1275,7 @@ elif active == "freak_finder":
             coloraxis_showscale=False,
             height=700,
             margin=dict(l=20, r=20, t=60, b=20),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0)
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
 
         # --- Add User Point (Always on Top) ---
@@ -1288,10 +1288,10 @@ elif active == "freak_finder":
                 mode='markers',
                 name='YOU',
                 marker=dict(
-                    color='#FF1744',
+                    color='#2962FF',
                     size=14,
                     symbol='star',
-                    line=dict(width=1.5, color='white')
+                    line=dict(width=1.5, color='#00E5FF')
                 ),
                 hovertemplate=f"<b>YOU</b><br>{metric_x}: %{{x}}<br>{metric_y}: %{{y}}<extra></extra>"
             ))
