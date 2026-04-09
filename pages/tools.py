@@ -1092,23 +1092,6 @@ elif active == "pattern_discoverer":
             hover_name="Name",
             hover_data=["Age", "BodyweightKg", "TotalKg", "Dots"]
         )
-        
-        # --- Add User Point (2D) ---
-        if u_sq + u_bn + u_dl > 0:
-            fig_sb.add_trace(go.Scatter(
-                x=[u_x], y=[u_y],
-                mode='markers+text',
-                name='⭐ YOU',
-                text=["YOU"],
-                textposition="top center",
-                marker=dict(
-                    color='#00e676', # Neon Green
-                    size=18,
-                    symbol='diamond',
-                    line=dict(width=2, color='white')
-                ),
-                hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
-            ))
     else:
         fig_sb = px.scatter_3d(
             plot_df, x=axes_options[x_ax], y=axes_options[y_ax], z=axes_options[z_ax],
@@ -1123,8 +1106,31 @@ elif active == "pattern_discoverer":
         )
         fig_sb.update_layout(margin=dict(l=0, r=0, t=30, b=0))
 
-        # --- Add User Point (3D) ---
-        if u_sq + u_bn + u_dl > 0:
+
+    fig_sb.update_layout(
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+
+    # --- Add User Point (Always on Top) ---
+    if u_sq + u_bn + u_dl > 0:
+        if dim_mode == "2D":
+            fig_sb.add_trace(go.Scatter(
+                x=[u_x], y=[u_y],
+                mode='markers+text',
+                name='⭐ YOU',
+                text=["YOU"],
+                textposition="top center",
+                marker=dict(
+                    color='#00e676', # Neon Green
+                    size=18,
+                    symbol='diamond',
+                    line=dict(width=2, color='white')
+                ),
+                hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
+            ))
+        else:
             fig_sb.add_trace(go.Scatter3d(
                 x=[u_x], y=[u_y], z=[u_z],
                 mode='markers+text',
@@ -1139,12 +1145,6 @@ elif active == "pattern_discoverer":
                 ),
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
             ))
-
-    fig_sb.update_layout(
-        plot_bgcolor="rgba(0,0,0,0)",
-        paper_bgcolor="rgba(0,0,0,0)",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-    )
     st.plotly_chart(fig_sb, use_container_width=True)
     
     st.info("💡 **Pro-Tip**: Click and drag to rotate 3D plots. Use the legend to toggle specific groups on and off. **Others** represents points excluded by your filters.")
