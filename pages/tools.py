@@ -1183,6 +1183,49 @@ elif active == "freak_finder":
     if sel_wc != "All":
         filtered_df = filtered_df[filtered_df["WeightClassKg"] == sel_wc]
     
+    # 3.5 User Manual Entry for Plotting
+    with st.expander("📍 Plot Your Performance", expanded=False):
+        st.write("Enter your data to see where you stand on the distribution map.")
+        u_c1, u_c2, u_c3 = st.columns(3)
+        with u_c1:
+            u_sex_sel = st.selectbox("Your Sex", ["Male", "Female"], key="u_sandbox_gender")
+            u_bw = st.number_input("Your Bodyweight (kg)", 30.0, 250.0, 80.0, 0.1, key="u_sandbox_bw")
+            u_age = st.number_input("Your Age", 5, 100, 25, 1, key="u_sandbox_age")
+        with u_c2:
+            u_sq = st.number_input("Your Best Squat (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_sq")
+            u_bn = st.number_input("Your Best Bench (kg)", 0.0, 500.0, 0.0, 2.5, key="u_sandbox_bn")
+        with u_c3:
+            u_dl = st.number_input("Your Best Deadlift (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_dl")
+            
+            # Local utility for calculation
+            def get_sandbox_user_metrics(s, b, d, w, a, g):
+                tot = s + b + d
+                # Dots
+                if g == "Male": A, B, C, D, E = -0.000001093, 0.0007391293, -0.1918759221, 24.0900756, -307.75076
+                else: A, B, C, D, E = -0.0000010706, 0.0005158568, -0.1126655495, 13.6175032, -57.96288
+                denom = (A * w**4) + (B * w**3) + (C * w**2) + (D * w) + E
+                dots = tot * (500 / denom) if denom > 0 else 0.0
+                # Wilks
+                if g == "Male": aw, bw, cw, dw, ew, fw = -216.0475144, 16.2606339, -0.002388645, -0.00113732, 7.01863e-6, -1.291e-8
+                else: aw, bw, cw, dw, ew, fw = 594.31747775582, -27.23842536447, 0.82112226871, -0.00930733913, 4.731582e-5, -9.054e-8
+                w_denom = aw + (bw * w) + (cw * w**2) + (dw * w**3) + (ew * w**4) + (fw * w**5)
+                wilks = tot * (500 / w_denom) if w_denom > 0 else 0.0
+                # Goodlift
+                if g == "Male": ag, bg, cg = 1199.72839, 1025.18162, 0.00921
+                else: ag, bg, cg = 610.32796, 1045.59282, 0.03048
+                gl_denom = ag - bg * np.exp(-cg * w)
+                goodlift = tot * (100 / gl_denom) if gl_denom > 0 else 0.0
+                
+                return {
+                    "BodyweightKg": w, "Age": a, "Best3SquatKg": s, "Best3BenchKg": b, "Best3DeadliftKg": d,
+                    "TotalKg": tot, "Dots": dots, "Wilks": wilks, "Goodlift": goodlift, "Glossbrenner": 0.0
+                }
+            
+            u_metrics = get_sandbox_user_metrics(u_sq, u_bn, u_dl, u_bw, u_age, u_sex_sel)
+            st.write("") # Spacer
+            st.write(f"**Total:** {u_sq+u_bn+u_dl:.1f} kg")
+            st.write(f"**Dots:** {u_metrics['Dots']:.2f}")
+    
     # Ensure metrics are valid and numeric
     filtered_df = filtered_df.dropna(subset=[metric_x, metric_y])
     filtered_df = filtered_df[(filtered_df[metric_x] > 0) & (filtered_df[metric_y] > 0)]
