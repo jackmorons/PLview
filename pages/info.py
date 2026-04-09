@@ -29,7 +29,8 @@ with col2:
         
         *   **Dataset Scope**: Over **120,000+** unique contest results.
         *   **Cleaning Process**: We've removed anomalies (like the 0kg SHW squatters) 
-            to ensure that the "Average" truly represents the reality of the platform.
+            to ensure that the "Average" truly represents the reality of the platform,
+            we also removed single lifts competition for simplicity.
         *   **Disclaimer**: This app is for informational purposes. While our math is 
             precise, it does not guarantee your 3rd deadlift will move. 
     """)
@@ -83,13 +84,13 @@ c1, c2 = st.columns(2)
 
 with c1:
     st.markdown("#### 📧 Email (Muscles)")
-    st.code("placeholder.one@example.com")
+    st.code("niccolo.marino@mail.polimi.it")
     st.markdown("#### 🔗 LinkedIn")
     st.markdown("[Visit Profile One](https://www.linkedin.com/in/placeholder1/)")
 
 with c2:
     st.markdown("#### 📧 Email (Brain)")
-    st.code("placeholder.two@example.com")
+    st.code("giacomogiovanni.moroni@mail.polimi.it")
     st.markdown("#### 🔗 LinkedIn")
     st.markdown("[Visit Profile Two](https://www.linkedin.com/in/placeholder2/)")
 

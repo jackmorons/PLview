@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import urllib.parse
+import plotly.graph_objects as go
 
 st.header("Athletes")
 st.write("Search and explore athlete profiles, competition history, and personal bests.")
@@ -120,7 +121,6 @@ if selected_name:
 
             categories = ['Squat', 'Bench Press', 'Deadlift']
 
-            import plotly.graph_objects as go
             fig_radar = go.Figure()
 
             # Add traces in specific order for layering (back to front)
@@ -289,7 +289,6 @@ if selected_name:
     chart_source = chart_source.dropna(subset=["Date"]).sort_values("Date")
 
     if not chart_source.empty:
-        import plotly.graph_objects as go
         fig = go.Figure()
         # --- Identify PRs (Personal Records) ---
         pr_markers = []

@@ -418,7 +418,6 @@ elif active == "1v1":
         
         with r1_col1:
             # Radar 1: S/B/D Profile
-            import plotly.graph_objects as go
             categories_sbd = ['Squat', 'Bench', 'Deadlift']
             
             # Data for both athletes
