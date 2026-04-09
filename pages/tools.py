@@ -1147,7 +1147,7 @@ elif active == "pattern_discoverer":
                     mode='markers',
                     name='YOU',
                     marker=dict(
-                        color='#00C853', # Darker Neon Green
+                        color='#39FF14', # Neon Green
                         size=14,
                         symbol='diamond',
                         line=dict(width=3, color='purple')
