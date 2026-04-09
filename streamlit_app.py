@@ -17,6 +17,8 @@ def inject_custom_css():
         /* Hide the default Streamlit sidebar and header */
         [data-testid="collapsedControl"] { display: none; }
         section[data-testid="stSidebar"] { display: none; }
+        header { visibility: hidden; display: none; }
+        [data-testid="stHeader"] { display: none; }
         /* Radial gradient background */
         .stApp {
             background: radial-gradient(circle at 50% 50%, #1e1e2b 0%, #0e0e12 60%, #050505 100%);
