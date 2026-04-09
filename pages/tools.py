@@ -627,7 +627,6 @@ elif active == "weight_class":
     curr_pct = get_percentile(eval_curr_tot, curr_pop)
     target_pct = get_percentile(eval_projected_tot, target_pop)
 
-    # Dots calculation logic (reused from index calculator)
     def calc_dots(w, t, g):
         if g == "Male": A, B, C, D, E = -0.000001093, 0.0007391293, -0.1918759221, 24.0900756, -307.75076
         else: A, B, C, D, E = -0.0000010706, 0.0005158568, -0.1126655495, 13.6175032, -57.96288
@@ -964,6 +963,54 @@ elif active == "pattern_discoverer":
         with f_c3:
             h_action = st.radio("Action for Excluded", ["Grey-out", "Remove"], horizontal=True, help="'Grey-out' keeps points visible but desaturated. 'Remove' hides them completely.")
 
+    # 3.5 User Manual Entry for Plotting
+    with st.expander("📍 Plot Your Performance", expanded=False):
+        st.write("Enter your data to see where you stand on the distribution map.")
+        u_c1, u_c2, u_c3 = st.columns(3)
+        with u_c1:
+            u_sex_sel = st.selectbox("Your Sex", ["Male", "Female"], key="u_sandbox_gender")
+            u_bw = st.number_input("Your Bodyweight (kg)", 30.0, 250.0, 80.0, 0.1, key="u_sandbox_bw")
+            u_age = st.number_input("Your Age", 5, 100, 25, 1, key="u_sandbox_age")
+        with u_c2:
+            u_sq = st.number_input("Your Best Squat (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_sq")
+            u_bn = st.number_input("Your Best Bench (kg)", 0.0, 500.0, 0.0, 2.5, key="u_sandbox_bn")
+        with u_c3:
+            u_dl = st.number_input("Your Best Deadlift (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_dl")
+            
+            # Local utility for calculation
+            def get_sandbox_user_metrics(s, b, d, w, a, g):
+                tot = s + b + d
+                # Dots
+                if g == "Male": A, B, C, D, E = -0.000001093, 0.0007391293, -0.1918759221, 24.0900756, -307.75076
+                else: A, B, C, D, E = -0.0000010706, 0.0005158568, -0.1126655495, 13.6175032, -57.96288
+                denom = (A * w**4) + (B * w**3) + (C * w**2) + (D * w) + E
+                dots = tot * (500 / denom) if denom > 0 else 0.0
+                # Wilks
+                if g == "Male": aw, bw, cw, dw, ew, fw = -216.0475144, 16.2606339, -0.002388645, -0.00113732, 7.01863e-6, -1.291e-8
+                else: aw, bw, cw, dw, ew, fw = 594.31747775582, -27.23842536447, 0.82112226871, -0.00930733913, 4.731582e-5, -9.054e-8
+                w_denom = aw + (bw * w) + (cw * w**2) + (dw * w**3) + (ew * w**4) + (fw * w**5)
+                wilks = tot * (500 / w_denom) if w_denom > 0 else 0.0
+                # Goodlift
+                if g == "Male": ag, bg, cg = 1199.72839, 1025.18162, 0.00921
+                else: ag, bg, cg = 610.32796, 1045.59282, 0.03048
+                gl_denom = ag - bg * np.exp(-cg * w)
+                goodlift = tot * (100 / gl_denom) if gl_denom > 0 else 0.0
+                
+                return {
+                    "BodyweightKg": w, "Age": a, "Best3SquatKg": s, "Best3BenchKg": b, "Best3DeadliftKg": d,
+                    "TotalKg": tot, "Dots": dots, "Wilks": wilks, "Goodlift": goodlift, "Glossbrenner": 0.0
+                }
+            
+            u_metrics = get_sandbox_user_metrics(u_sq, u_bn, u_dl, u_bw, u_age, u_sex_sel)
+            st.write("") # Spacer
+            st.write(f"**Total:** {u_sq+u_bn+u_dl:.1f} kg")
+            st.write(f"**Dots:** {u_metrics['Dots']:.2f}")
+
+    # Map user coordinates
+    u_x = u_metrics.get(axes_options[x_ax], 0)
+    u_y = u_metrics.get(axes_options[y_ax], 0)
+    u_z = u_metrics.get(axes_options[z_ax], 0) if z_ax else 0
+
     # 4. Data Preparation & Filtering
     filter_data = alldf.dropna(subset=[axes_options[x_ax], axes_options[y_ax]])
     if z_ax: filter_data = filter_data.dropna(subset=[axes_options[z_ax]])
@@ -1045,6 +1092,23 @@ elif active == "pattern_discoverer":
             hover_name="Name",
             hover_data=["Age", "BodyweightKg", "TotalKg", "Dots"]
         )
+        
+        # --- Add User Point (2D) ---
+        if u_sq + u_bn + u_dl > 0:
+            fig_sb.add_trace(go.Scatter(
+                x=[u_x], y=[u_y],
+                mode='markers+text',
+                name='⭐ YOU',
+                text=["YOU"],
+                textposition="top center",
+                marker=dict(
+                    color='#00e676', # Neon Green
+                    size=18,
+                    symbol='diamond',
+                    line=dict(width=2, color='white')
+                ),
+                hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
+            ))
     else:
         fig_sb = px.scatter_3d(
             plot_df, x=axes_options[x_ax], y=axes_options[y_ax], z=axes_options[z_ax],
@@ -1059,6 +1123,23 @@ elif active == "pattern_discoverer":
         )
         fig_sb.update_layout(margin=dict(l=0, r=0, t=30, b=0))
 
+        # --- Add User Point (3D) ---
+        if u_sq + u_bn + u_dl > 0:
+            fig_sb.add_trace(go.Scatter3d(
+                x=[u_x], y=[u_y], z=[u_z],
+                mode='markers+text',
+                name='⭐ YOU',
+                text=["YOU"],
+                textposition="top center",
+                marker=dict(
+                    color='#00e676', # Neon Green
+                    size=10,
+                    symbol='diamond',
+                    line=dict(width=1, color='white')
+                ),
+                hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
+            ))
+
     fig_sb.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
@@ -1067,6 +1148,10 @@ elif active == "pattern_discoverer":
     st.plotly_chart(fig_sb, use_container_width=True)
     
     st.info("💡 **Pro-Tip**: Click and drag to rotate 3D plots. Use the legend to toggle specific groups on and off. **Others** represents points excluded by your filters.")
+
+    
+
+
 
 # ---------- 6. Freak Finder ----------
 elif active == "freak_finder":
@@ -1125,7 +1210,6 @@ elif active == "freak_finder":
             color_continuous_scale="Viridis"
         )
         
-        # Superimpose Scatterplot for Freaks
         # We add them as a separate trace
         fig_freak.add_trace(go.Scatter(
             x=freaks_df[metric_x],
