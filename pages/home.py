@@ -1,4 +1,7 @@
 import streamlit as st
+from style_utils import inject_custom_css
+
+inject_custom_css()
 
 st.markdown('<div class="hero-title">Powerlifting,<br>Visualized.</div>', unsafe_allow_html=True)
 

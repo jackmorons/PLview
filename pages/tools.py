@@ -1,4 +1,8 @@
 import streamlit as st
+from style_utils import inject_custom_css
+
+inject_custom_css()
+
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go

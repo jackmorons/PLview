@@ -1,6 +1,8 @@
 import streamlit as st
+from style_utils import inject_custom_css
 
-st.set_page_config(page_title="Info - PLview", page_icon="ℹ️", layout="wide")
+inject_custom_css()
+
 
 # ── Header Section ───────────────────────────────────────────────────
 st.title("ℹ️ Project Information")
