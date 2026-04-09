@@ -1134,8 +1134,7 @@ elif active == "pattern_discoverer":
             fig_sb.add_trace(go.Scatter3d(
                 x=[u_x], y=[u_y], z=[u_z],
                 mode='markers+text',
-                name='⭐ YOU',
-                text=["YOU"],
+                name='YOU',
                 textposition="top center",
                 marker=dict(
                     color='#00e676', # Neon Green
