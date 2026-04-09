@@ -1279,6 +1279,24 @@ elif active == "freak_finder":
         )
 
         st.plotly_chart(fig_freak, use_container_width=True)
+
+        # --- Add User Point (Always on Top) ---
+        if u_sq + u_bn + u_dl > 0:
+            # Using Scattergl to match the WebGL engine of the main plot
+            fig_freak.add_trace(go.Scattergl(
+                x=[u_x], y=[u_y],
+                mode='markers',
+                name='YOU',
+                marker=dict(
+                    color='#FF1744',
+                    size=14,
+                    symbol='star',
+                    line=dict(width=1.5, color='white')
+                ),
+                hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
+            ))
+            st.plotly_chart(fig_freak, use_container_width=True)
+
         
         # 5. List of identified freaks
         with st.expander(f"📋 List of {len(freaks_df)} Identified Freaks"):
