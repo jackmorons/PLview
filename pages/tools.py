@@ -1140,31 +1140,33 @@ elif active == "pattern_discoverer":
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
             ))
         else:
-            if color_by == "Sex": #or color_by == "WeightClassKg":
+            if color_by == "Sex":
+                # Special color for Sex view
                 fig_sb.add_trace(go.Scatter3d(
                     x=[u_x], y=[u_y], z=[u_z],
                     mode='markers',
                     name='YOU',
                     marker=dict(
-                    color='#39FF14',
-                    size=14,
-                    symbol='cross',
-                    line=dict(width=3, color='purple')
-                ),
-                hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
+                        color='#00C853', # Darker Neon Green
+                        size=14,
+                        symbol='diamond',
+                        line=dict(width=3, color='purple')
+                    ),
+                    hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
                 ))
             else:
+                # Default for other views
                 fig_sb.add_trace(go.Scatter3d(
                     x=[u_x], y=[u_y], z=[u_z],
                     mode='markers',
                     name='YOU',
                     marker=dict(
-                    color='#FF1744',
-                    size=14,
-                    symbol='cross',
-                    line=dict(width=3, color='white')
-                ),
-                hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
+                        color='#FF1744', # Neon Red
+                        size=14,
+                        symbol='diamond',
+                        line=dict(width=3, color='white')
+                    ),
+                    hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
                 ))
     st.plotly_chart(fig_sb, use_container_width=True)
     
