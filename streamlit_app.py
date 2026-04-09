@@ -21,7 +21,7 @@ def inject_custom_css():
         [data-testid="stHeader"] { display: none; }
         /* Radial gradient background */
         .stApp {
-            background: radial-gradient(circle at 30% 70%, #1e1e2b 0%, #0e0e12 60%, #050505 100%);
+            background: radial-gradient(circle at 50% 80%, #1e1e2b 0%, #0e0e12 30%, #050505 100%);
             background-attachment: fixed;
         }
 
