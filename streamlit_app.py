@@ -19,10 +19,13 @@ def inject_custom_css():
         section[data-testid="stSidebar"] { display: none; }
         header { visibility: hidden; display: none; }
         [data-testid="stHeader"] { display: none; }
-        /* Radial gradient background */
+        /* Patterned background (scrolling) */
         .stApp {
-            background: radial-gradient(circle at 50% 100%, #1e1e2b 0%, #0e0e12 80%, #050505 100%);
-            background-attachment: fixed;
+            background-color: #050505;
+            background-image: 
+                radial-gradient(circle at 50% 100%, rgba(30, 30, 43, 0.7) 0%, rgba(14, 14, 18, 0.9) 80%, #050505 100%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-attachment: scroll;
         }
 
         /* Custom horizontal rule for a more elegant look */
