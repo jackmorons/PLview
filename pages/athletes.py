@@ -88,7 +88,7 @@ if selected_name:
     
     with st.container():
         st.subheader("📊 Relative Strength Dashboard")
-        st.write("Compare your results against your category (same Sex, Weight Class, and Equipment).")
+        st.write("Compare an athlete's results against the category (same Sex, Weight Class, and Equipment).")
 
         # Get athlete's category context from their history
         latest_entry = athlete_df.iloc[0]
@@ -154,10 +154,10 @@ if selected_name:
                 theta=categories + [categories[0]],
                 fill='toself',
                 fillcolor='rgba(239, 83, 80, 0.3)',
-                name='You',
+                name='Athlete',
                 line=dict(color='#ef5350', width=4),
                 marker=dict(size=10, symbol='diamond'),
-                hovertemplate="You: %{r} kg<extra></extra>"
+                hovertemplate="Athlete: %{r} kg<extra></extra>"
             ))
 
             fig_radar.update_layout(
@@ -200,7 +200,7 @@ if selected_name:
                     pd.DataFrame(comparison_data), 
                     hide_index=True, 
                     use_container_width=True,
-                    column_config={"Lift": "Lift", "You": "You", "Avg": "Average", "Record": "Record"}
+                    column_config={"Lift": "Lift", "Athlete": "Athlete", "Average": "Average", "Record": "Record"}
                 )
                 # st.caption(f"Based on **{len(category_df)}** athletes: **{athlete_wc}kg {athlete_equip}**.")
                 
