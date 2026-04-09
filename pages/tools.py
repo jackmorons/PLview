@@ -1255,7 +1255,7 @@ elif active == "freak_finder":
             x=freaks_df[metric_x],
             y=freaks_df[metric_y],
             mode='markers',
-            name='🔥 Strength Freaks',
+            name='Strength Freaks',
             marker=dict(
                 color='#ef5350', 
                 size=10, 
