@@ -1148,7 +1148,7 @@ elif active == "pattern_discoverer":
                     color='#FF1744',
                     size=7,
                     symbol='diamond',
-                    line=dict(width=1, color='white')
+                    line=dict(width=3, color='white')
                 ),
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
             ))
