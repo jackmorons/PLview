@@ -1118,14 +1118,12 @@ elif active == "pattern_discoverer":
         if dim_mode == "2D":
             fig_sb.add_trace(go.Scatter(
                 x=[u_x], y=[u_y],
-                mode='markers+text',
-                name='⭐ YOU',
-                text=["YOU"],
-                textposition="top center",
+                mode='markers',
+                name='YOU',
                 marker=dict(
                     color='#00e676', # Neon Green
                     size=18,
-                    symbol='diamond',
+                    symbol='star',
                     line=dict(width=2, color='white')
                 ),
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<extra></extra>"
@@ -1133,13 +1131,12 @@ elif active == "pattern_discoverer":
         else:
             fig_sb.add_trace(go.Scatter3d(
                 x=[u_x], y=[u_y], z=[u_z],
-                mode='markers+text',
+                mode='markers',
                 name='YOU',
-                textposition="top center",
                 marker=dict(
                     color='#00e676', # Neon Green
                     size=10,
-                    symbol='diamond',
+                    symbol='star',
                     line=dict(width=1, color='white')
                 ),
                 hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
