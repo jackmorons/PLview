@@ -32,7 +32,7 @@ at1, at2= st.columns([14,1])
 with at1:
     st.subheader("🔍 Athlete Search")
 with at2:
-    resetbutton = st.button('Reset', on_click=reset)
+    resetbutton = st.button('Reset', on_click=reset, type='primary')
 
 # Get sorted unique names for the dropdown
 all_names = sorted(alldf["Name"].dropna().unique().tolist())
