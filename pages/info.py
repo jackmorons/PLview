@@ -66,6 +66,13 @@ with st.expander("📈 Trend Path: The Road to White Lights"):
           it might mean your opener is too heavy or your 2nd is too conservative.
     """)
 
+with st.expander("🔴 Dots?"):
+    st.write("""
+        - **What is the Dots value?**: the Dots (Dynamic Objective Team Scoring) is a unified
+        method of evaluating someone's strength, taking in consideration their body weight, age and
+        total.
+    """)
+
 st.markdown("---")
 
 # ── Humor & Credits ──────────────────────────────────────────────────
