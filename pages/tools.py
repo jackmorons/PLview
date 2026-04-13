@@ -289,7 +289,7 @@ if active == "lift_distributions":
     # ── Scientific Discovery: The Correlation Matrix ─────────────────
     st.markdown("---")
     st.subheader("🔬 The Correlation Matrix: Scientific Insights")
-    st.write("Understand the mathematical relationship between different variables. A score of **1.0** represents a perfect positive relationship, while **0.0** represents no relationship.")
+    st.write("Understand the mathematical relationship between different variables.")
 
     # Selection of variables for correlation
     corr_vars = [
@@ -333,6 +333,7 @@ if active == "lift_distributions":
         st.write("""
             - **Strong Positive (Red)**: Close to 1.0. This means as one goes up, the other usually goes up (e.g., Squat vs Total).
             - **Weak/No Correlation (White)**: Close to 0.0. This means the variables are independent (e.g., Age has a very weak correlation with Bodyweight).
+            - **Negative Correlation (Blue)**: Negatives up to -1.0. This means as one goes up, the other usually goes down.
             - **Insights**: Notice how **Bench Press** often has a lower correlation with **Deadlift** than **Squat** does. This statistically demonstrates that deadlifting depends more on lower-body 'squat' patterns than upper-body 'bench' patterns!
         """)
 
