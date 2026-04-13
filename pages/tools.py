@@ -1930,6 +1930,73 @@ elif active == "strength_index_calculator":
         )
         st.plotly_chart(fig_1rm, use_container_width=True)
 
+    # ---------- 12. Load Estimator (Reverse 1RM) ----------
 
-        
+    st.markdown("---")
+
+    st.subheader("🎯 Load Estimator")
+    st.info("Given your 1RM, target reps, and RPE — estimate the load you should use. Based on the reverse O'Conner formula.")
+
+    est_c1, est_c2, est_c3 = st.columns(3)
+
+    with est_c1:
+        est_1rm = st.number_input("Your 1RM (kg)", min_value=0.0, max_value=1000.0, value=100.0, step=2.5, help="Your known or estimated 1 Rep Max.", key="est_1rm")
+
+    with est_c2:
+        est_reps = st.number_input("Target Reps", min_value=1, max_value=20, value=5, step=1, help="How many reps you plan to do.", key="est_reps")
+
+    with est_c3:
+        est_rpe = st.slider("Target RPE", min_value=5.0, max_value=10.0, value=8.0, step=0.5, help="Rate of Perceived Exertion you want to hit.", key="est_rpe")
+
+    st.markdown("---")
+
+    # ── Reverse Calculation ──────────────────────────────────────
+    # Original: 1RM = Load * (1 + effective_reps * 0.025)
+    # Reversed: Load = 1RM / (1 + effective_reps * 0.025)
+    est_effective_reps = est_reps + (10.0 - est_rpe)
+    est_load = est_1rm / (1 + (est_effective_reps * 0.025)) if (1 + (est_effective_reps * 0.025)) > 0 else 0
+
+    # Display Result
+    est_main, est_chart = st.columns([1, 2])
+
+    with est_main:
+        st.metric("Recommended Load", f"{est_load:.1f} kg")
+        st.caption(f"Effective reps: {est_effective_reps:.1f} (reps {est_reps} + RIR {10.0 - est_rpe:.0f})")
+
+        st.markdown("### 📋 RPE Reference Table")
+        rpe_rows = []
+        for r in [6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0]:
+            eff = est_reps + (10.0 - r)
+            ld = est_1rm / (1 + (eff * 0.025)) if (1 + (eff * 0.025)) > 0 else 0
+            pct = (ld / est_1rm * 100) if est_1rm > 0 else 0
+            rpe_rows.append({"RPE": f"{r}", "Load (kg)": f"{ld:.1f}", "% of 1RM": f"{pct:.1f}%"})
+        st.table(pd.DataFrame(rpe_rows))
+
+    with est_chart:
+        # Bar chart: load across rep ranges at the chosen RPE
+        rep_range = list(range(1, 16))
+        loads_by_rep = []
+        for r in rep_range:
+            eff = r + (10.0 - est_rpe)
+            ld = est_1rm / (1 + (eff * 0.025)) if (1 + (eff * 0.025)) > 0 else 0
+            loads_by_rep.append(ld)
+
+        fig_est = px.bar(
+            x=[f"{r} reps" for r in rep_range], y=loads_by_rep,
+            title=f"Estimated Load by Rep Count (@ RPE {est_rpe})",
+            labels={'x': 'Reps', 'y': 'Load (kg)'},
+            template="plotly_dark",
+            color=loads_by_rep,
+            color_continuous_scale="Viridis"
+        )
+
+        # Highlight the selected rep count
+        colors = ["rgba(239, 83, 80, 0.9)" if r == est_reps else "rgba(100, 100, 100, 0.5)" for r in rep_range]
+        fig_est.update_traces(marker_color=colors, showlegend=False)
+
+        fig_est.update_layout(
+            plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+            coloraxis_showscale=False
+        )
+        st.plotly_chart(fig_est, use_container_width=True)
 
