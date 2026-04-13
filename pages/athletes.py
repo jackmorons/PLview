@@ -31,9 +31,6 @@ with at1:
 with at2:
     resetbutton = st.button('Reset', on_click=reset)
 
-def reset():
-    st.session_state.athlete_search = ""
-
 # Get sorted unique names for the dropdown
 all_names = sorted(alldf["Name"].dropna().unique().tolist())
 
@@ -53,6 +50,9 @@ selected_name = st.selectbox(
     placeholder="Type a name to search...",
     key="athlete_search"
 )
+
+def reset():
+        st.session_state.athlete_search = 'Please Select'
 
 if selected_name:
     # Filter all competition entries for this athlete
