@@ -1058,7 +1058,7 @@ elif active == "pattern_discoverer":
     limit = 5000 if dim_mode == "3D" else 15000
     if len(filter_data) > limit:
         st.warning(f"⚡ **Performance Optimisation**: Plotting a random sample of {limit} athletes from the {len(filter_data)} available.")
-        plot_df = filter_data.sample(limit, random_state=42)
+        plot_df = filter_data.sample(limit)
     else:
         plot_df = filter_data
     
