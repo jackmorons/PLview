@@ -39,11 +39,11 @@ if "name" in st.query_params:
         st.session_state["athlete_search"] = name_from_url
 
 
-    selected_name = st.selectbox(
-        "Search for an athlete",
-        options=[""] + all_names,
-        index=0,
-        placeholder="Type a name to search...",
+selected_name = st.selectbox(
+    "Search for an athlete",
+    options=[""] + all_names,
+    index=0,
+    placeholder="Type a name to search...",
     key="athlete_search"
 )
 
