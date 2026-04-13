@@ -1580,7 +1580,7 @@ elif active == "strength_index_calculator":
         bench_options = [round(x, 1) for x in bench_range]
         # Default to a common total like 400.0
         try:
-            default_bench_idx = bench_options.index(400.0)
+            default_bench_idx = bench_options.index(100.0)
         except ValueError:
             default_bench_idx = 0
             
@@ -1592,7 +1592,7 @@ elif active == "strength_index_calculator":
         squat_options = [round(x, 1) for x in squat_range]
         # Default to a common total like 400.0
         try:
-            default_squat_idx = squat_options.index(400.0)
+            default_squat_idx = squat_options.index(150.0)
         except ValueError:
             default_squat_idx = 0
             
@@ -1604,7 +1604,7 @@ elif active == "strength_index_calculator":
         deadlift_options = [round(x, 1) for x in deadlift_range]
         # Default to a common total like 400.0
         try:
-            default_deadlift_idx = deadlift_options.index(400.0)
+            default_deadlift_idx = deadlift_options.index(150.0)
         except ValueError:
             default_deadlift_idx = 0
             
