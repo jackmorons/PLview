@@ -145,3 +145,109 @@ else:
         },
         use_container_width=True
     )
+
+
+r1, r2, r3 = st.columns(3)
+
+with r2:
+    st.markdown("---")
+    st.subheader("📊 Top 5 Benches")
+    top5 = (
+        filtered[filtered["Best3BenchKg"] > 0]
+        .sort_values("Best3BenchKg", ascending=False)
+        .drop_duplicates(subset="Name")
+        .head(5)[["Name", "Best3BenchKg", "Dots", "Date", "Federation"]]
+        .reset_index(drop=True)
+    )
+    top5.index = top5.index + 1  # 1-indexed ranking
+    
+    # Construct Athlete URLs for the table
+    # We use a trick: display the name but the link is to the profile
+    # LinkColumn will display the cell value unless display_text is set.
+    # To keep it clean, we'll construct the full URL.
+    top5["Profile"] = top5["Name"].apply(lambda x: f"/athletes?name={urllib.parse.quote(x)}")
+    
+    # Reorder to put Profile first or replace Name
+    cols = ["Profile"] + [c for c in top5.columns if c not in ["Name", "Profile"]]
+    top5_display = top5[cols].copy()
+    
+    st.dataframe(
+        top5_display,
+        column_config={
+            "Profile": st.column_config.LinkColumn(
+                "Athlete Name",
+                help="Click to view athlete profile",
+                validate=r"^/athletes\?name=.*",
+                display_text=r"/athletes\?name=(.*)" # Shows the decoded name parts if simple, but might show %20
+            )
+        },
+        use_container_width=True
+    )
+with r1:
+    st.markdown("---")
+    st.subheader("📊 Top 5 Squat")
+    top5 = (
+        filtered[filtered["Best3SquatKg"] > 0]
+        .sort_values("Best3SquatKg", ascending=False)
+        .drop_duplicates(subset="Name")
+        .head(5)[["Name", "Best3SquatKg", "Dots", "Date", "Federation"]]
+        .reset_index(drop=True)
+    )
+    top5.index = top5.index + 1  # 1-indexed ranking
+    
+    # Construct Athlete URLs for the table
+    # We use a trick: display the name but the link is to the profile
+    # LinkColumn will display the cell value unless display_text is set.
+    # To keep it clean, we'll construct the full URL.
+    top5["Profile"] = top5["Name"].apply(lambda x: f"/athletes?name={urllib.parse.quote(x)}")
+    
+    # Reorder to put Profile first or replace Name
+    cols = ["Profile"] + [c for c in top5.columns if c not in ["Name", "Profile"]]
+    top5_display = top5[cols].copy()
+    
+    st.dataframe(
+        top5_display,
+        column_config={
+            "Profile": st.column_config.LinkColumn(
+                "Athlete Name",
+                help="Click to view athlete profile",
+                validate=r"^/athletes\?name=.*",
+                display_text=r"/athletes\?name=(.*)" # Shows the decoded name parts if simple, but might show %20
+            )
+        },
+        use_container_width=True
+    )
+with r3:
+    st.markdown("---")
+    st.subheader("📊 Top 5 Deadlifts")
+    top5 = (
+        filtered[filtered["Best3DeadliftKg"] > 0]
+        .sort_values("Best3DeadliftKg", ascending=False)
+        .drop_duplicates(subset="Name")
+        .head(5)[["Name", "Best3DeadliftKg", "Dots", "Date", "Federation"]]
+        .reset_index(drop=True)
+    )
+    top5.index = top5.index + 1  # 1-indexed ranking
+    
+    # Construct Athlete URLs for the table
+    # We use a trick: display the name but the link is to the profile
+    # LinkColumn will display the cell value unless display_text is set.
+    # To keep it clean, we'll construct the full URL.
+    top5["Profile"] = top5["Name"].apply(lambda x: f"/athletes?name={urllib.parse.quote(x)}")
+    
+    # Reorder to put Profile first or replace Name
+    cols = ["Profile"] + [c for c in top5.columns if c not in ["Name", "Profile"]]
+    top5_display = top5[cols].copy()
+    
+    st.dataframe(
+        top5_display,
+        column_config={
+            "Profile": st.column_config.LinkColumn(
+                "Athlete Name",
+                help="Click to view athlete profile",
+                validate=r"^/athletes\?name=.*",
+                display_text=r"/athletes\?name=(.*)" # Shows the decoded name parts if simple, but might show %20
+            )
+        },
+        use_container_width=True
+    )
