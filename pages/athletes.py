@@ -25,7 +25,14 @@ femalesdf = st.session_state["females_data"]
 alldf = pd.concat([malesdf, femalesdf], ignore_index=True)
 
 # --- Athlete Search ---
-st.subheader("🔍 Athlete Search")
+at1, at2= st.columns([14,1])
+with at1:
+    st.subheader("🔍 Athlete Search")
+with at2:
+    resetbutton = st.button('Reset', on_click=reset)
+
+def reset():
+    st.session_state.athlete_search = ""
 
 # Get sorted unique names for the dropdown
 all_names = sorted(alldf["Name"].dropna().unique().tolist())
