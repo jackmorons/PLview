@@ -38,10 +38,11 @@ if "name" in st.query_params:
         # But for direct links, we usually want to force it.
         st.session_state["athlete_search"] = name_from_url
 
+st.write("Search for an athlete")
 at1, at2 = st.columns([14,1])
 with at1:
     selected_name = st.selectbox(
-        "Search for an athlete",
+        #"Search for an athlete",
         options=[""] + all_names,
         index=0,
         placeholder="Type a name to search...",
