@@ -1282,6 +1282,9 @@ elif active == "freak_finder":
     # Ensure metrics are valid and numeric
     filtered_df = filtered_df.dropna(subset=[metric_x, metric_y])
     filtered_df = filtered_df[(filtered_df[metric_x] > 0) & (filtered_df[metric_y] > 0)]
+    
+    # Keep only each athlete's best total to avoid duplicates
+    filtered_df = filtered_df.sort_values("TotalKg", ascending=False).drop_duplicates(subset="Name", keep="first")
 
     if len(filtered_df) < 5:
         st.warning(f"⚠️ **Not enough data.** Only {len(filtered_df)} athletes found for this combination. Try broadening your filters.")
