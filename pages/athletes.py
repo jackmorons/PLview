@@ -38,13 +38,17 @@ if "name" in st.query_params:
         # But for direct links, we usually want to force it.
         st.session_state["athlete_search"] = name_from_url
 
-selected_name = st.selectbox(
-    "Search for an athlete",
-    options=[""] + all_names,
-    index=0,
-    placeholder="Type a name to search...",
+at1, at2 = st.columns([14,1])
+with at1:
+    selected_name = st.selectbox(
+        "Search for an athlete",
+        options=[""] + all_names,
+        index=0,
+        placeholder="Type a name to search...",
     key="athlete_search"
 )
+with at2:
+    resetbutton = st.button
 
 if selected_name:
     # Filter all competition entries for this athlete
