@@ -633,7 +633,7 @@ elif active == "weight_class":
 
         with input_c3:
             st.write("🔮 **The 'Trust Me Bro' Speculator**")
-            eval_retention = st.slider("Expected Strength Retention (%)", 80.0, 100.0, 95.0, help="Speculative guess on how much strength you'll keep after the cut.", step=1)
+            eval_retention = st.slider("Expected Strength Retention (%)", 80.0, 100.0, 95.0, step=1.0, help="Speculative guess on how much strength you'll keep after the cut.")
             eval_projected_tot = eval_curr_tot * (eval_retention / 100.0)
             st.caption(f"Projected Total: **{eval_projected_tot:.1f} kg**")
 
