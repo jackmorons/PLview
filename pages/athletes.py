@@ -42,7 +42,7 @@ st.write("Search for an athlete")
 at1, at2 = st.columns([14,1])
 with at1:
     selected_name = st.selectbox(
-        #"Search for an athlete",
+        "",
         options=[""] + all_names,
         index=0,
         placeholder="Type a name to search...",
