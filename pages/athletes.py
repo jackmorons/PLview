@@ -48,7 +48,7 @@ with at1:
     key="athlete_search"
 )
 with at2:
-    resetbutton = st.button("reset input", type="primary", use_container_width=True)
+    resetbutton = st.button("reset", type="primary", use_container_width=True)
 
 if selected_name:
     # Filter all competition entries for this athlete
