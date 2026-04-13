@@ -24,6 +24,9 @@ femalesdf = st.session_state["females_data"]
 # Combine both datasets for a unified search
 alldf = pd.concat([malesdf, femalesdf], ignore_index=True)
 
+def reset():
+    st.session_state.athlete_search = ""
+
 # --- Athlete Search ---
 at1, at2= st.columns([14,1])
 with at1:
@@ -50,9 +53,6 @@ selected_name = st.selectbox(
     placeholder="Type a name to search...",
     key="athlete_search"
 )
-
-def reset():
-        st.session_state.athlete_search = 'Please Select'
 
 if selected_name:
     # Filter all competition entries for this athlete
