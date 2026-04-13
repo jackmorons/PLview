@@ -333,7 +333,7 @@ if active == "lift_distributions":
         st.write("""
             - **Strong Positive (Red)**: Close to 1.0. This means as one goes up, the other usually goes up (e.g., Squat vs Total).
             - **Weak/No Correlation (White)**: Close to 0.0. This means the variables are independent (e.g., Age has a very weak correlation with Bodyweight).
-            - **Negative Correlation (Blue)**: Negatives up to -1.0. This means as one goes up, the other usually goes down.
+            - **Negative Correlation (Blue)**: Negatives up to -1.0. This means as one goes up, the other usually goes down (e.g., Age vs Dots).
             - **Insights**: Notice how **Bench Press** often has a lower correlation with **Deadlift** than **Squat** does. This statistically demonstrates that deadlifting depends more on lower-body 'squat' patterns than upper-body 'bench' patterns!
         """)
 
