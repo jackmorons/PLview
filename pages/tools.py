@@ -1192,7 +1192,7 @@ elif active == "pattern_discoverer":
                     ),
                     hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
                 ))
-    bbb1, bbb2, bbb3 = st.columns([1,5,1])
+    bbb1, bbb2, bbb3 = st.columns([1,8,1])
     with bbb2:
         st.plotly_chart(fig_sb, use_container_width=True)
     
