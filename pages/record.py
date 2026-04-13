@@ -156,7 +156,7 @@ with r2:
         filtered[filtered["Best3BenchKg"] > 0]
         .sort_values("Best3BenchKg", ascending=False)
         .drop_duplicates(subset="Name")
-        .head(5)[["Name", "Best3BenchKg", "Dots", "Date", "Federation"]]
+        .head(5)[["Name", "Best3BenchKg", "Dots", "Date"]]
         .reset_index(drop=True)
     )
     top5.index = top5.index + 1  # 1-indexed ranking
@@ -190,7 +190,7 @@ with r1:
         filtered[filtered["Best3SquatKg"] > 0]
         .sort_values("Best3SquatKg", ascending=False)
         .drop_duplicates(subset="Name")
-        .head(5)[["Name", "Best3SquatKg", "Dots", "Date", "Federation"]]
+        .head(5)[["Name", "Best3SquatKg", "Dots", "Date"]]
         .reset_index(drop=True)
     )
     top5.index = top5.index + 1  # 1-indexed ranking
