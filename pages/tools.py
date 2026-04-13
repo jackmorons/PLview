@@ -1195,7 +1195,7 @@ elif active == "pattern_discoverer":
     st.plotly_chart(fig_sb, use_container_width=True)
     
     st.info("💡 **Pro-Tip**: Click and drag to rotate 3D plots. Use the legend to toggle specific groups on and off. **Others** represents points excluded by your filters.")
-    st.info("💡 **Can't find yourself?**: If you can't find yourself, you're right inn the middle of a cluster of dots, right in the middle of the pack.")
+    st.info("💡 **Can't find yourself?**: If you can't find yourself, you're covered by a cluster of dots, right in the middle of the pack.")
 
     
 
