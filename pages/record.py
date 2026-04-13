@@ -224,7 +224,7 @@ with r3:
         filtered[filtered["Best3DeadliftKg"] > 0]
         .sort_values("Best3DeadliftKg", ascending=False)
         .drop_duplicates(subset="Name")
-        .head(5)[["Name", "Best3DeadliftKg", "Dots", "Date", "Federation"]]
+        .head(5)[["Name", "Best3DeadliftKg", "Dots", "Date"]]
         .reset_index(drop=True)
     )
     top5.index = top5.index + 1  # 1-indexed ranking
