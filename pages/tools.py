@@ -1549,7 +1549,7 @@ elif active == "strength_index_calculator":
     # Dots;Wilks;Glossbrenner;Goodlift
     st.info("Insert your athlete data to calculate your strength indexes (Dots, Wilks, etc.).")
 
-    input_cols = st.columns(4)
+    input_cols = st.columns(3)
     
     with input_cols[0]:
         gender = st.selectbox("Gender", ["Male", "Female"], help="Select your gender for coefficient calculation.")
@@ -1571,18 +1571,46 @@ elif active == "strength_index_calculator":
             default_w_idx = 0
             
         weight = st.selectbox("Bodyweight (kg)", weight_options, index=default_w_idx)
-    
-    with input_cols[3]:
+
+    input_cols2 = st.columns(3)
+
+    with input_cols2[0]:
         # Total from 0 to 1500 with delta 2.5
-        total_range = np.arange(0.0, 1502.5, 2.5)
-        total_options = [round(x, 1) for x in total_range]
+        bench_range = np.arange(0.0, 1502.5, 2.5)
+        bench_options = [round(x, 1) for x in bench_range]
         # Default to a common total like 400.0
         try:
-            default_t_idx = total_options.index(400.0)
+            default_bench_idx = bench_options.index(400.0)
         except ValueError:
-            default_t_idx = 0
+            default_bench_idx = 0
             
-        total = st.selectbox("Total (kg)", total_options, index=default_t_idx)
+        bench = st.selectbox("Bench (kg)", bench_options, index=default_bench_idx)
+    
+    with input_cols2[1]:
+        # Total from 0 to 1500 with delta 2.5
+        squat_range = np.arange(0.0, 1502.5, 2.5)
+        squat_options = [round(x, 1) for x in squat_range]
+        # Default to a common total like 400.0
+        try:
+            default_squat_idx = squat_options.index(400.0)
+        except ValueError:
+            default_squat_idx = 0
+            
+        squat = st.selectbox("Squat (kg)", squat_options, index=default_squat_idx)
+    
+    with input_cols2[2]:
+        # Total from 0 to 1500 with delta 2.5
+        deadlift_range = np.arange(0.0, 1502.5, 2.5)
+        deadlift_options = [round(x, 1) for x in deadlift_range]
+        # Default to a common total like 400.0
+        try:
+            default_deadlift_idx = deadlift_options.index(400.0)
+        except ValueError:
+            default_deadlift_idx = 0
+            
+        deadlift = st.selectbox("Deadlift (kg)", deadlift_options, index=default_deadlift_idx)
+    
+    total = squat + bench + deadlift;
 
     st.markdown("---")
     
