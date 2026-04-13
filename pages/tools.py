@@ -196,6 +196,22 @@ if active == "lift_distributions":
                 equip_order = ["Raw", "Wraps", "Single-ply", "Multi-ply"]
                 all_cats = [e for e in equip_order if e in all_cats] + [e for e in sorted(set(all_cats) - set(equip_order))]
             
+            # Numeric sorting for Weight Class
+            if c_col == "WeightClassKg" or (c_col == "display_cat" and color_col == "WeightClassKg"):
+                def wc_sort_key(x):
+                    try: return float(x.replace("+", ""))
+                    except: return 9999
+                pure = [c for c in all_cats if c != " Others"]
+                all_cats = sorted(pure, key=wc_sort_key) + ([" Others"] if " Others" in all_cats else [])
+
+            # Numeric sorting for Age Class
+            if c_col == "AgeClass" or (c_col == "display_cat" and color_col == "AgeClass"):
+                def age_sort_key(x):
+                    try: return int(x.split("-")[0].replace("+", ""))
+                    except: return 9999
+                pure = [c for c in all_cats if c != " Others"]
+                all_cats = sorted(pure, key=age_sort_key) + ([" Others"] if " Others" in all_cats else [])
+            
             # Ensure " Others" is at the end
             if " Others" in all_cats:
                 all_cats.remove(" Others")
