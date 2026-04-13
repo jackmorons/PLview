@@ -1710,7 +1710,168 @@ elif active == "strength_index_calculator":
         else:
             st.warning("Please check your bodyweight/total values.")
 
-    # ---------- 10. 1RM Calculator ----------
+    # ---------- 10. Relative Strength Dashboard ----------
+
+    st.markdown("---")
+    st.subheader("📊 Relative Strength Dashboard")
+    st.write("Compare your entered lifts against the category (same Gender & closest Weight Class).")
+
+    # --- Determine the user's weight class from the dataset ---
+    ref_df_calc = malesdf if gender == "Male" else femalesdf
+    all_wc_vals = ref_df_calc["WeightClassKg"].dropna().unique().tolist()
+
+    # Find closest weight class by parsing numeric values
+    def parse_wc(wc):
+        try: return float(str(wc).replace("+", ""))
+        except: return 9999
+
+    closest_wc = min(all_wc_vals, key=lambda wc: abs(parse_wc(wc) - weight))
+
+    # Build category reference
+    category_df_calc = ref_df_calc[ref_df_calc["WeightClassKg"] == closest_wc].copy()
+
+    if not category_df_calc.empty and total > 0:
+        # Category benchmarks
+        avg_squat_c = category_df_calc["Best3SquatKg"].mean()
+        avg_bench_c = category_df_calc["Best3BenchKg"].mean()
+        avg_deadlift_c = category_df_calc["Best3DeadliftKg"].mean()
+
+        rec_squat_c = category_df_calc["Best3SquatKg"].max()
+        rec_bench_c = category_df_calc["Best3BenchKg"].max()
+        rec_deadlift_c = category_df_calc["Best3DeadliftKg"].max()
+
+        categories_radar = ['Squat', 'Bench Press', 'Deadlift']
+
+        fig_radar_calc = go.Figure()
+
+        # 1. Category Record (Background)
+        fig_radar_calc.add_trace(go.Scatterpolar(
+            r=[rec_squat_c, rec_bench_c, rec_deadlift_c, rec_squat_c],
+            theta=categories_radar + [categories_radar[0]],
+            fill='toself',
+            fillcolor='rgba(255, 213, 79, 0.1)',
+            name='Category Record',
+            line=dict(color='rgba(255, 213, 79, 0.4)', width=2, dash='dot'),
+            marker=dict(size=4),
+            hovertemplate="Record: %{r} kg<extra></extra>"
+        ))
+
+        # 2. Category Average (Middle)
+        fig_radar_calc.add_trace(go.Scatterpolar(
+            r=[avg_squat_c, avg_bench_c, avg_deadlift_c, avg_squat_c],
+            theta=categories_radar + [categories_radar[0]],
+            fill='toself',
+            fillcolor='rgba(66, 165, 245, 0.1)',
+            name='Category Average',
+            line=dict(color='rgba(66, 165, 245, 0.6)', width=2, dash='dash'),
+            marker=dict(size=4),
+            hovertemplate="Average: %{r:.1f} kg<extra></extra>"
+        ))
+
+        # 3. You (Foreground)
+        fig_radar_calc.add_trace(go.Scatterpolar(
+            r=[squat, bench, deadlift, squat],
+            theta=categories_radar + [categories_radar[0]],
+            fill='toself',
+            fillcolor='rgba(239, 83, 80, 0.3)',
+            name='You',
+            line=dict(color='#ef5350', width=4),
+            marker=dict(size=10, symbol='diamond'),
+            hovertemplate="You: %{r} kg<extra></extra>"
+        ))
+
+        fig_radar_calc.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, max(rec_squat_c, rec_bench_c, rec_deadlift_c, squat, bench, deadlift) * 1.15],
+                    gridcolor="rgba(255,255,255,0.1)",
+                    angle=-90,
+                    tickangle=0
+                ),
+                angularaxis=dict(gridcolor="rgba(255,255,255,0.1)", linecolor="rgba(255,255,255,0.2)"),
+                bgcolor="rgba(0,0,0,0)"
+            ),
+            showlegend=True,
+            template="plotly_dark",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            height=600,
+            margin=dict(l=20, r=20, t=20, b=20),
+            legend=dict(orientation="h", yanchor="bottom", y=-0.05, xanchor="center", x=0.5)
+        )
+
+        # --- Columns for side-by-side view ---
+        rad_cols_calc = st.columns([2, 1])
+
+        with rad_cols_calc[0]:
+            st.plotly_chart(fig_radar_calc, use_container_width=True)
+
+        with rad_cols_calc[1]:
+            st.write("")  # Spacer
+            comparison_data_calc = {
+                "Lift": categories_radar,
+                "You": [f"{squat} kg", f"{bench} kg", f"{deadlift} kg"],
+                "Average": [f"{round(avg_squat_c, 1)} kg", f"{round(avg_bench_c, 1)} kg", f"{round(avg_deadlift_c, 1)} kg"],
+                "Record": [f"{rec_squat_c} kg", f"{rec_bench_c} kg", f"{rec_deadlift_c} kg"]
+            }
+            st.dataframe(
+                pd.DataFrame(comparison_data_calc),
+                hide_index=True,
+                use_container_width=True,
+                column_config={"Lift": "Lift", "You": "You", "Average": "Average", "Record": "Record"}
+            )
+
+            # --- Percentile & Progress Gauges ---
+            cat_totals_calc = category_df_calc[category_df_calc["TotalKg"] > 0]["TotalKg"].sort_values()
+
+            if not cat_totals_calc.empty:
+                rank_calc = (cat_totals_calc < total).sum()
+                percentile_calc = (rank_calc / len(cat_totals_calc)) * 100
+                top_percent_calc = 100 - percentile_calc
+                progress_to_record_calc = (total / cat_totals_calc.max()) * 100 if cat_totals_calc.max() > 0 else 0
+
+                fig_pct_calc = go.Figure(go.Indicator(
+                    mode="gauge+number",
+                    value=percentile_calc,
+                    number={'suffix': "%", 'font': {'size': 25}},
+                    gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#42a5f5"}, 'bgcolor': "rgba(0,0,0,0)"}
+                ))
+                fig_rec_calc = go.Figure(go.Indicator(
+                    mode="gauge+number",
+                    value=progress_to_record_calc,
+                    number={'suffix': "%", 'font': {'size': 25}},
+                    gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#ffd54f"}, 'bgcolor': "rgba(0,0,0,0)"}
+                ))
+
+                for f_g in [fig_pct_calc, fig_rec_calc]:
+                    f_g.update_layout(
+                        height=125,
+                        margin=dict(l=10, r=10, t=10, b=10),
+                        paper_bgcolor="rgba(0,0,0,0)",
+                        font={'color': "#f0f0f5"}
+                    )
+
+                st.markdown("<br>", unsafe_allow_html=True)
+
+                st.markdown("<div style='text-align: center; font-weight: bold;'>📊 Percentile Standing (total)</div>", unsafe_allow_html=True)
+                st.write("")
+                st.plotly_chart(fig_pct_calc, use_container_width=True)
+
+                st.markdown("<div style='text-align: center; font-weight: bold;'>🏆 Progress to Record (total)</div>", unsafe_allow_html=True)
+                st.write("")
+                st.plotly_chart(fig_rec_calc, use_container_width=True)
+
+                # Standing Summary
+                if top_percent_calc <= 1: st.success("⭐ Top 1%!")
+                elif top_percent_calc <= 10: st.info(f"💪 Top {int(top_percent_calc)}%!")
+                st.caption(f"Based on **{len(category_df_calc)}** athletes in **{closest_wc}kg {gender}**.")
+    elif total > 0:
+        st.info("Not enough category data for benchmarks.")
+    else:
+        st.info("Enter your lifts above to see your relative strength dashboard.")
+
+    # ---------- 11. 1RM Calculator ----------
 
     st.markdown("---")
 
