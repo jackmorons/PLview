@@ -73,6 +73,14 @@ with st.expander("🔴 Dots?"):
         total.
     """)
 
+with st.expander("📉 Pearson coefficient"):
+    st.write("""
+        - **What is the Pearson coefficient?**: the Pearson coefficient is a measure of the
+        linear correlation between two sets of data. It is a value between -1 and 1, where 1
+        indicates a perfect positive correlation, -1 indicates a perfect negative correlation,
+        and 0 indicates no correlation.
+    """)
+
 st.markdown("---")
 
 # ── Humor & Credits ──────────────────────────────────────────────────
