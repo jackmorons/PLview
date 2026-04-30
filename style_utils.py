@@ -71,7 +71,7 @@ def inject_custom_css():
             letter-spacing: -1px;
             line-height: 1.15;
             margin-bottom: 1rem;
-            backgroud: #e0e0e0
+            background: rgba(255, 255, 255, 1);
             /* background: linear-gradient(135deg, #d32f2f 40%, #f9a825 50%, #388e3c 60%); */
             /* background: linear-gradient(135deg, #e0e0e0 40%, #f9a825 50%, #d32f2f 60%); */
             /* background: linear-gradient(135deg, #f0f0f5 30%, #d32f2f 65%, #1976d2); */
