@@ -6,6 +6,7 @@ inject_custom_css()
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import numpy as np
 import urllib.parse
 # import geopandas as gpd
@@ -2035,4 +2036,341 @@ elif active == "strength_index_calculator":
             "RPE", min_value=6.0, max_value=10.0, value=8.0, step=0.5,
             help="Rate of Perceived Exertion (6 = very easy, 10 = absolute limit).",
             key="fat_rpe"
+        )
+    
+    # import the sheet
+    GOOGLE_SHEET_CSV_URL = (
+        "https://docs.google.com/spreadsheets/d/"
+        "1eWItYgh2UWjA94bXWqOpRkEUkh3gZVG80O00NeubMo0/export?format=csv"
+    )
+
+    @st.cache_data(ttl=300)
+    def load_sheet_data(url: str) -> pd.DataFrame:
+        # Sheet has no header row — each row is a progression of values
+        df = pd.read_csv(url, header=None)
+        return df
+
+    raw_df = load_sheet_data(GOOGLE_SHEET_CSV_URL)
+
+    # ── Melt: turn each cell into (column_position, value, row_label) ──
+    # Columns become 1-indexed positions; each row is a separate series
+    raw_df.columns = [i + 1 for i in range(len(raw_df.columns))]
+    raw_df["Progression"] = [f"Row {i + 1}" for i in range(len(raw_df))]
+
+    melted = raw_df.melt(
+        id_vars="Progression",
+        var_name="Step",
+        value_name="Value",
+    )
+
+    # ── Build normalized data (each row ÷ its first-set value) ──────────
+    norm_df = raw_df.copy()
+    value_cols = [c for c in norm_df.columns if c != "Progression"]
+    norm_df[value_cols] = norm_df[value_cols].astype(float)
+    first_vals = norm_df[value_cols[0]].replace(0, np.nan)
+    norm_df[value_cols] = norm_df[value_cols].div(first_vals, axis=0)
+
+    melted_norm = norm_df.melt(
+        id_vars="Progression",
+        var_name="Step",
+        value_name="Value",
+    )
+
+    exp = st.expander("📊 Show data", expanded=True)
+
+    with exp:
+
+        st.write("What am I looking at? 👇")
+        st.write("We have asked a number of subjects to perform a benching test: 5 sets, 5 minutes rests, 80% of their 1RM, all to absolute failure.")
+        st.write("The table below shows the number of repetitions performed in each set.")
+        st.write("Each row corresponds to a subject and each column corresponds to a set.")
+        st.write("The idea is capturing the mathematical trend of fatigue, to understand how fixed RPE sets could be developed educing reps over series to maintain fatigue.")
+
+        col_norm, col_raw = st.columns(2)
+
+        # ── Helper: build all three charts for a given melted df ──────
+        def _render_charts(
+            container,
+            m_df,
+            r_df,
+            y_label,
+            scatter_title,
+            reg_title,
+            mean_title,
+            table_key,
+        ):
+            """Render scatter → regression → mean-regression inside *container*."""
+            with container:
+                # 1) Scatter ──────────────────────────────────────────
+                fig = px.scatter(
+                    m_df,
+                    x="Step",
+                    y="Value",
+                    color="Progression",
+                    template="plotly_dark",
+                    title=scatter_title,
+                    opacity=0.85,
+                )
+                fig.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(family="Inter, sans-serif"),
+                    title_font_size=16,
+                    margin=dict(t=50, b=30),
+                    xaxis=dict(dtick=1, title="Series"),
+                    yaxis=dict(title=y_label),
+                    legend=dict(font=dict(size=9)),
+                )
+                fig.update_traces(
+                    marker=dict(size=8, line=dict(width=1, color="rgba(255,255,255,0.3)"))
+                )
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Raw data toggle
+                if st.checkbox("Show raw data table", key=table_key):
+                    st.dataframe(r_df.drop(columns="Progression"), use_container_width=True)
+
+                # 2) Quadratic regression ─────────────────────────────
+                fig_reg = go.Figure()
+                colors = px.colors.qualitative.Plotly
+                n_sets = len(r_df.columns) - 1
+                x_smooth = np.linspace(1, n_sets, 100)
+
+                for idx, row_label in enumerate(m_df["Progression"].unique()):
+                    subset = m_df[m_df["Progression"] == row_label]
+                    x_pts = subset["Step"].values.astype(float)
+                    y_pts = subset["Value"].values.astype(float)
+
+                    coeffs = np.polyfit(x_pts, y_pts, 2)
+                    y_smooth = np.polyval(coeffs, x_smooth)
+                    color = colors[idx % len(colors)]
+
+                    fig_reg.add_trace(go.Scatter(
+                        x=x_pts, y=y_pts, mode="markers",
+                        marker=dict(size=7, color=color,
+                                    line=dict(width=1, color="rgba(255,255,255,0.3)")),
+                        name=row_label, legendgroup=row_label, showlegend=True,
+                    ))
+                    fig_reg.add_trace(go.Scatter(
+                        x=x_smooth, y=y_smooth, mode="lines",
+                        line=dict(color=color, width=2),
+                        name=f"{row_label} fit", legendgroup=row_label, showlegend=False,
+                    ))
+
+                fig_reg.update_layout(
+                    template="plotly_dark",
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(family="Inter, sans-serif"),
+                    title=reg_title, title_font_size=16,
+                    margin=dict(t=50, b=30),
+                    xaxis=dict(dtick=1, title="Set"),
+                    yaxis=dict(title=y_label),
+                    legend=dict(font=dict(size=9)),
+                )
+                st.plotly_chart(fig_reg, use_container_width=True)
+
+                # 3) Mean regression ──────────────────────────────────
+                mean_y = np.zeros(len(x_smooth))
+                for row_label in m_df["Progression"].unique():
+                    subset = m_df[m_df["Progression"] == row_label]
+                    x_pts = subset["Step"].values.astype(float)
+                    y_pts = subset["Value"].values.astype(float)
+                    coeffs = np.polyfit(x_pts, y_pts, 2)
+                    mean_y += np.polyval(coeffs, x_smooth)
+                mean_y /= len(m_df["Progression"].unique())
+
+                fig_mean = go.Figure()
+                fig_mean.add_trace(go.Scatter(
+                    x=m_df["Step"].astype(float), y=m_df["Value"].astype(float),
+                    mode="markers",
+                    marker=dict(size=5, color="rgba(150,150,255,0.7)",
+                                line=dict(width=1, color="white")),
+                    name="All subjects",
+                ))
+                fig_mean.add_trace(go.Scatter(
+                    x=x_smooth, y=mean_y, mode="lines",
+                    line=dict(color="white", width=3, dash="dash"),
+                    name="Mean regression",
+                ))
+                fig_mean.update_layout(
+                    template="plotly_dark",
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(family="Inter, sans-serif"),
+                    title=mean_title, title_font_size=16,
+                    margin=dict(t=50, b=30),
+                    xaxis=dict(dtick=1, title="Set"),
+                    yaxis=dict(title=y_label),
+                )
+                st.plotly_chart(fig_mean, use_container_width=True)
+
+        # ── Left column: Normalized ──────────────────────────────────
+        with col_norm:
+            st.markdown("#### Normalized (÷ first set)")
+        _render_charts(
+            col_norm, melted_norm, norm_df,
+            y_label="Fraction of Set 1",
+            scatter_title="Normalized — Value vs Step",
+            reg_title="Normalized — Fatigue Curves",
+            mean_title="Normalized — Mean Fatigue Curve",
+            table_key="table_norm",
+        )
+
+        # ── Right column: Absolute (current) ─────────────────────────
+        with col_raw:
+            st.markdown("#### Absolute (raw reps)")
+        _render_charts(
+            col_raw, melted, raw_df,
+            y_label="Repetitions",
+            scatter_title="Absolute — Value vs Step",
+            reg_title="Absolute — Fatigue Curves",
+            mean_title="Absolute — Mean Fatigue Curve",
+            table_key="table_raw",
+        )
+
+        st.write("The left column normalizes every subject's reps by their first-set count (so set 1 = 1.0), revealing the universal fatigue *shape*. The right column shows the original absolute rep counts.")
+        st.write("From the mean curves we can derive a single fatigue-decay reference for fixed-RPE set programming.")
+
+    # 1. Compute mean normalized fatigue coefficients from the data
+    all_coeffs = []
+    for row_label in melted_norm["Progression"].unique():
+        subset = melted_norm[melted_norm["Progression"] == row_label]
+        x_pts = subset["Step"].values.astype(float)
+        y_pts = subset["Value"].values.astype(float)
+        all_coeffs.append(np.polyfit(x_pts, y_pts, 2))
+    mean_coeffs = np.mean(all_coeffs, axis=0)
+
+    # 2. Derive per-set values from user inputs
+    rir_set1 = 10.0 - fat_rpe
+    max_reps_set1 = fat_reps + rir_set1
+
+    sets = np.arange(1, fat_series + 1)
+    decay = np.polyval(mean_coeffs, sets)
+    # Clamp decay so it never goes negative (edge-case for wild extrapolation)
+    decay = np.clip(decay, 0.0, None)
+
+    max_reps_per_set = max_reps_set1 * decay
+    eff_rir = max_reps_per_set - fat_reps
+    eff_rpe = 10.0 - eff_rir
+
+    # 3. Extrapolation warning
+    if fat_series > 5:
+        st.warning(
+            f"⚠️ The fatigue model is built on **5-set** experimental data. "
+            f"Sets 6–{fat_series} are **extrapolated** and may be less accurate."
+        )
+
+    # 4. Build dual-axis chart
+    fig_drift = make_subplots(specs=[[{"secondary_y": True}]])
+
+    # Color map for RPE bars: green → yellow → red
+    def rpe_color(r):
+        if r >= 10.0:
+            return "rgba(239, 83, 80, 0.95)"   # red — failure
+        elif r >= 9.0:
+            return "rgba(255, 152, 0, 0.85)"    # orange
+        elif r >= 8.0:
+            return "rgba(255, 213, 79, 0.80)"   # yellow
+        else:
+            return "rgba(102, 187, 106, 0.80)"  # green
+
+    bar_colors = [rpe_color(r) for r in eff_rpe]
+
+    # RPE bars (primary Y)
+    fig_drift.add_trace(
+        go.Bar(
+            x=sets, y=eff_rpe,
+            name="Effective RPE",
+            marker=dict(color=bar_colors, line=dict(width=1, color="rgba(255,255,255,0.3)")),
+            text=[f"{r:.1f}" for r in eff_rpe],
+            textposition="outside",
+            textfont=dict(size=12, color="white"),
+        ),
+        secondary_y=False,
+    )
+
+    # Max reps curve (secondary Y) — smooth line
+    x_smooth = np.linspace(1, fat_series, 200)
+    decay_smooth = np.clip(np.polyval(mean_coeffs, x_smooth), 0.0, None)
+    max_reps_smooth = max_reps_set1 * decay_smooth
+
+    fig_drift.add_trace(
+        go.Scatter(
+            x=x_smooth, y=max_reps_smooth,
+            mode="lines",
+            name="Max reps (fatigue curve)",
+            line=dict(color="#42a5f5", width=3),
+        ),
+        secondary_y=True,
+    )
+
+    # Prescribed reps threshold line
+    fig_drift.add_trace(
+        go.Scatter(
+            x=[1, fat_series], y=[fat_reps, fat_reps],
+            mode="lines",
+            name=f"Prescribed reps ({fat_reps})",
+            line=dict(color="white", width=2, dash="dash"),
+        ),
+        secondary_y=True,
+    )
+
+    # Failure zone shading
+    failure_sets = sets[eff_rir < 0]
+    if len(failure_sets) > 0:
+        first_fail = int(failure_sets[0])
+        fig_drift.add_vrect(
+            x0=first_fail - 0.4, x1=fat_series + 0.4,
+            fillcolor="rgba(239, 83, 80, 0.12)",
+            layer="below", line_width=0,
+            annotation_text="FAILURE ZONE",
+            annotation_position="top left",
+            annotation=dict(font=dict(color="#ef5350", size=12)),
+        )
+
+    # Layout
+    fig_drift.update_layout(
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="Inter, sans-serif"),
+        height=500,
+        margin=dict(l=20, r=20, t=40, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        bargap=0.3,
+    )
+    fig_drift.update_xaxes(title_text="Set", dtick=1)
+    fig_drift.update_yaxes(title_text="Effective RPE", range=[5.5, 11], secondary_y=False)
+    fig_drift.update_yaxes(title_text="Max Reps Possible", secondary_y=True)
+
+    st.plotly_chart(fig_drift, use_container_width=True)
+
+    # 5. Summary table
+    summary_rows = []
+    for i, s in enumerate(sets):
+        rpe_val = eff_rpe[i]
+        rir_val = eff_rir[i]
+        mr = max_reps_per_set[i]
+        status = "✅" if rir_val >= 0 else "❌ FAILURE"
+        summary_rows.append({
+            "Set": int(s),
+            "Prescribed Reps": fat_reps,
+            "Max Reps Possible": f"{mr:.1f}",
+            "RIR": f"{rir_val:.1f}" if rir_val >= 0 else "—",
+            "Effective RPE": f"{min(rpe_val, 10.0):.1f}" if rir_val >= 0 else "10+",
+            "Status": status,
+        })
+    st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
+
+    if len(failure_sets) > 0:
+        st.error(
+            f"🚨 At this scheme ({fat_series}×{fat_reps} @ RPE {fat_rpe}), "
+            f"you're predicted to **fail** starting at **set {int(failure_sets[0])}**. "
+            f"Consider reducing reps or starting at a lower RPE."
+        )
+    else:
+        st.success(
+            f"✅ Scheme {fat_series}×{fat_reps} @ RPE {fat_rpe} looks sustainable! "
+            f"Final set estimated RPE: **{eff_rpe[-1]:.1f}**"
         )
