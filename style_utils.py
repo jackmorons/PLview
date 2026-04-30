@@ -71,14 +71,21 @@ def inject_custom_css():
             letter-spacing: -1px;
             line-height: 1.15;
             margin-bottom: 1rem;
-            background: rgba(255, 255, 255, 1);
             /* background: linear-gradient(135deg, #d32f2f 40%, #f9a825 50%, #388e3c 60%); */
             /* background: linear-gradient(135deg, #e0e0e0 40%, #f9a825 50%, #d32f2f 60%); */
-            /* background: linear-gradient(135deg, #f0f0f5 30%, #d32f2f 65%, #1976d2); */
+            background: linear-gradient(135deg, #f0f0f5 30%, #d32f2f 65%, #1976d2);
             /* background: linear-gradient(135deg, #d32f2f 35%, #1976d2 45%, #f9a825 50%, #388e3c 55%, #e0e0e0 65%); */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-align: center;
+        }
+        .hero-title2 {
+            font-size: clamp(5rem, 8vw, 5.0rem) !important;
+            font-weight: 800 !important;
+            letter-spacing: -1px;
+            line-height: 1.15;
+            margin-bottom: 1rem;
             text-align: center;
         }
         .hero-subtitle {
@@ -90,7 +97,7 @@ def inject_custom_css():
 
         /* Mobile Responsiveness Overrides */
         @media (max-width: 640px) {
-            .hero-title {
+            .hero-title, .hero-title2 {
                 font-size: 4rem !important;
                 line-height: 1.2 !important;
                 width: 100% !important;
