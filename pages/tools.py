@@ -2000,3 +2000,39 @@ elif active == "strength_index_calculator":
         )
         st.plotly_chart(fig_est, use_container_width=True)
 
+    # ---------- 13. Fatigue Estimator ----------
+
+    st.markdown("---")
+
+    st.subheader("📉 Fatigue Estimator - An absolutely un-scientific calculator")
+
+    st.write("""
+        You know that feeling:
+        - Today you train "light" (RPE 8)
+        - Next session you feel like garbage and can barely lift
+        - What the hell happened?
+    """)
+
+    st.write("Whenever a scheme uses precentages or RPEs over different sets, fatigue accumulates, making your 5x5@7 feel like a 5x5@9!")
+    st.write("But how much does fatigue actually accumulate?")
+
+    fat_c1, fat_c2, fat_c3 = st.columns(3)
+
+    with fat_c1:
+        fat_series = st.number_input(
+            "Series (sets)", min_value=1, max_value=20, value=5, step=1,
+            help="Number of working sets.", key="fat_series"
+        )
+
+    with fat_c2:
+        fat_reps = st.number_input(
+            "Reps per set", min_value=1, max_value=30, value=5, step=1,
+            help="Repetitions per set.", key="fat_reps"
+        )
+
+    with fat_c3:
+        fat_rpe = st.slider(
+            "RPE", min_value=6.0, max_value=10.0, value=8.0, step=0.5,
+            help="Rate of Perceived Exertion (6 = very easy, 10 = absolute limit).",
+            key="fat_rpe"
+        )
