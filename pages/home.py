@@ -47,10 +47,15 @@ with gallery[1]:
     # third
     st.image("https://i.ytimg.com/vi/Q1uwqvNjJQk/maxresdefault.jpg")
     st.markdown("Austin Perkins", text_alignment="center")
-
+    # fourth
     st.image("https://barbend.com/wp-content/uploads/2025/06/Wow-65.jpg")
     st.markdown("Tiffany Chapon", text_alignment="center")
-    
+    # fifth
+    st.image("https://cdn.magzter.com/1487587887/1652085287/articles/0hyBKIjo-1653893490875/AMANDA-LAWRENCE.jpg")
+    st.markdown("Amanda Lawrence", text_alignment="center")
+    # sixth
+    st.image("https://static.wikia.nocookie.net/ipf/images/a/a1/Sonita_Muluh.png/revision/latest?cb=20250129080106")
+    st.markdown("Sonita Muluh", text_alignment="center")
 
 
 
@@ -59,8 +64,18 @@ with gallery[3]:
     st.image("https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2018/06/andrey-1109.jpg?quality=86&strip=all")
     st.markdown("Andrey Malanichev", text_alignment="center")
     # second
+    st.image("https://sbdapparel.ca/cdn/shop/files/Jessica_Deadlift.jpg?v=1702498796&width=2400")
+    st.markdown("Jessica Buettner", text_alignment="center")
+    # third
     st.image("https://www.ironcompany.com/media/magefan_blog/2018/04/Larry-Pacifico-Squat.jpg")
     st.markdown("Larry Pacifico", text_alignment="center")
-    # third
+    # fourth
     st.image("https://i.ytimg.com/vi/pV-hG2tO8LQ/maxresdefault.jpg")
     st.markdown("Jesus Olivares", text_alignment="center")
+    # fifth
+    st.image("https://cdn.mbnews.it/photogallery_new/images/2023/12/generico-dicembre-2023-470947.jpg")
+    st.markdown("Annalisa Motta", text_alignment="center")
+    # sixth
+    st.image("https://www.benchpresschampion.com/WORLDCOMPETITIONS/Power2018/BonicaBrown4.jpg")
+    st.markdown("Bonica Brown", text_alignment="center")
+    
