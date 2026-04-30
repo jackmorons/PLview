@@ -2241,16 +2241,32 @@ elif active == "strength_index_calculator":
         all_coeffs.append(np.polyfit(x_pts, y_pts, 2))
     mean_coeffs = np.mean(all_coeffs, axis=0)
 
-    # 2. Derive per-set values from user inputs
+    # 2. Derive per-set values using effort-scaled iterative decay
+    #    The experimental curve was built at RPE 10 (all-out). Sub-maximal
+    #    sets generate less fatigue, so we scale the decay at each step by
+    #    the effort ratio: effort = reps_done / max_reps_possible.
     rir_set1 = 10.0 - fat_rpe
     max_reps_set1 = fat_reps + rir_set1
 
     sets = np.arange(1, fat_series + 1)
-    decay = np.polyval(mean_coeffs, sets)
-    # Clamp decay so it never goes negative (edge-case for wild extrapolation)
-    decay = np.clip(decay, 0.0, None)
 
-    max_reps_per_set = max_reps_set1 * decay
+    # Pre-compute the experimental per-step decay ratios from the curve
+    exp_vals = np.polyval(mean_coeffs, sets)
+    exp_vals = np.clip(exp_vals, 0.01, None)  # safety floor
+
+    # Iterative model: accumulate fatigue proportional to effort
+    max_reps_per_set = np.zeros(len(sets))
+    max_reps_per_set[0] = max_reps_set1
+
+    for i in range(1, len(sets)):
+        # How hard was the previous set? (1.0 = to failure, lower = easier)
+        effort = min(fat_reps / max_reps_per_set[i - 1], 1.0) if max_reps_per_set[i - 1] > 0 else 1.0
+        # Experimental decay ratio from set i-1 → set i
+        exp_decay_rate = exp_vals[i] / exp_vals[i - 1]
+        # Scale: less effort → less fatigue → decay closer to 1.0
+        adjusted_decay = 1.0 - effort * (1.0 - exp_decay_rate)
+        max_reps_per_set[i] = max(max_reps_per_set[i - 1] * adjusted_decay, 0.0)
+
     eff_rir = max_reps_per_set - fat_reps
     eff_rpe = 10.0 - eff_rir
 
