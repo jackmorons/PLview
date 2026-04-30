@@ -48,6 +48,10 @@ with gallery[1]:
     st.image("https://i.ytimg.com/vi/Q1uwqvNjJQk/maxresdefault.jpg")
     st.markdown("Austin Perkins", text_alignment="center")
 
+    st.image("https://barbend.com/wp-content/uploads/2025/06/Wow-65.jpg")
+    st.markdown("Tiffany Chapon", text_alignment="center")
+    
+
 
 
 with gallery[3]:
