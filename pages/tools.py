@@ -2337,16 +2337,13 @@ elif active == "strength_index_calculator":
         secondary_y=False,
     )
 
-    # Max reps curve (secondary Y) — interpolate the iterative model points
-    x_smooth = np.linspace(1, fat_series, 200)
-    max_reps_smooth = np.interp(x_smooth, sets, max_reps_per_set)
-
+    # Max reps curve (secondary Y) — plot with native spline smoothing
     fig_drift.add_trace(
         go.Scatter(
-            x=x_smooth, y=max_reps_smooth,
+            x=sets, y=max_reps_per_set,
             mode="lines",
             name="Max reps (fatigue curve)",
-            line=dict(color="#42a5f5", width=3),
+            line=dict(color="#42a5f5", width=3, shape="spline", smoothing=1.3),
         ),
         secondary_y=True,
     )
