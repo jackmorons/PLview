@@ -4,7 +4,7 @@ from style_utils import inject_custom_css
 inject_custom_css()
 
 # Original Hero Title
-st.markdown('<div class="hero-title">Powerlifting,<br>Visualized.</div>', unsafe_allow_html=True)
+# st.markdown('<div class="hero-title">Powerlifting,<br>Visualized.</div>', unsafe_allow_html=True)
 
 # New Hero Title 2 (Using CSS classes for specific letters)
 st.markdown('<div class="hero-title2">Power<span class="red">l</span><span class="blue">i</span><span class="gold">f</span><span class="green">t</span>ing,<br>Visualized.</div>', unsafe_allow_html=True)
