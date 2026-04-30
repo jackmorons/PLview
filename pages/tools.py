@@ -2376,8 +2376,21 @@ elif active == "strength_index_calculator":
         bargap=0.3,
     )
     fig_drift.update_xaxes(title_text="Set", dtick=1)
-    fig_drift.update_yaxes(title_text="Effective RPE", range=[5.5, 11], secondary_y=False)
-    fig_drift.update_yaxes(title_text="Max Reps Possible", secondary_y=True)
+    # Primary Y-Axis (Effective RPE) - Solid grid lines
+    fig_drift.update_yaxes(
+        title_text="Effective RPE", 
+        range=[5.5, 11], 
+        secondary_y=False,
+        gridcolor="rgba(255,255,255,0.15)",
+        griddash="solid"
+    )
+    # Secondary Y-Axis (Max Reps Possible) - Dotted grid lines
+    fig_drift.update_yaxes(
+        title_text="Max Reps Possible", 
+        secondary_y=True,
+        gridcolor="rgba(255,255,255,0.25)",
+        griddash="dot"
+    )
 
     st.plotly_chart(fig_drift, use_container_width=True)
 
