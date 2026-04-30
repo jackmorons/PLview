@@ -6,29 +6,8 @@ inject_custom_css()
 # Original Hero Title
 st.markdown('<div class="hero-title">Powerlifting,<br>Visualized.</div>', unsafe_allow_html=True)
 
-# New Hero Title 2 (Individual letter coloring)
-colors = ["#d32f2f", "#1976d2", "#f9a825", "#388e3c", "#e0e0e0"]
-
-def colorize_text(text):
-    colored_html = ""
-    color_index = 0
-    for char in text:
-        if char in [" ", "<", ">"]:
-             colored_html += char
-             continue
-        
-        color = colors[color_index % len(colors)]
-        colored_html += f'<span style="color: {color};">{char}</span>'
-        
-        if char.strip():
-            color_index += 1
-            
-    return colored_html
-
-line1 = colorize_text("Powerlifting,")
-line2 = colorize_text("Visualized.")
-
-st.markdown(f'<div class="hero-title2">{line1}<br>{line2}</div>', unsafe_allow_html=True)
+# New Hero Title 2 (Using CSS classes for specific letters)
+st.markdown('<div class="hero-title2"><span class="red">P</span>owerlifting,<br><span class="blue">V</span>isualized.</div>', unsafe_allow_html=True)
 
 st.markdown('<div style="margin-top: 2rem;"></div>', unsafe_allow_html=True)
 

@@ -30,7 +30,7 @@ with st.container():
     headerNavLinks = st.columns([5, 1, 1, 1, 1, 1])
     
     with headerNavLinks[0]: 
-        st.markdown('<div class="nav-logo">PL<span>view</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="nav-logo"><span class="red">P</span><span class="blue">L</span><span class="gold">view</span></div>', unsafe_allow_html=True)
     with headerNavLinks[1]: st.page_link(pages["Home"], label="Home", icon="🏠", use_container_width=True)
     with headerNavLinks[2]: st.page_link(pages["Athletes"], label="Athletes", icon="🏋️", use_container_width=True)
     with headerNavLinks[3]: st.page_link(pages["Records"], label="Records", icon="🏆", use_container_width=True)

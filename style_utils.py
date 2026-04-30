@@ -60,9 +60,11 @@ def inject_custom_css():
             letter-spacing: -0.5px;
             margin-top: -5px;
         }
-        .nav-logo span {
-            color: #d32f2f;
-        }
+        .nav-logo span.red { color: #d32f2f; }
+        .nav-logo span.blue { color: #1976d2; }
+        .nav-logo span.gold { color: #f9a825; }
+        .nav-logo span.green { color: #388e3c; }
+        .nav-logo span.white { color: #e0e0e0; }
 
         /* Hero Text Styles (used in home.py) */
         .hero-title {
@@ -87,7 +89,14 @@ def inject_custom_css():
             line-height: 1.15;
             margin-bottom: 1rem;
             text-align: center;
+            color: #f0f0f5;
         }
+        .hero-title2 span.red { color: #d32f2f; }
+        .hero-title2 span.blue { color: #1976d2; }
+        .hero-title2 span.gold { color: #f9a825; }
+        .hero-title2 span.green { color: #388e3c; }
+        .hero-title2 span.white { color: #e0e0e0; }
+
         .hero-subtitle {
             font-size: 1.25rem;
             color: #9a9ab0;
