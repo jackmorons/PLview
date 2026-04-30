@@ -10,7 +10,8 @@ def inject_custom_css():
         [data-testid="stHeader"] { display: none; }
         /* Radial gradient background */
         .stApp {
-            background: radial-gradient(circle at 50% 100%, #1e1e2b 0%, #0e0e12 80%, #050505 100%);
+            background: radial-gradient(circle at 50% 100%, #2a3b5c 0%, #161e2d 80%, #0a0f18 100%);
+            /* background: radial-gradient(circle at 50% 100%, #1e1e2b 0%, #0e0e12 80%, #050505 100%); */
             background-attachment: fixed;
         }
 
