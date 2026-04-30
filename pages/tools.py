@@ -2076,15 +2076,35 @@ elif active == "strength_index_calculator":
         value_name="Value",
     )
 
-    exp = st.expander("📊 Show data", expanded=True)
+    exp = st.expander("🤓 Nerd out →", expanded=False)
 
     with exp:
 
-        st.write("What am I looking at? 👇")
-        st.write("We have asked a number of subjects to perform a benching test: 5 sets, 5 minutes rests, 80% of their 1RM, all to absolute failure.")
-        st.write("The table below shows the number of repetitions performed in each set.")
-        st.write("Each row corresponds to a subject and each column corresponds to a set.")
-        st.write("The idea is capturing the mathematical trend of fatigue, to understand how fixed RPE sets could be developed educing reps over series to maintain fatigue.")
+        st.markdown("#### 🧪 The Experiment")
+        st.write("We asked a number of subjects to perform a benching test: **5 sets, 5 minutes rest, 80% of 1RM, all to absolute failure (RPE 10).** "
+                 "Each row is a subject, each column is a set, and the values are the reps achieved.")
+        st.write("The left column **normalizes** every subject's reps by their first-set count (set 1 = 1.0), revealing the universal fatigue *shape*. "
+                 "The right column shows the raw absolute rep counts.")
+
+        st.markdown("#### 🧮 How the RPE Drift Model Works")
+        st.write(
+            "From the normalized data we fit a **mean quadratic fatigue curve** — this tells us how fast max reps "
+            "decay across sets *when every set is taken to failure*."
+        )
+        st.write(
+            "But in real training you stop **before** failure (e.g. RPE 8 = 2 reps in reserve). "
+            "Stopping short generates **less fatigue**, so we scale the decay at each set by an "
+            "**effort ratio** = (reps done ÷ max reps possible)²."
+        )
+        st.write(
+            "The squaring reflects that the last reps near failure are disproportionately fatiguing — "
+            "skipping them has a bigger recovery benefit than a linear model would suggest."
+        )
+        st.write(
+            "This compounds iteratively: less fatigue → more reps available next set → lower effort → even less fatigue. "
+            "At RPE 10 the full experimental curve applies; at RPE 7 only ~33% of the fatigue accumulates per set."
+        )
+        st.caption("⚠️ Sets beyond 5 are extrapolated from the quadratic fit and may be less accurate.")
 
         col_norm, col_raw = st.columns(2)
 
@@ -2229,9 +2249,6 @@ elif active == "strength_index_calculator":
             table_key="table_raw",
         )
 
-        st.write("The left column normalizes every subject's reps by their first-set count (so set 1 = 1.0), revealing the universal fatigue *shape*. The right column shows the original absolute rep counts.")
-        st.write("From the mean curves we can derive a single fatigue-decay reference for fixed-RPE set programming.")
-
     # 1. Compute mean normalized fatigue coefficients from the data
     all_coeffs = []
     for row_label in melted_norm["Progression"].unique():
@@ -2260,7 +2277,10 @@ elif active == "strength_index_calculator":
 
     for i in range(1, len(sets)):
         # How hard was the previous set? (1.0 = to failure, lower = easier)
-        effort = min(fat_reps / max_reps_per_set[i - 1], 1.0) if max_reps_per_set[i - 1] > 0 else 1.0
+        # Squared: the last reps near failure generate disproportionately
+        # more fatigue, so stopping short has a bigger dampening effect.
+        effort_raw = min(fat_reps / max_reps_per_set[i - 1], 1.0) if max_reps_per_set[i - 1] > 0 else 1.0
+        effort = effort_raw ** 2
         # Experimental decay ratio from set i-1 → set i
         exp_decay_rate = exp_vals[i] / exp_vals[i - 1]
         # Scale: less effort → less fatigue → decay closer to 1.0
