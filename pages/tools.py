@@ -84,7 +84,7 @@ TOOLS_PAGES = [
     {"key": "freak_finder", "label": "🤯 Strength Freaks Finder"}, # 6
     #{"key": "geo_strength", "label": "🌍 Geographical Strength"}, # 7
     {"key": "twin_finder", "label": "🫂 Find Your Powerlifting Twin!"}, # 8
-    {"key": "strength_index_calculator", "label": "🧮 Strength Index Calculator"}, # 9
+    {"key": "strength_index_calculator", "label": "🧮 The All-In-One Calculator"}, # 9
 ]
 
 # Initialise active sub-page (default to first)
