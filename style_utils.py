@@ -71,7 +71,7 @@ def inject_custom_css():
             letter-spacing: -1px;
             line-height: 1.15;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #f0f0f5 30%, #d32f2f 65%, #1976d2);
+            background: linear-gradient(135deg, #d32f2f 0%, #1976d2 25%, #f9a825 50%, #388e3c 75%, #e0e0e0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
