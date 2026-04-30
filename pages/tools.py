@@ -2306,10 +2306,9 @@ elif active == "strength_index_calculator":
         secondary_y=False,
     )
 
-    # Max reps curve (secondary Y) — smooth line
+    # Max reps curve (secondary Y) — interpolate the iterative model points
     x_smooth = np.linspace(1, fat_series, 200)
-    decay_smooth = np.clip(np.polyval(mean_coeffs, x_smooth), 0.0, None)
-    max_reps_smooth = max_reps_set1 * decay_smooth
+    max_reps_smooth = np.interp(x_smooth, sets, max_reps_per_set)
 
     fig_drift.add_trace(
         go.Scatter(
