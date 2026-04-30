@@ -2268,8 +2268,20 @@ elif active == "strength_index_calculator":
     sets = np.arange(1, fat_series + 1)
 
     # Pre-compute the experimental per-step decay ratios from the curve
-    exp_vals = np.polyval(mean_coeffs, sets)
-    exp_vals = np.clip(exp_vals, 0.01, None)  # safety floor
+    # Quadratic polynomials are bad at extrapolation (they dive to negative).
+    # For sets > 5, we carry forward the decay rate observed between set 4 and 5.
+    exp_decay_rates = np.ones(len(sets))
+    for i in range(1, len(sets)):
+        if sets[i] <= 5:
+            val_prev = np.polyval(mean_coeffs, sets[i - 1])
+            val_curr = np.polyval(mean_coeffs, sets[i])
+            rate = val_curr / val_prev if val_prev > 0 else 0
+        else:
+            val_4 = np.polyval(mean_coeffs, 4)
+            val_5 = np.polyval(mean_coeffs, 5)
+            rate = val_5 / val_4 if val_4 > 0 else 0
+        
+        exp_decay_rates[i] = np.clip(rate, 0.01, 1.0)
 
     # Iterative model: accumulate fatigue proportional to effort
     max_reps_per_set = np.zeros(len(sets))
@@ -2281,10 +2293,9 @@ elif active == "strength_index_calculator":
         # more fatigue, so stopping short has a bigger dampening effect.
         effort_raw = min(fat_reps / max_reps_per_set[i - 1], 1.0) if max_reps_per_set[i - 1] > 0 else 1.0
         effort = effort_raw ** 2
-        # Experimental decay ratio from set i-1 → set i
-        exp_decay_rate = exp_vals[i] / exp_vals[i - 1]
+        
         # Scale: less effort → less fatigue → decay closer to 1.0
-        adjusted_decay = 1.0 - effort * (1.0 - exp_decay_rate)
+        adjusted_decay = 1.0 - effort * (1.0 - exp_decay_rates[i])
         max_reps_per_set[i] = max(max_reps_per_set[i - 1] * adjusted_decay, 0.0)
 
     eff_rir = max_reps_per_set - fat_reps
