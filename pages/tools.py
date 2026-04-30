@@ -11,7 +11,7 @@ import numpy as np
 import urllib.parse
 # import geopandas as gpd
 
-st.set_page_config(page_title="Tools - PLview", page_icon="⚙️", layout="wide")
+# st.set_page_config(page_title="Tools - PLview", page_icon="⚙️", layout="wide")
 
 st.header("Tools")
 st.write("Tools for data analysis and visualization built for coaches and athletes.")
