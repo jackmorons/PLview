@@ -7,7 +7,7 @@ inject_custom_css()
 st.markdown('<div class="hero-title">Powerlifting,<br>Visualized.</div>', unsafe_allow_html=True)
 
 # New Hero Title 2 (Using CSS classes for specific letters)
-st.markdown('<div class="hero-title2"><span class="red">P</span>owerlifting,<br><span class="blue">V</span>isualized.</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-title2">Power<span class="red">l</span><span class="blue">i</span><span class="gold">f</span><span class="green">t</span>ing,<br>Visualized.</div>', unsafe_allow_html=True)
 
 st.markdown('<div style="margin-top: 2rem;"></div>', unsafe_allow_html=True)
 
