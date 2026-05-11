@@ -981,7 +981,7 @@ elif active == "pattern_discoverer":
     st.markdown("---")
 
     # 3. Sandbox Controls
-    with st.expander("🛠️ Customise Your Sandbox", expanded=True):
+    with st.expander("🛠️ Customise Your Sandbox", expanded=False):
         ctrl_c1, ctrl_c2, ctrl_c3, ctrl_c4 = st.columns(4)
         
         with ctrl_c1:
