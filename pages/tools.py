@@ -297,7 +297,6 @@ if active == "lift_distributions":
     
     with st.expander("The Distribution:", expanded=False):
         st.write("This chart shows the distribution of each category across males and females. The apparent discretization of values is due to the limited number of plates available, making a 2.5kg (5lb) increase or decrease the smallest possible increment. The exceptions are record attempts, where a smaller jump is allowed to break a record.")
-    
 
     # ── Scientific Discovery: The Correlation Matrix ─────────────────
     st.markdown("---")
@@ -349,6 +348,10 @@ if active == "lift_distributions":
             - **Negative Correlation (Blue)**: Negatives up to -1.0. This means as one goes up, the other usually goes down (e.g., Age vs Dots).
             - **Insights**: Notice how **Bench Press** often has a lower correlation with **Deadlift** than **Squat** does. This statistically demonstrates that deadlifting depends more on lower-body 'squat' patterns than upper-body 'bench' patterns!
         """)
+
+    if st.button("More insights and notes in the info page."):
+        st.link_button("Go to Info Page", "/info")
+        
 
 # ---------- 2. 1v1 Strength Comparison ----------
 elif active == "1v1":
