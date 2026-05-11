@@ -48,8 +48,8 @@ with filter_cols[1]:
     selected_age_classes = IPF_AGE_DIVISIONS[ipf_division]
 
 with filter_cols[2]:
-    weight_classes = sorted(df["WeightClassKg"].dropna().unique().tolist())
-    weight_class = st.selectbox("Weight Class (kg)", weight_classes, key="rec_wc")
+    all_wc = sorted(df["WeightClassKg"].dropna().unique().tolist())
+    weight_class = st.selectbox("Weight Class (kg)", all_wc, key="rec_wc", format_func=lambda x: f"{x} kg")
 
 with filter_cols[3]:
     equipment_options = sorted(df["Equipment"].dropna().unique().tolist())

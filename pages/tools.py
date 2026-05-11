@@ -630,7 +630,7 @@ elif active == "weight_class":
                     break
             else: curr_class_idx = len(all_wc) - 1 # SHW
             
-            eval_target_wc = st.selectbox("Target Weight Class", all_wc, index=max(0, curr_class_idx-1))
+            eval_target_wc = st.selectbox("Target Weight Class", all_wc, index=max(0, curr_class_idx-1), format_func=lambda x: f"{x}")
 
         with input_c3:
             st.write("🔮 **The 'Trust Me Bro' Speculator**")
@@ -762,7 +762,7 @@ elif active == "entry_calculator":
     with input_c2:
         ref_df = malesdf if calc_gender == "Male" else femalesdf
         all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
-        calc_wc = st.selectbox("Weight Class", all_wc, index=min(len(all_wc)-1, 5), key="trend_wc")
+        calc_wc = st.selectbox("Weight Class", all_wc, index=min(len(all_wc)-1, 5), key="trend_wc", format_func=lambda x: f"{x}")
         calc_goal = st.number_input("Target 3rd Lift (kg)", min_value=20.0, max_value=600.0, value=200.0, step=2.5, format="%.1f")
 
     with input_c3:
@@ -1220,7 +1220,7 @@ elif active == "freak_finder":
         # Dynamic Weight Class based on Gender
         ref_df = malesdf if freak_gender == "Male" else femalesdf
         all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
-        sel_wc = st.selectbox("Weight Class", ["All"] + all_wc, key="freak_wc_sel")
+        sel_wc = st.selectbox("Weight Class", ["All"] + all_wc, key="freak_wc_sel", format_func=lambda x: f"{x}")
         metric_y = st.selectbox("Y-Axis Metric", ["TotalKg", "Dots", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"], index=0)
 
     with filter_c3:
@@ -1556,60 +1556,21 @@ elif active == "strength_index_calculator":
         gender = st.selectbox("Gender", ["Male", "Female"], help="Select your gender for coefficient calculation.")
     
     with input_cols[1]:
-        # Age range from 5 to 100
-        age_options = list(range(5, 101))
-        age = st.selectbox("Age", age_options, index=20, help="Your current age.")
+        age = st.number_input("Age", min_value=5, max_value=100, value=25, step=1, format="%d", help="Your current age.")
     
     with input_cols[2]:
-        # Weight from 40 to 250 with delta 0.1
-        # Use np.linspace for precise step counts or np.arange with round
-        weight_range = np.arange(40.0, 250.1, 0.1)
-        weight_options = [round(x, 1) for x in weight_range]
-        # Default to a common weight like 80.0
-        try:
-            default_w_idx = weight_options.index(80.0)
-        except ValueError:
-            default_w_idx = 0
-            
-        weight = st.selectbox("Bodyweight (kg)", weight_options, index=default_w_idx)
+        weight = st.number_input("Bodyweight (kg)", min_value=40.0, max_value=250.0, value=80.0, step=0.1, format="%.1f")
 
     input_cols2 = st.columns(3)
 
     with input_cols2[0]:
-        # Total from 0 to 1500 with delta 2.5
-        bench_range = np.arange(0.0, 1502.5, 2.5)
-        bench_options = [round(x, 1) for x in bench_range]
-        # Default to a common total like 400.0
-        try:
-            default_bench_idx = bench_options.index(100.0)
-        except ValueError:
-            default_bench_idx = 0
-            
-        bench = st.selectbox("Bench (kg)", bench_options, index=default_bench_idx)
+        bench = st.number_input("Bench (kg)", min_value=0.0, max_value=500.0, value=100.0, step=2.5, format="%.1f")
     
     with input_cols2[1]:
-        # Total from 0 to 1500 with delta 2.5
-        squat_range = np.arange(0.0, 1502.5, 2.5)
-        squat_options = [round(x, 1) for x in squat_range]
-        # Default to a common total like 400.0
-        try:
-            default_squat_idx = squat_options.index(150.0)
-        except ValueError:
-            default_squat_idx = 0
-            
-        squat = st.selectbox("Squat (kg)", squat_options, index=default_squat_idx)
+        squat = st.number_input("Squat (kg)", min_value=0.0, max_value=600.0, value=150.0, step=2.5, format="%.1f")
     
     with input_cols2[2]:
-        # Total from 0 to 1500 with delta 2.5
-        deadlift_range = np.arange(0.0, 1502.5, 2.5)
-        deadlift_options = [round(x, 1) for x in deadlift_range]
-        # Default to a common total like 400.0
-        try:
-            default_deadlift_idx = deadlift_options.index(150.0)
-        except ValueError:
-            default_deadlift_idx = 0
-            
-        deadlift = st.selectbox("Deadlift (kg)", deadlift_options, index=default_deadlift_idx)
+        deadlift = st.number_input("Deadlift (kg)", min_value=0.0, max_value=600.0, value=150.0, step=2.5, format="%.1f")
     
     total = squat + bench + deadlift;
 
