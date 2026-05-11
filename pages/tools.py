@@ -1316,7 +1316,7 @@ elif active == "freak_finder":
             labels={metric_x: f"{metric_x} (kg/yrs)", metric_y: f"{metric_y} (kg/pts)"},
             template="plotly_dark",
             nbinsx=30, nbinsy=30,
-            color_continuous_scale="Viridis"
+            color_continuous_scale=DENSITY_COLORSCALE
         )
         
         # We add them as a separate trace
@@ -1341,10 +1341,11 @@ elif active == "freak_finder":
         fig_freak.update_layout(
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
-            coloraxis_showscale=False,
+            coloraxis_showscale=True,
+            coloraxis_colorbar=dict(title="Lifter Density", thickness=15, len=0.8),
             height=700,
-            margin=dict(l=20, r=20, t=60, b=20),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            margin=dict(l=20, r=80, t=60, b=20),
+            legend=dict(x=0.01, y=0.99, bgcolor="rgba(0,0,0,0.5)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1)
         )
 
         # --- Add User Point (Always on Top) ---
