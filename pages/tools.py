@@ -349,8 +349,7 @@ if active == "lift_distributions":
             - **Insights**: Notice how **Bench Press** often has a lower correlation with **Deadlift** than **Squat** does. This statistically demonstrates that deadlifting depends more on lower-body 'squat' patterns than upper-body 'bench' patterns!
         """)
 
-    if st.button("More insights and notes in the info page."):
-        st.link_button("Go to Info Page", "/info")
+    st.link_button("More insights and notes in the info page.", "/info")
         
 
 # ---------- 2. 1v1 Strength Comparison ----------
