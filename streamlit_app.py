@@ -4,15 +4,23 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import locale
+import plotly.io as pio
 
-# Force dots as decimal separators
+# Force dots as decimal separators globally for Python & Plotly
 try:
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 except:
     try:
         locale.setlocale(locale.LC_ALL, 'en_US')
     except:
-        pass
+        try:
+            locale.setlocale(locale.LC_ALL, 'C')
+        except:
+            pass
+
+# Consistently use dots in Plotly charts
+pio.templates.default = "plotly_dark"
+pio.templates[pio.templates.default].layout.separators = ". "
 
 st.set_page_config(
     page_title="PLview",

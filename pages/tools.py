@@ -630,7 +630,7 @@ elif active == "weight_class":
                     break
             else: curr_class_idx = len(all_wc) - 1 # SHW
             
-            eval_target_wc = st.selectbox("Target Weight Class", all_wc, index=max(0, curr_class_idx-1), format_func=lambda x: f"{x}")
+            eval_target_wc = st.selectbox("Target Weight Class", all_wc, index=max(0, curr_class_idx-1), format_func=lambda x: str(x).replace(',', '.'))
 
         with input_c3:
             st.write("🔮 **The 'Trust Me Bro' Speculator**")
@@ -762,7 +762,7 @@ elif active == "entry_calculator":
     with input_c2:
         ref_df = malesdf if calc_gender == "Male" else femalesdf
         all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
-        calc_wc = st.selectbox("Weight Class", all_wc, index=min(len(all_wc)-1, 5), key="trend_wc", format_func=lambda x: f"{x}")
+        calc_wc = st.selectbox("Weight Class", all_wc, index=min(len(all_wc)-1, 5), key="trend_wc", format_func=lambda x: str(x).replace(',', '.'))
         calc_goal = st.number_input("Target 3rd Lift (kg)", min_value=20.0, max_value=600.0, value=200.0, step=2.5, format="%.1f")
 
     with input_c3:
@@ -1220,7 +1220,7 @@ elif active == "freak_finder":
         # Dynamic Weight Class based on Gender
         ref_df = malesdf if freak_gender == "Male" else femalesdf
         all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
-        sel_wc = st.selectbox("Weight Class", ["All"] + all_wc, key="freak_wc_sel", format_func=lambda x: f"{x}")
+        sel_wc = st.selectbox("Weight Class", ["All"] + all_wc, key="freak_wc_sel", format_func=lambda x: str(x).replace(',', '.'))
         metric_y = st.selectbox("Y-Axis Metric", ["TotalKg", "Dots", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"], index=0)
 
     with filter_c3:

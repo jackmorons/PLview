@@ -49,7 +49,7 @@ with filter_cols[1]:
 
 with filter_cols[2]:
     all_wc = sorted(df["WeightClassKg"].dropna().unique().tolist())
-    weight_class = st.selectbox("Weight Class (kg)", all_wc, key="rec_wc", format_func=lambda x: f"{x} kg")
+    weight_class = st.selectbox("Weight Class (kg)", all_wc, key="rec_wc", format_func=lambda x: str(x).replace(',', '.') + " kg")
 
 with filter_cols[3]:
     equipment_options = sorted(df["Equipment"].dropna().unique().tolist())
