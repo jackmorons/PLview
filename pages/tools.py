@@ -766,7 +766,7 @@ elif active == "weight_class":
             height=300, showlegend=False, margin=dict(l=10, r=10, t=10, b=10)
         )
         st.plotly_chart(fig_bar, use_container_width=True)
-        st.link_button("More insights and notes in the info page.", "/info#chart-reading-101", use_container_width=True)
+    st.link_button("More insights and notes in the info page.", "/info#chart-reading-101", use_container_width=True)
 
 
 # ---------- 4. Trend Calculator (Entry Calculator) ----------
