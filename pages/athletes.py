@@ -268,7 +268,7 @@ if selected_name:
         else:
             st.info("Not enough category data for benchmarks.")
         
-    st.link_button("More insights and notes in the info page.", "/info#chart-reading-101")          
+    st.link_button("More insights and notes in the info page.", "/info#chart-reading-101", use_container_width=True)
 
     st.write("") # Extra spacer to push down next section
     st.write("") 

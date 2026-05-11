@@ -349,8 +349,8 @@ if active == "lift_distributions":
             - **Insights**: Notice how **Bench Press** often has a lower correlation with **Deadlift** than **Squat** does. This statistically demonstrates that deadlifting depends more on lower-body 'squat' patterns than upper-body 'bench' patterns!
         """)
 
-    st.link_button("More insights and notes in the info page.", "/info#chart-reading-101")
-        
+    st.link_button("More insights and notes in the info page.", "/info#chart-reading-101", use_container_width=True)
+    
 
 # ---------- 2. 1v1 Strength Comparison ----------
 elif active == "1v1":
@@ -572,7 +572,7 @@ elif active == "1v1":
             legend=dict(x=0.01, y=0.99, bgcolor="rgba(0,0,0,0.5)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1)
         )
         st.plotly_chart(fig_heat, use_container_width=True)
-        st.link_button("More insights and notes in the info page.", "/info#chart-reading-101")
+        st.link_button("More insights and notes in the info page.", "/info#chart-reading-101", use_container_width=True)
 
         # --- Row 3: Gauges and Efficiency ---
         r3_col1, r3_col2 = st.columns(2)
