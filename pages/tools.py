@@ -618,6 +618,7 @@ elif active == "1v1":
                 showlegend=False, xaxis_title="Kgs lifted per Kg of bodyweight"
             )
             st.plotly_chart(fig_eff, use_container_width=True)
+            st.link_button("More insights and notes in the info page.", "/info#chart-reading-101")
 
 # ---------- 3. Weight Class Evaluator ----------
 elif active == "weight_class":
