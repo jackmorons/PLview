@@ -536,7 +536,8 @@ elif active == "1v1":
                 height=500
             )
             st.plotly_chart(fig_coeff, use_container_width=True)
-        st.link_button("More insights and notes in the info page.", "/info#chart-reading-101")
+        clb1, clb2, clb3 = st.columns(3)
+        clb2.link_button("More insights and notes in the info page.", "/info#chart-reading-101")
 
         # --- Row 2: Population Heatmap ---
         st.markdown("<br>", unsafe_allow_html=True)
