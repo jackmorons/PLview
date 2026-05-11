@@ -946,6 +946,11 @@ elif active == "pattern_discoverer":
     
     # 2. Discovery Presets (Quick Access)
     st.markdown("### 💡 Quick Discoveries")
+    ex_c1, ex_c2, ex_c3, ex_c4 = st.columns(4)
+    ex_c1.write("Example 1: Correlation between age and total.")
+    ex_c2.write("Example 2: Correlation between squat and deadlift.")
+    ex_c3.write("Example 3: Trend of squat, bench, deadlift in 3d.")
+    ex_c4.write("Example 4: Correlation between bodyweight and total.")
     p_c1, p_c2, p_c3, p_c4 = st.columns(4)
     
     # Preset initialisation
