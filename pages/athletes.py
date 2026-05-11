@@ -14,9 +14,9 @@ st.markdown("---")
 
 # --- Load data from session state ---
 if "males_data" not in st.session_state:
-    st.session_state["males_data"] = pd.read_csv("datasets/OP_Males.csv", sep=";")
+    st.session_state["males_data"] = pd.read_csv("datasets/OP_Males.csv", sep=";", decimal=",")
 if "females_data" not in st.session_state:
-    st.session_state["females_data"] = pd.read_csv("datasets/OP_Females.csv", sep=";")
+    st.session_state["females_data"] = pd.read_csv("datasets/OP_Females.csv", sep=";", decimal=",")
 
 malesdf = st.session_state["males_data"]
 femalesdf = st.session_state["females_data"]
@@ -407,7 +407,14 @@ if selected_name:
     display_cols = [c for c in display_cols if c in athlete_df.columns]
     history = athlete_df[display_cols].reset_index(drop=True)
     history.index = history.index + 1
-    st.dataframe(history, use_container_width=True)
+    st.dataframe(
+        history, 
+        use_container_width=True,
+        column_config={
+            col: st.column_config.NumberColumn(format="%.2f") 
+            for col in history.select_dtypes(include=['number']).columns
+        }
+    )
 
 else:
     st.info("🏋️ Select an athlete from the dropdown above to view their profile and competition history.")

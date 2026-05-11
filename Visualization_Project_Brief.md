@@ -32,7 +32,7 @@ The visualizations are designed to support the following actions and behaviors:
 ## 7. Data
 * **Datasets:** The project uses a curated, split subset of the OpenPowerlifting database (separated into male and female datasets to optimize memory usage).
 * **Variables:** Includes categorical data (Name, Equipment, AgeClass, Federation) and quantitative data (BodyweightKg, Best3SquatKg, Best3BenchKg, Best3DeadliftKg, TotalKg, Dots, and individual attempts).
-* **Granularity:** The data is granular down to the level of individual competition entries, encompassing over 120,000 records.
+* **Granularity:** The data is granular down to the level of individual competition entries, encompassing over 120.000 records.
 * **Data Quality Considerations:** Anomalies (such as 0kg bodyweight outliers) and single-lift competitions have been cleaned out to ensure statistical averages represent full powerlifting meets. Failed attempts are captured as negative values to allow for accurate progression and trend tracking.
 * **Limitations:** The dataset relies exclusively on historical, public competition data. It does not account for gym lifts, training age, or injuries, meaning predictive tools operate under the assumption of normal competition conditions. 
 

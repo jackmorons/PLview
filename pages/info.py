@@ -29,7 +29,7 @@ with col2:
         for strength sports records. This project is possible thanks to the tireless 
         volunteers who archive every single attempt in the sport's history.
         
-        *   **Dataset Scope**: Over **120,000+** unique contest results.
+        *   **Dataset Scope**: Over **120.000+** unique contest results.
         *   **Cleaning Process**: We've removed anomalies (like the 0kg SHW squatters) 
             to ensure that the "Average" truly represents the reality of the platform,
             we also removed single lifts competition for simplicity.

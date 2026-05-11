@@ -14,9 +14,9 @@ st.markdown("---")
 
 # --- Load data from session state ---
 if "males_data" not in st.session_state:
-    st.session_state["males_data"] = pd.read_csv("datasets/OP_Males.csv", sep=";")
+    st.session_state["males_data"] = pd.read_csv("datasets/OP_Males.csv", sep=";", decimal=",")
 if "females_data" not in st.session_state:
-    st.session_state["females_data"] = pd.read_csv("datasets/OP_Females.csv", sep=";")
+    st.session_state["females_data"] = pd.read_csv("datasets/OP_Females.csv", sep=";", decimal=",")
 
 malesdf = st.session_state["males_data"]
 femalesdf = st.session_state["females_data"]

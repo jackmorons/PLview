@@ -40,8 +40,8 @@ with st.container():
 st.markdown("---")
 
 # import data from csv files as dictionaries
-males_data = pd.read_csv("datasets/OP_Males.csv", sep=";")
-females_data = pd.read_csv("datasets/OP_Females.csv", sep=";")
+males_data = pd.read_csv("datasets/OP_Males.csv", sep=";", decimal=",")
+females_data = pd.read_csv("datasets/OP_Females.csv", sep=";", decimal=",")
 
 if st.session_state.get("males_data") is None:
     st.session_state["males_data"] = males_data
