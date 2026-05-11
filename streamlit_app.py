@@ -40,13 +40,10 @@ with st.container():
 st.markdown("---")
 
 # import data from csv files as dictionaries
-males_data = pd.read_csv("datasets/OP_Males.csv", sep=";", decimal=",")
-females_data = pd.read_csv("datasets/OP_Females.csv", sep=";", decimal=",")
-
-if st.session_state.get("males_data") is None:
-    st.session_state["males_data"] = males_data
-if st.session_state.get("females_data") is None:
-    st.session_state["females_data"] = females_data
+if "males_data" not in st.session_state:
+    st.session_state["males_data"] = pd.read_csv("datasets/OP_Males.csv", sep=";")
+if "females_data" not in st.session_state:
+    st.session_state["females_data"] = pd.read_csv("datasets/OP_Females.csv", sep=";")
 
 # Run navigation engine
 pg = st.navigation(list(pages.values()), position="hidden")
