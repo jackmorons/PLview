@@ -2423,3 +2423,5 @@ elif active == "strength_index_calculator":
             f"✅ Scheme {fat_series}×{fat_reps} @ RPE {fat_rpe} looks sustainable! "
             f"Final set estimated RPE: **{format_decimal(f'{eff_rpe[-1]:.1f}')}**"
         )
+    st.link_button("More insights and notes in the info page.", "/info#chart-reading-101", use_container_width=True)
+    
