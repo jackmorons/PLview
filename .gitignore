@@ -1,4 +1,3 @@
 .DS_Store
 .OP_*.csv.icloud
 *.icloud
-check_locale.py
