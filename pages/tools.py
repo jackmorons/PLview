@@ -618,10 +618,10 @@ elif active == "weight_class":
             ref_df = malesdf if eval_gender == "Male" else femalesdf
             all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
             
-            eval_curr_bw = st.number_input("Current Bodyweight (kg)", min_value=30.0, max_value=250.0, value=90.0, step=0.1)
+            eval_curr_bw = st.number_input("Current Bodyweight (kg)", min_value=30.0, max_value=250.0, value=90.0, step=0.1, format="%.1f")
         
         with input_c2:
-            eval_curr_tot = st.number_input("Current Total (kg)", min_value=0.0, max_value=1500.0, value=500.0, step=2.5)
+            eval_curr_tot = st.number_input("Current Total (kg)", min_value=0.0, max_value=1500.0, value=500.0, step=2.5, format="%.1f")
             # Find current class automatically
             curr_class_idx = 0
             for i, wc in enumerate(all_wc):
@@ -763,7 +763,7 @@ elif active == "entry_calculator":
         ref_df = malesdf if calc_gender == "Male" else femalesdf
         all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
         calc_wc = st.selectbox("Weight Class", all_wc, index=min(len(all_wc)-1, 5), key="trend_wc")
-        calc_goal = st.number_input("Target 3rd Lift (kg)", min_value=20.0, max_value=600.0, value=200.0, step=2.5)
+        calc_goal = st.number_input("Target 3rd Lift (kg)", min_value=20.0, max_value=600.0, value=200.0, step=2.5, format="%.1f")
 
     with input_c3:
         all_equip = sorted(ref_df["Equipment"].dropna().unique().tolist())
@@ -994,13 +994,13 @@ elif active == "pattern_discoverer":
         u_c1, u_c2, u_c3 = st.columns(3)
         with u_c1:
             u_sex_sel = st.selectbox("Your Sex", ["Male", "Female"], key="u_sandbox_gender")
-            u_bw = st.number_input("Your Bodyweight (kg)", 30.0, 250.0, 80.0, 0.1, key="u_sandbox_bw")
-            u_age = st.number_input("Your Age", 5, 100, 25, 1, key="u_sandbox_age")
+            u_bw = st.number_input("Your Bodyweight (kg)", 30.0, 250.0, 80.0, 0.1, key="u_sandbox_bw", format="%.1f")
+            u_age = st.number_input("Your Age", 5, 100, 25, 1, key="u_sandbox_age", format="%d")
         with u_c2:
-            u_sq = st.number_input("Your Best Squat (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_sq")
-            u_bn = st.number_input("Your Best Bench (kg)", 0.0, 500.0, 0.0, 2.5, key="u_sandbox_bn")
+            u_sq = st.number_input("Your Best Squat (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_sq", format="%.1f")
+            u_bn = st.number_input("Your Best Bench (kg)", 0.0, 500.0, 0.0, 2.5, key="u_sandbox_bn", format="%.1f")
         with u_c3:
-            u_dl = st.number_input("Your Best Deadlift (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_dl")
+            u_dl = st.number_input("Your Best Deadlift (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_dl", format="%.1f")
             
             # Local utility for calculation
             def get_sandbox_user_metrics(s, b, d, w, a, g):
@@ -1243,13 +1243,13 @@ elif active == "freak_finder":
         u_c1, u_c2, u_c3 = st.columns(3)
         with u_c1:
             u_sex_sel = st.selectbox("Your Sex", ["Male", "Female"], key="u_sandbox_gender")
-            u_bw = st.number_input("Your Bodyweight (kg)", 30.0, 250.0, 80.0, 0.1, key="u_sandbox_bw")
-            u_age = st.number_input("Your Age", 5, 100, 25, 1, key="u_sandbox_age")
+            u_bw = st.number_input("Your Bodyweight (kg)", 30.0, 250.0, 80.0, 0.1, key="u_twin_bw", format="%.1f")
+            u_age = st.number_input("Your Age", 5, 100, 25, 1, key="u_twin_age", format="%d")
         with u_c2:
-            u_sq = st.number_input("Your Best Squat (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_sq")
-            u_bn = st.number_input("Your Best Bench (kg)", 0.0, 500.0, 0.0, 2.5, key="u_sandbox_bn")
+            u_sq = st.number_input("Your Best Squat (kg)", 0.0, 600.0, 0.0, 2.5, key="u_twin_sq", format="%.1f")
+            u_bn = st.number_input("Your Best Bench (kg)", 0.0, 500.0, 0.0, 2.5, key="u_twin_bn", format="%.1f")
         with u_c3:
-            u_dl = st.number_input("Your Best Deadlift (kg)", 0.0, 600.0, 0.0, 2.5, key="u_sandbox_dl")
+            u_dl = st.number_input("Your Best Deadlift (kg)", 0.0, 600.0, 0.0, 2.5, key="u_twin_dl", format="%.1f")
             
             # Local utility for calculation
             def get_sandbox_user_metrics(s, b, d, w, a, g):
@@ -1400,11 +1400,11 @@ elif active == "twin_finder":
         u_gender = st.selectbox("Gender", ["Male", "Female"], key="twin_gender")
         u_equip = st.selectbox("Equipment", ["Raw", "Wraps", "Single-ply", "Multi-ply"], key="twin_equip")
     with input_c2:
-        u_bw = st.number_input("Bodyweight (kg)", min_value=30.0, max_value=250.0, value=82.5, step=0.5)
-        u_squat = st.number_input("Best Squat (kg)", min_value=0.0, max_value=600.0, value=180.0, step=2.5)
+        u_bw = st.number_input("Bodyweight (kg)", min_value=30.0, max_value=250.0, value=82.5, step=0.5, format="%.1f")
+        u_squat = st.number_input("Best Squat (kg)", min_value=0.0, max_value=600.0, value=180.0, step=2.5, format="%.1f")
     with input_c3:
-        u_bench = st.number_input("Best Bench (kg)", min_value=0.0, max_value=400.0, value=120.0, step=2.5)
-        u_deadlift = st.number_input("Best Deadlift (kg)", min_value=0.0, max_value=500.0, value=220.0, step=2.5)
+        u_bench = st.number_input("Best Bench (kg)", min_value=0.0, max_value=400.0, value=120.0, step=2.5, format="%.1f")
+        u_deadlift = st.number_input("Best Deadlift (kg)", min_value=0.0, max_value=500.0, value=220.0, step=2.5, format="%.1f")
 
     if st.button("🔍 Find My Twin", type="primary", use_container_width=True):
         # 2. Logic
@@ -1882,10 +1882,10 @@ elif active == "strength_index_calculator":
     calc_c1, calc_c2, calc_c3 = st.columns(3)
     
     with calc_c1:
-        load = st.number_input("Load (kg)", min_value=0.0, max_value=1000.0, value=100.0, step=2.5, help="The weight you lifted.")
+        load = st.number_input("Load (kg)", min_value=0.0, max_value=1000.0, value=100.0, step=2.5, format="%.1f", help="The weight you lifted.")
     
     with calc_c2:
-        reps = st.number_input("Reps", min_value=1, max_value=20, value=5, step=1, help="Number of repetitions performed.")
+        reps = st.number_input("Reps", min_value=1, max_value=20, value=5, step=1, format="%d", help="Number of repetitions performed.")
     
     with calc_c3:
         rpe = st.slider("RPE", min_value=5.0, max_value=10.0, value=8.0, step=0.5, help="Rate of Perceived Exertion (10 = absolute limit, 9 = 1 rep in tank, etc.)")
@@ -2022,13 +2022,13 @@ elif active == "strength_index_calculator":
     with fat_c1:
         fat_series = st.number_input(
             "Series (sets)", min_value=1, max_value=20, value=5, step=1,
-            help="Number of working sets.", key="fat_series"
+            format="%d", help="Number of working sets.", key="fat_series"
         )
 
     with fat_c2:
         fat_reps = st.number_input(
             "Reps per set", min_value=1, max_value=30, value=5, step=1,
-            help="Repetitions per set.", key="fat_reps"
+            format="%d", help="Repetitions per set.", key="fat_reps"
         )
 
     with fat_c3:

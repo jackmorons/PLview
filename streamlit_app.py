@@ -3,6 +3,16 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import locale
+
+# Force dots as decimal separators
+try:
+    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+except:
+    try:
+        locale.setlocale(locale.LC_ALL, 'en_US')
+    except:
+        pass
 
 st.set_page_config(
     page_title="PLview",
