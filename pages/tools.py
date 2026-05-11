@@ -1383,6 +1383,9 @@ elif active == "freak_finder":
             ))
         
         st.plotly_chart(fig_freak, use_container_width=True)
+        st.link_button("More insights and notes in the info page.", "/info#chart-reading-101", use_container_width=True)
+        
+
 
         
         # 5. List of identified freaks
