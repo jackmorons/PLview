@@ -41,44 +41,107 @@ st.markdown("---")
 
 # ── Reading the Charts ───────────────────────────────────────────────
 st.header("📊 Chart Reading 101")
-st.write("If the colors and lines look confusing, here’s a quick field guide to the analytics:")
+st.write("If the colors and lines look confusing, here’s a quick field guide to the analytics and science behind PLview.")
 
-with st.expander("🛡️ Radar Charts: The Strength Geometry"):
+# --- 1. Visual Geometry ---
+st.subheader("📐 Visual Geometry")
+
+with st.expander("🛡️ Radar Charts: The Strength Profile"):
     st.write("""
-        - **Outer Points**: Represent the absolute maximums or best coefficients. 
-        - **Area**: The bigger the shape, the more "balanced" the athlete. 
-        - **Z-Ordering**: In our 1v1 tool, we always put the smaller shape on top 
-          so you can see how much further you need to grow to engulf your competition!
+        Radar charts visualize multi-dimensional data in a single 'web'. We use two types:
+        
+        - **S/B/D Profile**: Shows the absolute balance between your Squat, Bench, and Deadlift. 
+            - *How to read*: A perfectly equilateral triangle means a balanced lifter. A sharp point towards one lift indicates a specialist (e.g., a "Bench Specialist").
+        - **Coefficient Battle**: Compares multiple scoring systems (Dots, Wilks, etc.). 
+            - *How to read*: Since different systems use different scales, we **normalize** these to a 0-100 scale. A score of 100 on the radar represents a world-class level for that specific coefficient.
+        - **Pro Tip**: In 1v1 matchups, the smaller shape is always plotted on top of the larger one, making the performance gap immediately visible.
     """)
 
-with st.expander("🗺️ Heatmaps: Searching the Ocean"):
+with st.expander("🗺️ Density Heatmaps: The Ocean of Lifters"):
     st.write("""
-        - **Brightness (Yellow/Green)**: Areas of high population density. Most people live here.
-        - **Darkness (Purple)**: The "Quiet Zones." If you see a star marker here at a high Total, 
-          you're looking at a world-class outlier (a 'Freak' in our Sandbox terms).
+        Heatmaps represent the population density across two variables (usually Bodyweight vs. Total).
+        
+        - **Colorscale (Viridis)**: 
+            - **Yellow/Green**: High density. This is where the majority of lifters sit.
+            - **Dark Purple**: Low density. These are the outliers.
+        - **Non-Linear Scaling**: We use a power-law transformation ($x^3$) for the colors. This "stretches" the scale at the bottom, making it easier to see the difference between 0 lifters and 1-5 lifters in a specific weight/total region.
+        - **Markers**: Star markers represent specific athletes. If a star is in a dark purple region but high on the Y-axis, you are looking at a "Freak"—someone lifting weights very few others can at that bodyweight.
     """)
 
-with st.expander("📈 Trend Path: The Road to White Lights"):
+with st.expander("📉 Histograms: Population Distribution"):
     st.write("""
-        - **The Staircase**: Shows your recommended attempt progression.
-        - **The Shaded Aura**: This is the 'Safe Zone'—representing **±1 Standard Deviation** 
-          of thousands of successful lifters in your weight class. Straying too far outside 
-          it might mean your opener is too heavy or your 2nd is too conservative.
+        Histograms show how often certain values occur in the population.
+        
+        - **X-Axis**: The metric value (e.g., Total in kg).
+        - **Y-Axis (Frequency)**: We use **Relative Frequency (Normalized to 1)**. This means the sum of all bars equals 100% of that population (e.g., all Males in the database).
+        - **Why Relative?**: It allows you to compare groups of different sizes (e.g., 50,000 Males vs 15,000 Females) on the same scale without one group dwarfing the other.
     """)
 
-with st.expander("🔴 Dots?"):
+with st.expander("📈 Trend Paths & Shaded Areas"):
     st.write("""
-        - **What is the Dots value?**: the Dots (Dynamic Objective Team Scoring) is a unified
-        method of evaluating someone's strength, taking in consideration their body weight, age and
-        total.
+        Used primarily in the **Entry Calculator** and **Fatigue Manager**.
+        
+        - **The Staircase**: Represents a discrete progression (e.g., 1st → 2nd → 3rd attempts).
+        - **The Shaded Aura (Population Norm)**: This represents **±1 Standard Deviation** from the mean of successful performances. 
+            - *Example*: In the Entry Calculator, staying within the green shaded area means your jump sizes are statistically aligned with how most successful lifters (who go 3-for-3) manage their energy.
     """)
 
-with st.expander("📉 Pearson coefficient"):
+# --- 2. The Coefficient Lab ---
+st.subheader("🧪 The Coefficient Lab")
+st.write("How do we compare a 60kg woman to a 120kg man? We use mathematical formulas called coefficients.")
+
+with st.expander("🔴 Dots (Dynamic Objective Team Scoring)"):
     st.write("""
-        - **What is the Pearson coefficient?**: the Pearson coefficient is a measure of the
-        linear correlation between two sets of data. It is a value between -1 and 1, where 1
-        indicates a perfect positive correlation, -1 indicates a perfect negative correlation,
-        and 0 indicates no correlation.
+        The current standard for many international federations.
+        - **Mechanism**: Uses a complex polynomial curve based on bodyweight and sex.
+        - **Advantage**: It is designed to be more "fair" across the entire spectrum of bodyweights, reducing the historical advantage that extremely light or extremely heavy lifters had in older systems.
+        - **Scale**: A score above **500** is considered elite/national level; above **600** is world-class.
+    """)
+
+with st.expander("⚪ Wilks (The Classic)"):
+    st.write("""
+        The most famous coefficient in powerlifting history.
+        - **Mechanism**: A 5th-degree polynomial formula developed by Robert Wilks.
+        - **Context**: While less common in the IPF now, it remains the "lingua franca" for many lifters globally when discussing relative strength.
+    """)
+
+with st.expander("🟢 Goodlift (IPF Points)"):
+    st.write("""
+        The modern official system of the International Powerlifting Federation.
+        - **Mechanism**: Unlike Dots or Wilks, it is a **points-based system** derived from the regression of actual world-level competition data.
+        - **Scale**: Usually expressed in points (e.g., 100 points). It is specifically tuned to reward lifters who perform well relative to the top of their specific category.
+    """)
+
+with st.expander("🔵 Glossbrenner"):
+    st.write("""
+        A hybrid coefficient often used in geared (equipped) powerlifting or by specific federations like the WPC.
+        - **Mechanism**: Combines elements of the Wilks and Oliphant formulas. It is often perceived as being more favorable to mid-heavyweight lifters compared to Dots.
+    """)
+
+# --- 3. Scientific Metrics ---
+st.subheader("🔬 Scientific Metrics")
+
+with st.expander("🔢 Pearson Correlation Coefficient (r)"):
+    st.write("""
+        Used in our **Correlation Matrix** to show how two variables are related.
+        - **r = 1.0 (Bright Red)**: Perfect Positive Correlation. As X goes up, Y goes up (e.g., Squat vs Total).
+        - **r = 0.0 (White)**: No Correlation. The variables are independent (e.g., Age vs Eye Color).
+        - **r = -1.0 (Bright Blue)**: Perfect Negative Correlation. As X goes up, Y goes down (e.g., Age vs relative strength in older populations).
+    """)
+
+with st.expander("🏆 Percentile Standing"):
+    st.write("""
+        Found in our **Gauge Charts**.
+        - **Meaning**: A percentile tells you what percentage of the population you are **stronger than**.
+        - **Example**: A **95th Percentile** standing means if you were in a room with 100 random lifters from the database, you would be stronger than 95 of them. You are in the "Top 5%".
+    """)
+
+with st.expander("⚡ Strength Efficiency (Total/BW)"):
+    st.write("""
+        The simplest measure of relative strength.
+        - **Calculation**: Your Total divided by your Bodyweight.
+        - **Example**: If you weigh 100kg and lift 700kg, your efficiency is **7.0x**. 
+        - **Insight**: Generally, lighter lifters have higher efficiency ratios (e.g., 10x) because of the square-cube law in biology, while heavyweights may have lower ratios (e.g., 5x) but higher absolute totals.
     """)
 
 st.markdown("---")
