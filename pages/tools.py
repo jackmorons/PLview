@@ -295,10 +295,9 @@ if active == "lift_distributions":
             fig_f.update_yaxes(title_text="Frequency (Relative)")
             st.plotly_chart(fig_f, use_container_width=True)
     
-    with st.expander("Gender Distribution:", expanded=False):
+    with st.expander("The Distribution:", expanded=False):
         st.write("This chart shows the distribution of each category across males and females. The apparent discretization of values is due to the limited number of plates available, making a 2.5kg (5lb) increase or decrease the smallest possible increment. The exceptions are record attempts, where a smaller jump is allowed to break a record.")
-        st.plotly_chart(fig_m, use_container_width=True)
-        st.plotly_chart(fig_f, use_container_width=True)
+    
 
     # ── Scientific Discovery: The Correlation Matrix ─────────────────
     st.markdown("---")
