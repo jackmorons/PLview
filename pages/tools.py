@@ -561,7 +561,8 @@ elif active == "1v1":
             plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
             height=600, margin=dict(l=20, r=80, t=20, b=20),
             coloraxis_showscale=True,
-            coloraxis_colorbar=dict(title="Lifter Density", thickness=15, len=0.8)
+            coloraxis_colorbar=dict(title="Lifter Density", thickness=15, len=0.8),
+            legend=dict(x=0.01, y=0.99, bgcolor="rgba(0,0,0,0.5)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1)
         )
         st.plotly_chart(fig_heat, use_container_width=True)
 
@@ -718,7 +719,8 @@ elif active == "weight_class":
             plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
             height=600, margin=dict(l=20, r=80, t=20, b=20),
             coloraxis_showscale=True,
-            coloraxis_colorbar=dict(title="Lifter Density", thickness=15, len=0.8)
+            coloraxis_colorbar=dict(title="Lifter Density", thickness=15, len=0.8),
+            legend=dict(x=0.01, y=0.99, bgcolor="rgba(0,0,0,0.5)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1)
         )
         st.plotly_chart(fig_map, use_container_width=True)
 
