@@ -429,7 +429,7 @@ elif active == "1v1":
             m_c2.metric("Best Total", f"{stats['tot']} kg", delta=f"{d_tot:+.1f} kg" if d_tot is not None else None)
             
             st.divider()
-            st.metric("Best Dots", f"{stats['dots']:.2f}", delta=f"{d_dots:+.2f}" if d_dots is not None else None)
+            st.metric("Best Dots", format_decimal(f"{stats['dots']:.2f}"), delta=format_decimal(f"{d_dots:+.2f}") if d_dots is not None else None)
 
     render_athlete_col(stats1, stats2, disp_a, True)
     render_athlete_col(stats2, stats1, disp_b, False)
@@ -637,7 +637,7 @@ elif active == "weight_class":
             st.write("🔮 **The 'Trust Me Bro' Speculator**")
             eval_retention = st.slider("Expected Strength Retention (%)", 80.0, 100.0, 95.0, step=1.0, help="Speculative guess on how much strength you'll keep after the cut.")
             eval_projected_tot = eval_curr_tot * (eval_retention / 100.0)
-            st.caption(f"Projected Total: **{eval_projected_tot:.1f} kg**")
+            st.caption(f"Projected Total: **{format_decimal(f'{eval_projected_tot:.1f}')} kg**")
 
     # 2. Analytical Logic
     # Filter populations
@@ -667,18 +667,18 @@ elif active == "weight_class":
     
     with stand_c1:
         st.markdown(f"### 📍 Current Standings ({curr_wc_val}kg)")
-        st.metric("Percentile Standing", f"{curr_pct:.1f}%", help="Higher is better. 90% means you are stronger than 90% of the class.")
-        st.metric("Dots Score", f"{curr_dots:.2f}")
+        st.metric("Percentile Standing", f"{format_decimal(f'{curr_pct:.1f}')}%", help="Higher is better. 90% means you are stronger than 90% of the class.")
+        st.metric("Dots Score", format_decimal(f"{curr_dots:.2f}"))
         
     with stand_c2:
         st.markdown(f"### 🎯 Projected Standings ({eval_target_wc}kg)")
         pct_delta = target_pct - curr_pct
-        st.metric("Percentile Standing", f"{target_pct:.1f}%", delta=f"{pct_delta:+.1f}%", delta_color="normal")
+        st.metric("Percentile Standing", f"{format_decimal(f'{target_pct:.1f}')}%", delta=f"{format_decimal(f'{pct_delta:+.1f}')}%", delta_color="normal")
         dots_delta = target_dots - curr_dots
-        st.metric("Dots Score", f"{target_dots:.2f}", delta=f"{dots_delta:+.2f}")
+        st.metric("Dots Score", format_decimal(f"{target_dots:.2f}"), delta=format_decimal(f"{dots_delta:+.2f}"))
 
     if target_pct > curr_pct:
-        st.success(f"📈 **Strategic Advantage!** Moving to the **{eval_target_wc}kg** class could improve your competitive standing by **{pct_delta:.1f}%**.")
+        st.success(f"📈 **Strategic Advantage!** Moving to the **{eval_target_wc}kg** class could improve your competitive standing by **{format_decimal(f'{pct_delta:.1f}')}%**.")
     else:
         st.warning(f"📉 **Diminishing Returns.** Strength loss might outweigh the weight class advantage. Staying at **{curr_wc_val}kg** currently keeps you higher in the rankings.")
 
@@ -726,8 +726,8 @@ elif active == "weight_class":
         
         comp_data = pd.DataFrame({
             "Tier": ["Top 1%", "Top 10%", "Median"],
-            f"{curr_wc_val}kg": [f"{s:.1f}kg" for s in curr_stats],
-            f"{eval_target_wc}kg": [f"{s:.1f}kg" for s in target_stats]
+            f"{curr_wc_val}kg": [f"{format_decimal(f'{s:.1f}')}kg" for s in curr_stats],
+            f"{eval_target_wc}kg": [f"{format_decimal(f'{s:.1f}')}kg" for s in target_stats]
         })
         st.table(comp_data.set_index("Tier"))
         
@@ -897,8 +897,8 @@ elif active == "entry_calculator":
         with st.expander("📚 Why these numbers?"):
             st.write(f"""
                 Based on **{len(trend_df)}** successful 3-for-3 performances in the **{calc_gender} {calc_wc}kg {calc_equip}** category:
-                - The median opener is **{(trend_df['r1'].median()*100):.1f}%** of the 3rd attempt.
-                - The median 2nd attempt is **{(trend_df['r2'].median()*100):.1f}%** of the 3rd attempt.
+                - The median opener is **{format_decimal(f'{(trend_df["r1"].median()*100):.1f}')}%** of the 3rd attempt.
+                - The median 2nd attempt is **{format_decimal(f'{(trend_df["r2"].median()*100):.1f}')}%** of the 3rd attempt.
                 - Your recommended jumps take into account the typical distribution of successful lifters in your weight class.
             """)
     else:
@@ -1029,8 +1029,8 @@ elif active == "pattern_discoverer":
             
             u_metrics = get_sandbox_user_metrics(u_sq, u_bn, u_dl, u_bw, u_age, u_sex_sel)
             st.write("") # Spacer
-            st.write(f"**Total:** {u_sq+u_bn+u_dl:.1f} kg")
-            st.write(f"**Dots:** {u_metrics['Dots']:.2f}")
+            st.write(f"**Total:** {format_decimal('{:.1f}'.format(u_sq+u_bn+u_dl))} kg")
+            st.write(f"**Dots:** {format_decimal('{:.2f}'.format(u_metrics['Dots']))}")
 
     # Map user coordinates
     u_x = u_metrics.get(axes_options[x_ax], 0)
@@ -1114,7 +1114,7 @@ elif active == "pattern_discoverer":
         corr_df = plot_df[plot_df[display_col] != " Others"] if " Others" in plot_df.columns else plot_df
         if not corr_df.empty:
             corr = corr_df[axes_options[x_ax]].corr(corr_df[axes_options[y_ax]])
-            st.write(f"🔬 **Correlation Analysis**: The relationship between **{x_ax}** and **{y_ax}** (highlighted points) has a Pearson coefficient of **{corr:.2f}**.")
+            st.write(f"🔬 **Correlation Analysis**: The relationship between **{x_ax}** and **{y_ax}** (highlighted points) has a Pearson coefficient of **{format_decimal(f'{corr:.2f}')}**.")
         
         fig_sb = px.scatter(
             plot_df, x=axes_options[x_ax], y=axes_options[y_ax],
@@ -1278,8 +1278,8 @@ elif active == "freak_finder":
             
             u_metrics = get_sandbox_user_metrics(u_sq, u_bn, u_dl, u_bw, u_age, u_sex_sel)
             st.write("") # Spacer
-            st.write(f"**Total:** {u_sq+u_bn+u_dl:.1f} kg")
-            st.write(f"**Dots:** {u_metrics['Dots']:.2f}")
+            st.write(f"**Total:** {format_decimal('{:.1f}'.format(u_sq+u_bn+u_dl))} kg")
+            st.write(f"**Dots:** {format_decimal('{:.2f}'.format(u_metrics['Dots']))}")
     
     # Ensure metrics are valid and numeric
     filtered_df = filtered_df.dropna(subset=[metric_x, metric_y])
@@ -1513,7 +1513,7 @@ elif active == "twin_finder":
                     st.write(f"**Bodyweight:** {twin['BodyweightKg']} kg")
                     st.write(f"**S/B/D:** {twin['Best3SquatKg']}/{twin['Best3BenchKg']}/{twin['Best3DeadliftKg']}")
                     st.write(f"**Total:** {twin['TotalKg']} kg")
-                    st.write(f"**Dots:** {twin['Dots']:.2f}")
+                    st.write(f"**Dots:** {format_decimal('{:.2f}'.format(twin['Dots']))}")
                 # --- 4. Grouped Bar Chart ---
                 st.markdown("---")
                 st.subheader("📊 Direct Strength Comparison")
@@ -1633,9 +1633,9 @@ elif active == "strength_index_calculator":
     # Display Results
     res_c1, res_c2, res_c3, res_c4 = st.columns([1, 1, 1, 1])
     with res_c1:
-        st.metric("DOTS Score", f"{dots_score:.2f}")
+        st.metric("DOTS Score", format_decimal("{:.2f}".format(dots_score)))
         if dots_score > 500:
-            st.success(f"🔥 **Elite Performance!** Your DOTS score of {dots_score:.2f} is world-class.")
+            st.success(f"🔥 **Elite Performance!** Your DOTS score of {format_decimal('{:.2f}'.format(dots_score))} is world-class.")
         elif dots_score > 400:
             st.info(f"💪 **Strong Lift!** You're highly competitive.")
         elif dots_score > 0:
@@ -1643,9 +1643,9 @@ elif active == "strength_index_calculator":
         else:
             st.warning("Please check your bodyweight/total values.")
     with res_c2:
-        st.metric("Wilks Score", f"{wilks_score:.2f}")
+        st.metric("Wilks Score", format_decimal("{:.2f}".format(wilks_score)))
         if wilks_score > 500:
-            st.success(f"🔥 **Elite Performance!** Your Wilks score of {wilks_score:.2f} is world-class.")
+            st.success(f"🔥 **Elite Performance!** Your Wilks score of {format_decimal('{:.2f}'.format(wilks_score))} is world-class.")
         elif wilks_score > 400:
             st.info(f"💪 **Strong Lift!** You're highly competitive.")
         elif wilks_score > 0:
@@ -1653,9 +1653,9 @@ elif active == "strength_index_calculator":
         else:
             st.warning("Please check your bodyweight/total values.")
     with res_c3:
-        st.metric("Glossbrenner Score", f"{glossbrenner_score:.2f}")
+        st.metric("Glossbrenner Score", format_decimal("{:.2f}".format(glossbrenner_score)))
         if glossbrenner_score > 500:
-            st.success(f"🔥 **Elite Performance!** Your Glossbrenner score of {glossbrenner_score:.2f} is world-class.")
+            st.success(f"🔥 **Elite Performance!** Your Glossbrenner score of {format_decimal('{:.2f}'.format(glossbrenner_score))} is world-class.")
         elif glossbrenner_score > 400:
             st.info(f"💪 **Strong Lift!** You're highly competitive.")
         elif glossbrenner_score > 0:
@@ -1663,9 +1663,9 @@ elif active == "strength_index_calculator":
         else:
             st.warning("Please check your bodyweight/total values.")
     with res_c4:
-        st.metric("Goodlift Score", f"{goodlift_score:.2f}")
+        st.metric("Goodlift Score", format_decimal("{:.2f}".format(goodlift_score)))
         if goodlift_score > 120:
-            st.success(f"🔥 **Elite Performance!** Your Goodlift score of {goodlift_score:.2f} is world-class.")
+            st.success(f"🔥 **Elite Performance!** Your Goodlift score of {format_decimal('{:.2f}'.format(goodlift_score))} is world-class.")
         elif goodlift_score > 90:
             st.info(f"💪 **Strong Lift!** You're highly competitive.")
         elif goodlift_score > 0:
@@ -1865,13 +1865,13 @@ elif active == "strength_index_calculator":
     res_main, res_chart = st.columns([1, 2])
     
     with res_main:
-        st.metric("Estimated 1RM", f"{one_rm:.2f} kg")
+        st.metric("Estimated 1RM", f"{format_decimal(f'{one_rm:.2f}')} kg")
         
         st.markdown("### 📊 Intensity Table")
         pcts = [100, 95, 90, 85, 80, 75, 70]
         rows = []
         for p in pcts:
-            rows.append({"Percentage (%)": f"{p}%", "Weight (kg)": f"{one_rm * (p/100):.1f}"})
+            rows.append({"Percentage (%)": f"{p}%", "Weight (kg)": format_decimal(f"{one_rm * (p/100):.1f}")})
         st.table(pd.DataFrame(rows))
         
     with res_chart:
@@ -1923,8 +1923,8 @@ elif active == "strength_index_calculator":
     est_main, est_chart = st.columns([1, 2])
 
     with est_main:
-        st.metric("Recommended Load", f"{est_load:.1f} kg")
-        st.caption(f"Effective reps: {est_effective_reps:.1f} (reps {est_reps} + RIR {10.0 - est_rpe:.0f})")
+        st.metric("Recommended Load", f"{format_decimal(f'{est_load:.1f}')} kg")
+        st.caption(f"Effective reps: {format_decimal(f'{est_effective_reps:.1f}')} (reps {est_reps} + RIR {format_decimal(f'{10.0 - est_rpe:.0f}')})")
 
         st.markdown("### 📋 RPE Reference Table")
         rpe_rows = []
@@ -1932,7 +1932,7 @@ elif active == "strength_index_calculator":
             eff = est_reps + (10.0 - r)
             ld = est_1rm / (1 + (eff * 0.025)) if (1 + (eff * 0.025)) > 0 else 0
             pct = (ld / est_1rm * 100) if est_1rm > 0 else 0
-            rpe_rows.append({"RPE": f"{r}", "Load (kg)": f"{ld:.1f}", "% of 1RM": f"{pct:.1f}%"})
+            rpe_rows.append({"RPE": format_decimal(f"{r}"), "Load (kg)": format_decimal(f"{ld:.1f}"), "% of 1RM": f"{format_decimal(f'{pct:.1f}')}%"})
         st.table(pd.DataFrame(rpe_rows))
 
     with est_chart:
@@ -2374,9 +2374,9 @@ elif active == "strength_index_calculator":
         summary_rows.append({
             "Set": int(s),
             "Prescribed Reps": fat_reps,
-            "Max Reps Possible": f"{mr:.1f}",
-            "RIR": f"{rir_val:.1f}" if rir_val >= 0 else "—",
-            "Effective RPE": f"{min(rpe_val, 10.0):.1f}" if rir_val >= 0 else "10+",
+            "Max Reps Possible": format_decimal(f"{mr:.1f}"),
+            "RIR": format_decimal(f"{rir_val:.1f}") if rir_val >= 0 else "—",
+            "Effective RPE": f"{format_decimal(f'{min(rpe_val, 10.0):.1f}')}" if rir_val >= 0 else "10+",
             "Status": status,
         })
     st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
@@ -2390,5 +2390,5 @@ elif active == "strength_index_calculator":
     else:
         st.success(
             f"✅ Scheme {fat_series}×{fat_reps} @ RPE {fat_rpe} looks sustainable! "
-            f"Final set estimated RPE: **{eff_rpe[-1]:.1f}**"
+            f"Final set estimated RPE: **{format_decimal(f'{eff_rpe[-1]:.1f}')}**"
         )

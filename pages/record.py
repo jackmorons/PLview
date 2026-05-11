@@ -92,7 +92,7 @@ else:
                 bodyweight = record_row.get("BodyweightKg", "—")
 
                 athlete_url = f"/athletes?name={urllib.parse.quote(athlete_name)}"
-                st.metric(label=label, value=f"{record_val} kg")
+                st.metric(label=label, value=f"{format_decimal(record_val)} kg")
                 st.caption(f"[**{athlete_name}**]({athlete_url})")
                 st.caption(f"📅 {date}  •  🏢 {federation}")
                 st.caption(f"⚖️ BW: {bodyweight} kg")
@@ -104,10 +104,10 @@ else:
         idx_total = valid_total["TotalKg"].idxmax()
         total_row = valid_total.loc[idx_total]
         total_athlete_url = f"/athletes?name={urllib.parse.quote(total_row['Name'])}"
-        st.metric(label="🏆 Total", value=f"{total_row['TotalKg']} kg")
+        st.metric(label="🏆 Total", value=f"{format_decimal(total_row['TotalKg'])} kg")
         st.caption(
             f"[**{total_row['Name']}**]({total_athlete_url})  •  "
-            f"S: {total_row['Best3SquatKg']} / B: {total_row['Best3BenchKg']} / D: {total_row['Best3DeadliftKg']}  •  "
+            f"S: {format_decimal(total_row['Best3SquatKg'])} / B: {format_decimal(total_row['Best3BenchKg'])} / D: {format_decimal(total_row['Best3DeadliftKg'])}  •  "
             f"📅 {total_row.get('Date', '—')}  •  🏢 {total_row.get('Federation', '—')}"
         )
 

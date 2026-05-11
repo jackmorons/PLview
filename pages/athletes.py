@@ -70,10 +70,10 @@ if selected_name:
         st.metric("Competitions", len(athlete_df))
     with info_cols[1]:
         best_total = athlete_df["TotalKg"].max()
-        st.metric("Best Total", f"{best_total} kg" if best_total > 0 else "N/A")
+        st.metric("Best Total", f"{format_decimal(best_total)} kg" if best_total > 0 else "N/A")
     with info_cols[2]:
         best_dots = athlete_df["Dots"].max()
-        st.metric("Best Dots", f"{best_dots:.2f}" if best_dots > 0 else "N/A")
+        st.metric("Best Dots", format_decimal(f"{best_dots:.2f}") if best_dots > 0 else "N/A")
     with info_cols[3]:
         sex = athlete_df["Sex"].iloc[0]
         st.metric("Sex", "Male" if sex == "M" else "Female")
@@ -96,7 +96,7 @@ if selected_name:
             else:
                 best_val = valid[col_name].max()
                 best_row = valid.loc[valid[col_name].idxmax()]
-                st.metric(label=label, value=f"{best_val} kg")
+                st.metric(label=label, value=f"{format_decimal(best_val)} kg")
                 st.caption(f"📅 {best_row.get('Date', '—')}  •  🏢 {best_row.get('Federation', '—')}")
 
     # --- Radar Chart & Comparative Metrics ---
