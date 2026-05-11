@@ -11,6 +11,13 @@ import numpy as np
 import urllib.parse
 # import geopandas as gpd
 
+# --- Custom Colorscale for Density Heatmaps (Log-like scaling) ---
+# This stretches the low end of the palette to better highlight low-density regions
+viridis_base = px.colors.sequential.Viridis
+# Position = (i/N)^3 compresses colors at the bottom, mapping low values to "higher" colors
+# e.g., 1% density (0.01) maps to i/(N-1) = 0.01^(1/3) = 0.21 on the original palette
+DENSITY_COLORSCALE = [[(i/(len(viridis_base)-1))**3, c] for i, c in enumerate(viridis_base)]
+
 # st.set_page_config(page_title="Tools - PLview", page_icon="⚙️", layout="wide")
 
 st.header("Tools")
@@ -532,7 +539,7 @@ elif active == "1v1":
         fig_heat = px.density_heatmap(
             alldf[alldf["TotalKg"] > 0], x="BodyweightKg", y="TotalKg",
             template="plotly_dark",
-            color_continuous_scale="Viridis",
+            color_continuous_scale=DENSITY_COLORSCALE,
             nbinsx=50, nbinsy=50,
             labels={"BodyweightKg": "Bodyweight (kg)", "TotalKg": "Total (kg)"}
         )
@@ -552,8 +559,9 @@ elif active == "1v1":
         ))
         fig_heat.update_layout(
             plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-            height=600, margin=dict(l=20, r=20, t=20, b=20),
-            coloraxis_showscale=False
+            height=600, margin=dict(l=20, r=80, t=20, b=20),
+            coloraxis_showscale=True,
+            coloraxis_colorbar=dict(title="Lifter Density", thickness=15, len=0.8)
         )
         st.plotly_chart(fig_heat, use_container_width=True)
 
@@ -692,7 +700,7 @@ elif active == "weight_class":
         st.write("Where you sit relative to every lifter in the database.")
         fig_map = px.density_heatmap(
             ref_df[ref_df["TotalKg"] > 100], x="BodyweightKg", y="TotalKg",
-            template="plotly_dark", color_continuous_scale="Viridis",
+            template="plotly_dark", color_continuous_scale=DENSITY_COLORSCALE,
             nbinsx=40, nbinsy=40,
             labels={"BodyweightKg": "Bodyweight (kg)", "TotalKg": "Total (kg)"}
         )
@@ -708,8 +716,9 @@ elif active == "weight_class":
         ))
         fig_map.update_layout(
             plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-            height=600, margin=dict(l=20, r=20, t=20, b=20),
-            coloraxis_showscale=False
+            height=600, margin=dict(l=20, r=80, t=20, b=20),
+            coloraxis_showscale=True,
+            coloraxis_colorbar=dict(title="Lifter Density", thickness=15, len=0.8)
         )
         st.plotly_chart(fig_map, use_container_width=True)
 
