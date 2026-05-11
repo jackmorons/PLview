@@ -536,6 +536,7 @@ elif active == "1v1":
                 height=500
             )
             st.plotly_chart(fig_coeff, use_container_width=True)
+            st.link_button("More insights and notes in the info page.", "/info#chart-reading-101")
 
         # --- Row 2: Population Heatmap ---
         st.markdown("<br>", unsafe_allow_html=True)
@@ -571,6 +572,7 @@ elif active == "1v1":
             legend=dict(x=0.01, y=0.99, bgcolor="rgba(0,0,0,0.5)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1)
         )
         st.plotly_chart(fig_heat, use_container_width=True)
+        st.link_button("More insights and notes in the info page.", "/info#chart-reading-101")
 
         # --- Row 3: Gauges and Efficiency ---
         r3_col1, r3_col2 = st.columns(2)
@@ -618,7 +620,6 @@ elif active == "1v1":
                 showlegend=False, xaxis_title="Kgs lifted per Kg of bodyweight"
             )
             st.plotly_chart(fig_eff, use_container_width=True)
-            st.link_button("More insights and notes in the info page.", "/info#chart-reading-101")
 
 # ---------- 3. Weight Class Evaluator ----------
 elif active == "weight_class":
