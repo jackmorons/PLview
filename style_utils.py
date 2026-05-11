@@ -266,3 +266,7 @@ def inject_custom_css():
         <div class="disk-bar2"></div>
         <div class="footer">PLview &copy; 2026. Data sourced from OpenPowerlifting.</div>
     """, unsafe_allow_html=True)
+
+def format_decimal(x):
+    """Ensures dots are used as decimal separators in strings."""
+    return str(x).replace(',', '.')

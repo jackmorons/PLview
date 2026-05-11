@@ -1,5 +1,5 @@
 import streamlit as st
-from style_utils import inject_custom_css
+from style_utils import inject_custom_css, format_decimal
 
 inject_custom_css()
 import pandas as pd
@@ -51,7 +51,8 @@ selected_name = st.selectbox(
     options=[""] + all_names,
     index=0,
     placeholder="Type a name to search...",
-    key="athlete_search"
+    key="athlete_search",
+    format_func=format_decimal
 )
 
 if selected_name:

@@ -1,5 +1,5 @@
 import streamlit as st
-from style_utils import inject_custom_css
+from style_utils import inject_custom_css, format_decimal
 
 inject_custom_css()
 
@@ -126,7 +126,8 @@ if active == "lift_distributions":
             "🎨 Color bars by:",
             ["None (Solid)", "Age Class", "Weight Class", "Equipment"],
             index=0,
-            help="Segment the histogram by a specific category."
+            help="Segment the histogram by a specific category.",
+            format_func=format_decimal
         )
 
     # Map the choice to actual column names
@@ -144,10 +145,10 @@ if active == "lift_distributions":
         f_c1, f_c2, f_c3 = st.columns(3)
         with f_c1:
             all_equip = sorted(alldf["Equipment"].dropna().unique().tolist())
-            h_equip = st.multiselect("Highlight Equipment", all_equip, default=all_equip, help="Keep only selected equipment types.")
+            h_equip = st.multiselect("Highlight Equipment", all_equip, default=all_equip, help="Keep only selected equipment types.", format_func=format_decimal)
         with f_c2:
             all_age = sorted(alldf["AgeClass"].dropna().unique().tolist())
-            h_age = st.multiselect("Highlight Age Class", all_age, default=all_age, help="Keep only selected age classes.")
+            h_age = st.multiselect("Highlight Age Class", all_age, default=all_age, help="Keep only selected age classes.", format_func=format_decimal)
         with f_c3:
             h_action = st.radio("Action for Excluded", ["Grey-out", "Remove"], horizontal=True, help="'Grey-out' keeps points visible but desaturated. 'Remove' hides them completely.")
 
@@ -348,11 +349,11 @@ elif active == "1v1":
     
     with col_a:
         st.markdown("### 🏹 Athlete 1")
-        name1 = st.selectbox("Search for Athlete 1", [""] + all_names, key="1v1_athlete_1", index=0, placeholder="Type to search...")
+        name1 = st.selectbox("Search for Athlete 1", [""] + all_names, key="1v1_athlete_1", index=0, placeholder="Type to search...", format_func=format_decimal)
     
     with col_b:
         st.markdown("### 🛡️ Athlete 2")
-        name2 = st.selectbox("Search for Athlete 2", [""] + all_names, key="1v1_athlete_2", index=0, placeholder="Type to search...")
+        name2 = st.selectbox("Search for Athlete 2", [""] + all_names, key="1v1_athlete_2", index=0, placeholder="Type to search...", format_func=format_decimal)
 
     st.markdown("---")
 
@@ -613,7 +614,7 @@ elif active == "weight_class":
         input_c1, input_c2, input_c3 = st.columns(3)
         
         with input_c1:
-            eval_gender = st.selectbox("Gender", ["Male", "Female"], key="eval_gen")
+            eval_gender = st.selectbox("Gender", ["Male", "Female"], key="eval_gen", format_func=format_decimal)
             # Get available classes for this gender
             ref_df = malesdf if eval_gender == "Male" else femalesdf
             all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
@@ -630,7 +631,7 @@ elif active == "weight_class":
                     break
             else: curr_class_idx = len(all_wc) - 1 # SHW
             
-            eval_target_wc = st.selectbox("Target Weight Class", all_wc, index=max(0, curr_class_idx-1), format_func=lambda x: str(x).replace(',', '.'))
+            eval_target_wc = st.selectbox("Target Weight Class", all_wc, index=max(0, curr_class_idx-1), format_func=format_decimal)
 
         with input_c3:
             st.write("🔮 **The 'Trust Me Bro' Speculator**")
@@ -756,18 +757,18 @@ elif active == "entry_calculator":
     input_c1, input_c2, input_c3 = st.columns(3)
     
     with input_c1:
-        calc_gender = st.selectbox("Gender", ["Male", "Female"], key="trend_gen")
-        calc_lift = st.selectbox("Lift", ["Squat", "Bench", "Deadlift"], key="trend_lift")
+        calc_gender = st.selectbox("Gender", ["Male", "Female"], key="trend_gen", format_func=format_decimal)
+        calc_lift = st.selectbox("Lift", ["Squat", "Bench", "Deadlift"], key="trend_lift", format_func=format_decimal)
     
     with input_c2:
         ref_df = malesdf if calc_gender == "Male" else femalesdf
         all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
-        calc_wc = st.selectbox("Weight Class", all_wc, index=min(len(all_wc)-1, 5), key="trend_wc", format_func=lambda x: str(x).replace(',', '.'))
+        calc_wc = st.selectbox("Weight Class", all_wc, index=min(len(all_wc)-1, 5), key="trend_wc", format_func=format_decimal)
         calc_goal = st.number_input("Target 3rd Lift (kg)", min_value=20.0, max_value=600.0, value=200.0, step=2.5, format="%.1f")
 
     with input_c3:
         all_equip = sorted(ref_df["Equipment"].dropna().unique().tolist())
-        calc_equip = st.selectbox("Equipment", all_equip, key="trend_equip")
+        calc_equip = st.selectbox("Equipment", all_equip, key="trend_equip", format_func=format_decimal)
         calc_buffer = st.slider("Aggressiveness", 0.0, 1.0, 0.5, help="Higher = closer attempts, Lower = safer opener.")
 
     # 2. Logic: Find successful 3/3 trends
@@ -959,32 +960,32 @@ elif active == "pattern_discoverer":
         with ctrl_c1:
             dim_mode = st.radio("Dimensions", ["2D", "3D"], index=["2D", "3D"].index(st.session_state["sandbox_dim"]), horizontal=True)
             st.session_state["sandbox_dim"] = dim_mode # Sync back if manually changed
-            x_ax = st.selectbox("X-Axis", list(axes_options.keys()), index=list(axes_options.keys()).index(st.session_state["sandbox_x"]))
+            x_ax = st.selectbox("X-Axis", list(axes_options.keys()), index=list(axes_options.keys()).index(st.session_state["sandbox_x"]), format_func=format_decimal)
         
         with ctrl_c2:
-            y_ax = st.selectbox("Y-Axis", list(axes_options.keys()), index=list(axes_options.keys()).index(st.session_state["sandbox_y"]))
+            y_ax = st.selectbox("Y-Axis", list(axes_options.keys()), index=list(axes_options.keys()).index(st.session_state["sandbox_y"]), format_func=format_decimal)
         
         with ctrl_c3:
             if dim_mode == "3D":
                 z_options = list(axes_options.keys())
                 z_idx = z_options.index(st.session_state["sandbox_z"]) if st.session_state["sandbox_z"] in z_options else 2
-                z_ax = st.selectbox("Z-Axis", z_options, index=z_idx)
+                z_ax = st.selectbox("Z-Axis", z_options, index=z_idx, format_func=format_decimal)
             else:
                 z_ax = None
                 st.write("") # Spacer
                 st.info("Switch to 3D to enable Z-Axis.")
         
         with ctrl_c4:
-            color_by = st.selectbox("Color By", ["Sex", "Equipment", "AgeClass", "WeightClassKg"], index=["Sex", "Equipment", "AgeClass", "WeightClassKg"].index(st.session_state["sandbox_color"]))
+            color_by = st.selectbox("Color By", ["Sex", "Equipment", "AgeClass", "WeightClassKg"], index=["Sex", "Equipment", "AgeClass", "WeightClassKg"].index(st.session_state["sandbox_color"]), format_func=format_decimal)
 
         st.markdown("---")
         st.markdown("##### 🔦 Highlight & Filter")
         f_c1, f_c2, f_c3 = st.columns([1, 1, 1])
         with f_c1:
-            h_sex = st.multiselect("Highlight Sex", ["M", "F"], default=["M", "F"], help="Keep only selected genders.")
+            h_sex = st.multiselect("Highlight Sex", ["M", "F"], default=["M", "F"], help="Keep only selected genders.", format_func=format_decimal)
         with f_c2:
             all_equip = sorted(alldf["Equipment"].dropna().unique().tolist())
-            h_equip = st.multiselect("Highlight Equipment", all_equip, default=all_equip, help="Keep only selected equipment types.")
+            h_equip = st.multiselect("Highlight Equipment", all_equip, default=all_equip, help="Keep only selected equipment types.", format_func=format_decimal)
         with f_c3:
             h_action = st.radio("Action for Excluded", ["Grey-out", "Remove"], horizontal=True, help="'Grey-out' keeps points visible but desaturated. 'Remove' hides them completely.")
 
@@ -993,7 +994,7 @@ elif active == "pattern_discoverer":
         st.write("Enter your data to see where you stand on the distribution map.")
         u_c1, u_c2, u_c3 = st.columns(3)
         with u_c1:
-            u_sex_sel = st.selectbox("Your Sex", ["Male", "Female"], key="u_sandbox_gender")
+            u_sex_sel = st.selectbox("Your Sex", ["Male", "Female"], key="u_sandbox_gender", format_func=format_decimal)
             u_bw = st.number_input("Your Bodyweight (kg)", 30.0, 250.0, 80.0, 0.1, key="u_sandbox_bw", format="%.1f")
             u_age = st.number_input("Your Age", 5, 100, 25, 1, key="u_sandbox_age", format="%d")
         with u_c2:
@@ -1213,15 +1214,15 @@ elif active == "freak_finder":
     filter_c1, filter_c2, filter_c3 = st.columns(3)
     
     with filter_c1:
-        freak_gender = st.selectbox("Gender Filter", ["Male", "Female"], key="freak_gender_sel")
-        metric_x = st.selectbox("X-Axis Metric", ["BodyweightKg", "Age", "TotalKg", "Dots", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"], index=0)
+        freak_gender = st.selectbox("Gender Filter", ["Male", "Female"], key="freak_gender_sel", format_func=format_decimal)
+        metric_x = st.selectbox("X-Axis Metric", ["BodyweightKg", "Age", "TotalKg", "Dots", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"], index=0, format_func=format_decimal)
     
     with filter_c2:
         # Dynamic Weight Class based on Gender
         ref_df = malesdf if freak_gender == "Male" else femalesdf
         all_wc = sorted(ref_df["WeightClassKg"].dropna().unique().tolist())
-        sel_wc = st.selectbox("Weight Class", ["All"] + all_wc, key="freak_wc_sel", format_func=lambda x: str(x).replace(',', '.'))
-        metric_y = st.selectbox("Y-Axis Metric", ["TotalKg", "Dots", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"], index=0)
+        sel_wc = st.selectbox("Weight Class", ["All"] + all_wc, key="freak_wc_sel", format_func=format_decimal)
+        metric_y = st.selectbox("Y-Axis Metric", ["TotalKg", "Dots", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"], index=0, format_func=format_decimal)
 
     with filter_c3:
         age_range = st.slider("Age Range", 5, 90, (18, 40), key="freak_age_range")
@@ -1242,7 +1243,7 @@ elif active == "freak_finder":
         st.write("Enter your data to see where you stand on the distribution map.")
         u_c1, u_c2, u_c3 = st.columns(3)
         with u_c1:
-            u_sex_sel = st.selectbox("Your Sex", ["Male", "Female"], key="u_sandbox_gender")
+            u_sex_sel = st.selectbox("Your Sex", ["Male", "Female"], key="u_sandbox_gender", format_func=format_decimal)
             u_bw = st.number_input("Your Bodyweight (kg)", 30.0, 250.0, 80.0, 0.1, key="u_twin_bw", format="%.1f")
             u_age = st.number_input("Your Age", 5, 100, 25, 1, key="u_twin_age", format="%d")
         with u_c2:
@@ -1397,8 +1398,8 @@ elif active == "twin_finder":
     # 1. Inputs
     input_c1, input_c2, input_c3 = st.columns(3)
     with input_c1:
-        u_gender = st.selectbox("Gender", ["Male", "Female"], key="twin_gender")
-        u_equip = st.selectbox("Equipment", ["Raw", "Wraps", "Single-ply", "Multi-ply"], key="twin_equip")
+        u_gender = st.selectbox("Gender", ["Male", "Female"], key="twin_gender", format_func=format_decimal)
+        u_equip = st.selectbox("Equipment", ["Raw", "Wraps", "Single-ply", "Multi-ply"], key="twin_equip", format_func=format_decimal)
     with input_c2:
         u_bw = st.number_input("Bodyweight (kg)", min_value=30.0, max_value=250.0, value=82.5, step=0.5, format="%.1f")
         u_squat = st.number_input("Best Squat (kg)", min_value=0.0, max_value=600.0, value=180.0, step=2.5, format="%.1f")
@@ -1553,7 +1554,7 @@ elif active == "strength_index_calculator":
     input_cols = st.columns(3)
     
     with input_cols[0]:
-        gender = st.selectbox("Gender", ["Male", "Female"], help="Select your gender for coefficient calculation.")
+        gender = st.selectbox("Gender", ["Male", "Female"], help="Select your gender for coefficient calculation.", format_func=format_decimal)
     
     with input_cols[1]:
         age = st.number_input("Age", min_value=5, max_value=100, value=25, step=1, format="%d", help="Your current age.")
@@ -1902,10 +1903,10 @@ elif active == "strength_index_calculator":
     est_c1, est_c2, est_c3 = st.columns(3)
 
     with est_c1:
-        est_1rm = st.number_input("Your 1RM (kg)", min_value=0.0, max_value=1000.0, value=100.0, step=2.5, help="Your known or estimated 1 Rep Max.", key="est_1rm")
+        est_1rm = st.number_input("Your 1RM (kg)", min_value=0.0, max_value=1000.0, value=100.0, step=2.5, format="%.1f", help="Your known or estimated 1 Rep Max.", key="est_1rm")
 
     with est_c2:
-        est_reps = st.number_input("Target Reps", min_value=1, max_value=20, value=5, step=1, help="How many reps you plan to do.", key="est_reps")
+        est_reps = st.number_input("Target Reps", min_value=1, max_value=20, value=5, step=1, format="%d", help="How many reps you plan to do.", key="est_reps")
 
     with est_c3:
         est_rpe = st.slider("Target RPE", min_value=5.0, max_value=10.0, value=8.0, step=0.5, help="Rate of Perceived Exertion you want to hit.", key="est_rpe")

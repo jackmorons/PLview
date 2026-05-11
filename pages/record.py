@@ -1,5 +1,5 @@
 import streamlit as st
-from style_utils import inject_custom_css
+from style_utils import inject_custom_css, format_decimal
 
 inject_custom_css()
 import pandas as pd
@@ -27,7 +27,7 @@ st.subheader("🔍 Record Lookup")
 filter_cols = st.columns(4)
 
 with filter_cols[0]:
-    sex = st.selectbox("Sex", ["Male", "Female"], key="rec_sex")
+    sex = st.selectbox("Sex", ["Male", "Female"], key="rec_sex", format_func=format_decimal)
 
 # IPF age division mapping → AgeClass values
 IPF_AGE_DIVISIONS = {
@@ -44,16 +44,16 @@ IPF_AGE_DIVISIONS = {
 df = malesdf if sex == "Male" else femalesdf
 
 with filter_cols[1]:
-    ipf_division = st.selectbox("Age Division", list(IPF_AGE_DIVISIONS.keys()), key="rec_age")
+    ipf_division = st.selectbox("Age Division", list(IPF_AGE_DIVISIONS.keys()), key="rec_age", format_func=format_decimal)
     selected_age_classes = IPF_AGE_DIVISIONS[ipf_division]
 
 with filter_cols[2]:
     all_wc = sorted(df["WeightClassKg"].dropna().unique().tolist())
-    weight_class = st.selectbox("Weight Class (kg)", all_wc, key="rec_wc", format_func=lambda x: str(x).replace(',', '.') + " kg")
+    weight_class = st.selectbox("Weight Class (kg)", all_wc, key="rec_wc", format_func=lambda x: format_decimal(x) + " kg")
 
 with filter_cols[3]:
     equipment_options = sorted(df["Equipment"].dropna().unique().tolist())
-    equipment = st.selectbox("Equipment", equipment_options, key="rec_equip")
+    equipment = st.selectbox("Equipment", equipment_options, key="rec_equip", format_func=format_decimal)
 
 # --- Apply filters ---
 filtered = df[
