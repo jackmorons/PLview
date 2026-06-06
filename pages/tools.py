@@ -260,14 +260,15 @@ if active == "lift_distributions":
                 color_discrete_sequence=m_seq,
                 color_discrete_map=m_map,
                 category_orders=m_cat_orders,
-                barmode="stack" if m_color_col else "relative"
+                barmode="stack" if m_color_col else "relative",
+                labels={"display_cat": color_col or ""},
             )
             fig_m.update_layout(
                 height=600,
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 margin=dict(l=20, r=20, t=200, b=20),
-                legend=dict(orientation="h", yanchor="bottom", y=1.1, xanchor="right", x=1.0) if m_color_col else None,
+                legend=dict(orientation="h", yanchor="bottom", y=1.1, xanchor="right", x=1.0, title_text="") if m_color_col else None,
                 title=dict(y=0.95, x=0, xanchor='left')
             )
             fig_m.update_yaxes(title_text="Frequency (Relative)")
@@ -282,14 +283,15 @@ if active == "lift_distributions":
                 color_discrete_sequence=f_seq,
                 color_discrete_map=f_map,
                 category_orders=f_cat_orders,
-                barmode="stack" if f_color_col else "relative"
+                barmode="stack" if f_color_col else "relative",
+                labels={"display_cat": color_col or ""},
             )
             fig_f.update_layout(
                 height=600,
                 plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
                 font_color="#9a9ab0", title_font_color="#f0f0f5",
                 margin=dict(l=20, r=20, t=200, b=20),
-                legend=dict(orientation="h", yanchor="bottom", y=1.1, xanchor="right", x=1.0) if f_color_col else None,
+                legend=dict(orientation="h", yanchor="bottom", y=1.1, xanchor="right", x=1.0, title_text="") if f_color_col else None,
                 title=dict(y=0.95, x=0, xanchor='left')
             )
             fig_f.update_yaxes(title_text="Frequency (Relative)")
@@ -1150,9 +1152,9 @@ elif active == "pattern_discoverer":
             category_orders={display_col: cat_order},
             color_discrete_sequence=color_seq,
             template="plotly_dark",
-            render_mode='webgl', # Performance high-five
+            render_mode='webgl',
             title=f"{y_ax} vs {x_ax} Discovery",
-            labels={axes_options[x_ax]: f"{x_ax} (kg/yrs)", axes_options[y_ax]: f"{y_ax} (kg/pts)"},
+            labels={axes_options[x_ax]: f"{x_ax} (kg/yrs)", axes_options[y_ax]: f"{y_ax} (kg/pts)", "display_cat": color_by},
             hover_name="Name",
             hover_data=["Age", "BodyweightKg", "TotalKg", "Dots"]
         )
@@ -1164,7 +1166,7 @@ elif active == "pattern_discoverer":
             color_discrete_sequence=color_seq,
             template="plotly_dark",
             title=f"3D Analysis: {z_ax} | {y_ax} | {x_ax}",
-            labels={axes_options[x_ax]: x_ax, axes_options[y_ax]: y_ax, axes_options[z_ax]: z_ax},
+            labels={axes_options[x_ax]: x_ax, axes_options[y_ax]: y_ax, axes_options[z_ax]: z_ax, "display_cat": color_by},
             hover_name="Name",
             height=800
         )
@@ -1174,7 +1176,7 @@ elif active == "pattern_discoverer":
     fig_sb.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, title_text="")
     )
 
     # --- Add User Point (Always on Top) ---
