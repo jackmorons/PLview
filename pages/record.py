@@ -86,7 +86,7 @@ SPIRAL_COLORSCALE = [
 ]
 
 
-def plot_spiral(spiral_df, col, title):
+def plot_spiral(spiral_df, col, title, height=550):
     """
     Render a 3D line spiral where:
       - height   = time (year)
@@ -128,7 +128,7 @@ def plot_spiral(spiral_df, col, title):
     fig.update_layout(
         template="plotly_dark",
         paper_bgcolor="rgba(0,0,0,0)",
-        height=550,
+        height=height,
         margin=dict(l=0, r=0, t=50, b=0),
         title=dict(text=title, x=0.5, xanchor="center", font=dict(color="#f0f0f5", size=14)),
         scene=dict(
@@ -276,7 +276,7 @@ else:
     total_spiral = build_record_spiral(filtered, "TotalKg")
     if total_spiral is not None:
         st.plotly_chart(
-            plot_spiral(total_spiral, "TotalKg", "🏆 Total Record — History Spiral"),
+            plot_spiral(total_spiral, "TotalKg", "🏆 Total Record — History Spiral", height=750),
             use_container_width=True
         )
     else:
