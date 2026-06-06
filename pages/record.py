@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import urllib.parse
 
 st.header("Records")
@@ -154,6 +155,298 @@ def plot_spiral(spiral_df, col, title, height=550):
     return fig
 
 
+# ── Records-by-weight-class helper ───────────────────────────────────
+
+def _parse_wc(wc):
+    try:
+        return float(str(wc).replace("+", ""))
+    except Exception:
+        return 9999.0
+
+def get_records_by_wc(ref_df):
+    """All-time best per weight class across all equipment and age divisions."""
+    recs = (
+        ref_df
+        .groupby("WeightClassKg")
+        .agg(
+            Squat    =("Best3SquatKg",   "max"),
+            Bench    =("Best3BenchKg",   "max"),
+            Deadlift =("Best3DeadliftKg","max"),
+            Total    =("TotalKg",        "max"),
+            Dots     =("Dots",           "max"),
+        )
+        .reset_index()
+    )
+    recs["wc_num"] = recs["WeightClassKg"].apply(_parse_wc)
+    return recs.sort_values("wc_num").reset_index(drop=True)
+
+
+# ── Global Record Showcase ────────────────────────────────────────────
+
+st.subheader("🌍 Global Record Showcase")
+st.caption("All-time records across every weight class — no filters applied.")
+
+_LIFT_COLORS = {
+    "Squat":    "#ef5350",
+    "Bench":    "#42a5f5",
+    "Deadlift": "#66bb6a",
+}
+_LIFT_ALPHA = {
+    "Squat":    "rgba(239,83,80,0.18)",
+    "Bench":    "rgba(66,165,245,0.18)",
+    "Deadlift": "rgba(102,187,106,0.18)",
+}
+
+_mrecs = get_records_by_wc(malesdf)
+_frecs = get_records_by_wc(femalesdf)
+
+tab_a, tab_b, tab_c, tab_d, tab_e = st.tabs([
+    "🌸 Polar Mandala",
+    "⛰️ 3D Terrain",
+    "📊 Parallel Coordinates",
+    "🫧 Bubble Landscape",
+    "🌞 Sunburst",
+])
+
+# ── Tab A: Polar Mandala ─────────────────────────────────────────────
+with tab_a:
+    st.caption(
+        "Each spoke is a weight class. The three overlapping webs show how Squat, Bench, "
+        "and Deadlift records scale across categories — Male (left) and Female (right)."
+    )
+    _fig_a = make_subplots(
+        rows=1, cols=2,
+        specs=[[{"type": "polar"}, {"type": "polar"}]],
+        subplot_titles=["♂ Male", "♀ Female"],
+    )
+    _m_theta = [f"{wc}kg" for wc in _mrecs["WeightClassKg"].astype(str)]
+    _f_theta = [f"{wc}kg" for wc in _frecs["WeightClassKg"].astype(str)]
+
+    for _lift, _color in _LIFT_COLORS.items():
+        _mr = _mrecs[_lift].tolist()
+        _fr = _frecs[_lift].tolist()
+        _fig_a.add_trace(go.Scatterpolar(
+            r=_mr + [_mr[0]],
+            theta=_m_theta + [_m_theta[0]],
+            fill="toself",
+            fillcolor=_LIFT_ALPHA[_lift],
+            name=_lift,
+            legendgroup=_lift,
+            line=dict(color=_color, width=2),
+        ), row=1, col=1)
+        _fig_a.add_trace(go.Scatterpolar(
+            r=_fr + [_fr[0]],
+            theta=_f_theta + [_f_theta[0]],
+            fill="toself",
+            fillcolor=_LIFT_ALPHA[_lift],
+            name=_lift,
+            legendgroup=_lift,
+            showlegend=False,
+            line=dict(color=_color, width=2, dash="dot"),
+        ), row=1, col=2)
+
+    _fig_a.update_layout(
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=580,
+        legend=dict(orientation="h", yanchor="bottom", y=-0.08, xanchor="center", x=0.5),
+        polar =dict(bgcolor="rgba(0,0,0,0)",
+                    radialaxis=dict(visible=True, gridcolor="rgba(255,255,255,0.1)", tickfont=dict(color="#9a9ab0", size=9)),
+                    angularaxis=dict(gridcolor="rgba(255,255,255,0.1)", tickfont=dict(color="#9a9ab0", size=9))),
+        polar2=dict(bgcolor="rgba(0,0,0,0)",
+                    radialaxis=dict(visible=True, gridcolor="rgba(255,255,255,0.1)", tickfont=dict(color="#9a9ab0", size=9)),
+                    angularaxis=dict(gridcolor="rgba(255,255,255,0.1)", tickfont=dict(color="#9a9ab0", size=9))),
+    )
+    st.plotly_chart(_fig_a, use_container_width=True)
+
+# ── Tab B: 3D Terrain ────────────────────────────────────────────────
+with tab_b:
+    st.caption(
+        "X = weight class, rows = lift type, Z = all-time record. "
+        "Male terrain (front) and Female terrain (back) share the same gradient."
+    )
+    _lifts_t = ["Squat", "Bench", "Deadlift"]
+    _mz = np.array([_mrecs[l].fillna(0).values for l in _lifts_t])   # (3, N_m)
+    _fz = np.array([_frecs[l].fillna(0).values for l in _lifts_t])   # (3, N_f)
+
+    _fig_b = go.Figure()
+    _fig_b.add_trace(go.Surface(
+        x=_mrecs["wc_num"].values,
+        y=[0, 1, 2],
+        z=_mz,
+        colorscale=SPIRAL_COLORSCALE,
+        showscale=False,
+        opacity=0.92,
+        name="Male",
+        hovertemplate="WC: %{x}kg<br>Record: %{z:.1f}kg<extra>Male</extra>",
+    ))
+    _fig_b.add_trace(go.Surface(
+        x=_frecs["wc_num"].values,
+        y=[4, 5, 6],
+        z=_fz,
+        colorscale=SPIRAL_COLORSCALE,
+        showscale=False,
+        opacity=0.92,
+        name="Female",
+        hovertemplate="WC: %{x}kg<br>Record: %{z:.1f}kg<extra>Female</extra>",
+    ))
+    _fig_b.update_layout(
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=620,
+        margin=dict(l=0, r=0, t=20, b=0),
+        scene=dict(
+            bgcolor="rgba(0,0,0,0)",
+            xaxis=dict(title=dict(text="Weight Class (kg)", font=dict(color="#9a9ab0")),
+                       gridcolor="rgba(255,255,255,0.08)", tickfont=dict(color="#9a9ab0")),
+            yaxis=dict(
+                title="",
+                tickvals=[0, 1, 2, 4, 5, 6],
+                ticktext=["M Squat","M Bench","M Deadlift","F Squat","F Bench","F Deadlift"],
+                gridcolor="rgba(255,255,255,0.08)", tickfont=dict(color="#9a9ab0", size=9),
+            ),
+            zaxis=dict(title=dict(text="Record (kg)", font=dict(color="#9a9ab0")),
+                       gridcolor="rgba(255,255,255,0.08)", tickfont=dict(color="#9a9ab0")),
+            aspectmode="manual",
+            aspectratio=dict(x=1.4, y=0.8, z=0.7),
+        ),
+    )
+    st.plotly_chart(_fig_b, use_container_width=True)
+
+# ── Tab C: Parallel Coordinates ──────────────────────────────────────
+with tab_c:
+    st.caption(
+        "Each line is one weight class. "
+        "Blue = Male, Red = Female. Drag any axis range to filter and highlight."
+    )
+    _pc_df = pd.concat([
+        _mrecs.assign(Sex=1.0),
+        _frecs.assign(Sex=0.0),
+    ]).reset_index(drop=True).fillna(0)
+
+    _fig_c = go.Figure(data=go.Parcoords(
+        line=dict(
+            color=_pc_df["Sex"],
+            colorscale=[[0, "#ef5350"], [1, "#42a5f5"]],
+            showscale=True,
+            cmin=0, cmax=1,
+            colorbar=dict(
+                title="Sex",
+                tickvals=[0, 1], ticktext=["Female", "Male"],
+                thickness=10, len=0.4,
+                tickfont=dict(color="#9a9ab0"),
+                title_font=dict(color="#9a9ab0"),
+            ),
+        ),
+        dimensions=[
+            dict(label="Weight Class", values=_pc_df["wc_num"],
+                 range=[_pc_df["wc_num"].min(), _pc_df["wc_num"].max()]),
+            dict(label="Squat (kg)",    values=_pc_df["Squat"],    range=[0, _pc_df["Squat"].max()]),
+            dict(label="Bench (kg)",    values=_pc_df["Bench"],    range=[0, _pc_df["Bench"].max()]),
+            dict(label="Deadlift (kg)", values=_pc_df["Deadlift"], range=[0, _pc_df["Deadlift"].max()]),
+            dict(label="Total (kg)",    values=_pc_df["Total"],    range=[0, _pc_df["Total"].max()]),
+            dict(label="Dots",          values=_pc_df["Dots"],     range=[0, _pc_df["Dots"].max()]),
+        ],
+        labelangle=-30,
+        labelside="top",
+    ))
+    _fig_c.update_layout(
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        height=520,
+        margin=dict(l=80, r=80, t=60, b=40),
+        font=dict(color="#9a9ab0"),
+    )
+    st.plotly_chart(_fig_c, use_container_width=True)
+
+# ── Tab D: Bubble Landscape ──────────────────────────────────────────
+with tab_d:
+    st.caption(
+        "X = weight class, Y = record value. "
+        "Color = lift type. Circle = Male, Diamond = Female. Bubble size scales with the record."
+    )
+    _bubble_df = pd.concat([
+        _mrecs.assign(Sex="Male"),
+        _frecs.assign(Sex="Female"),
+    ]).melt(
+        id_vars=["WeightClassKg", "wc_num", "Sex", "Dots"],
+        value_vars=["Squat", "Bench", "Deadlift", "Total"],
+        var_name="Lift",
+        value_name="RecordKg",
+    )
+    _bubble_df = _bubble_df[_bubble_df["RecordKg"] > 0].copy()
+
+    _fig_d = px.scatter(
+        _bubble_df,
+        x="wc_num",
+        y="RecordKg",
+        color="Lift",
+        symbol="Sex",
+        size="RecordKg",
+        size_max=32,
+        template="plotly_dark",
+        color_discrete_map={
+            "Squat":    "#ef5350",
+            "Bench":    "#42a5f5",
+            "Deadlift": "#66bb6a",
+            "Total":    "#ffd54f",
+        },
+        labels={"wc_num": "Weight Class (kg)", "RecordKg": "Record (kg)"},
+        hover_data={"WeightClassKg": True, "Dots": ":.2f", "wc_num": False},
+    )
+    _fig_d.update_layout(
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=520,
+        margin=dict(l=20, r=20, t=20, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    st.plotly_chart(_fig_d, use_container_width=True)
+
+# ── Tab E: Sunburst ──────────────────────────────────────────────────
+with tab_e:
+    st.caption(
+        "Inner ring = Sex, middle ring = Weight Class, outer ring = Lift. "
+        "Segment size = absolute all-time record. Reveals the S/B/D composition of the total."
+    )
+    _sun_df = pd.concat([
+        _mrecs.assign(Sex="Male"),
+        _frecs.assign(Sex="Female"),
+    ]).melt(
+        id_vars=["WeightClassKg", "Sex"],
+        value_vars=["Squat", "Bench", "Deadlift"],
+        var_name="Lift",
+        value_name="RecordKg",
+    )
+    _sun_df = _sun_df[_sun_df["RecordKg"] > 0].copy()
+    _sun_df["WeightClassKg"] = _sun_df["WeightClassKg"].astype(str) + "kg"
+
+    _fig_e = px.sunburst(
+        _sun_df,
+        path=["Sex", "WeightClassKg", "Lift"],
+        values="RecordKg",
+        color="Lift",
+        color_discrete_map={
+            "Squat":    "#ef5350",
+            "Bench":    "#42a5f5",
+            "Deadlift": "#66bb6a",
+        },
+        template="plotly_dark",
+    )
+    _fig_e.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=640,
+        margin=dict(l=10, r=10, t=20, b=10),
+    )
+    _fig_e.update_traces(
+        insidetextorientation="radial",
+        textfont=dict(color="#f0f0f5"),
+    )
+    st.plotly_chart(_fig_e, use_container_width=True)
+
+st.markdown("---")
+
 # --- Filter Panel ---
 st.subheader("🔍 Record Lookup")
 
@@ -299,7 +592,7 @@ else:
                 The line colour encodes the record value on a shared scale across all four charts:
                 near-white and grey represent the lowest records (early, weaker performances),
                 progressing through green → yellow → blue → red as the record climbs.
-                The mapping is quadratic, so the vivid colours are concentrated at the top end —
+                The mapping is quadratic, so the vivid colours are concentrated at the top end:
                 only the truly elite performances burn red.
             """)
     else:
