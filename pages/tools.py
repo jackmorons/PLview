@@ -954,7 +954,7 @@ elif active == "pattern_discoverer":
     if "sandbox_z" not in st.session_state: st.session_state["sandbox_z"] = "None"
     if "sandbox_color" not in st.session_state: st.session_state["sandbox_color"] = "Equipment"
     if "sandbox_dim" not in st.session_state: st.session_state["sandbox_dim"] = "2D"
-    if "sandbox_camera" not in st.session_state: st.session_state["sandbox_camera"] = "Free"
+    if "sandbox_camera" not in st.session_state: st.session_state["sandbox_camera"] = None
 
     if p_c1.button("📈 The Age Peak", use_container_width=True):
         st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Age", "Total", "None"
@@ -1225,7 +1225,6 @@ elif active == "pattern_discoverer":
     # ── 3D camera snap buttons ────────────────────────────────────────
     if dim_mode == "3D":
         _CAMERAS = {
-            "🔄 Free":         None,
             "⬆️ Top (XY)":    dict(eye=dict(x=0,    y=0,    z=2.5), up=dict(x=0, y=1, z=0)),
             "➡️ Front (XZ)":  dict(eye=dict(x=0,    y=-2.5, z=0  ), up=dict(x=0, y=0, z=1)),
             "↙️ Side (YZ)":   dict(eye=dict(x=2.5,  y=0,    z=0  ), up=dict(x=0, y=0, z=1)),
@@ -1243,8 +1242,8 @@ elif active == "pattern_discoverer":
                 st.session_state["sandbox_camera"] = _clabel
                 st.rerun()
 
-        # Apply the selected camera preset (None = leave Plotly default)
-        _sel_cam = _CAMERAS.get(st.session_state["sandbox_camera"])
+        # Apply the selected camera preset (None = leave Plotly default / free rotation)
+        _sel_cam = _CAMERAS.get(st.session_state["sandbox_camera"] or "")
         if _sel_cam:
             fig_sb.update_layout(scene_camera=_sel_cam)
 
