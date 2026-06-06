@@ -279,15 +279,15 @@ else:
             plot_spiral(total_spiral, "TotalKg", "🏆 Total Record — History Spiral", height=750),
             use_container_width=True
         )
-        with st.expander("📖 How to read this chart"):
+        with st.expander("📖 How to read this chart", expanded=True):
             st.markdown("""
                 **The Spiral Shape**
 
                 Each full revolution of the spiral represents one calendar year.
-                The vertical axis is time — the spiral climbs upward as years pass.
+                The vertical axis is time, the spiral climbs upward as years pass.
                 Within each revolution, the angle encodes the month (January at the front,
                 rotating clockwise through to December).
-                The **radius** — how far the line sits from the central vertical axis —
+                The **radius** (how far the line sits from the central vertical axis)
                 represents the all-time record at that moment. When a new record is set,
                 the line jumps outward. When no new record is set, it holds at the same
                 radius and continues its revolution flat. The result is a growing helix:
