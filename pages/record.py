@@ -514,12 +514,13 @@ with tab_e:
             ))
 
             # Place the label at the midpoint radius of this ring, on the right side
-            # (angle = 0°, i.e. the 3 o'clock position). All labels lie on a single
-            # horizontal spoke, reading outward from lightest to heaviest.
+            # Labels placed along the 12 o'clock spoke (angle = 90°).
+            # Only the y-coordinate is used for radial positioning, so the mapping is
+            # always correct regardless of the figure's aspect ratio.
             _r_mid_fig = (_i + 0.5) / _n * 0.5
             _fig_e.add_annotation(
-                x=0.5 + _r_mid_fig,
-                y=0.5,
+                x=0.5,
+                y=0.5 + _r_mid_fig,
                 text=_wc_label,
                 showarrow=False,
                 font=dict(size=7.5, color="white"),
