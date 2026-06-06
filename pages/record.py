@@ -515,11 +515,25 @@ with tab_e:
                 ),
             ))
 
+            # Label placed just outside the outer edge of this ring at a unique angle,
+            # distributed evenly around the full 360° so no two labels overlap.
+            # Angles start at top (90°) and rotate clockwise.
+            _angle_rad = np.radians(90 - _i * 360 / _n)
+            _lx = 0.5 + (_hw + 0.055) * np.cos(_angle_rad)
+            _ly = 0.5 + (_hw + 0.055) * np.sin(_angle_rad)
+            _fig_e.add_annotation(
+                x=_lx, y=_ly,
+                text=_wc_label,
+                showarrow=False,
+                font=dict(size=8.5, color="#b8b8cc"),
+                xanchor="center", yanchor="middle",
+            )
+
         _fig_e.update_layout(
             template="plotly_dark",
             paper_bgcolor="rgba(0,0,0,0)",
             height=520,
-            margin=dict(l=10, r=10, t=50, b=30),
+            margin=dict(l=55, r=55, t=55, b=55),
             title=dict(
                 text=_sex_label, x=0.5, xanchor="center",
                 font=dict(color="#f0f0f5", size=15),
