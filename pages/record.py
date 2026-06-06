@@ -204,7 +204,7 @@ tab_a, tab_b, tab_c, tab_d, tab_e = st.tabs([
     "⛰️ 3D Terrain",
     "📊 Parallel Coordinates",
     "🫧 Bubble Landscape",
-    "🌞 Sunburst",
+    "🥧 Pie!",
 ])
 
 # ── Tab A: Polar Mandala ─────────────────────────────────────────────
