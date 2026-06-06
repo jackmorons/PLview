@@ -1,5 +1,9 @@
 import streamlit as st
-from style_utils import inject_custom_css, format_decimal
+from style_utils import (
+    inject_custom_css, format_decimal,
+    LIFT_COLORS, LIFT_ALPHA, SPIRAL_COLORSCALE,
+    PLOTLY_LAYOUT_BASE, PLOTLY_AXIS_STYLE,
+)
 
 inject_custom_css()
 import pandas as pd
@@ -77,14 +81,6 @@ def build_record_spiral(df, col):
 
 
 
-# Shared colorscale for all spirals: white (lowest) → green → yellow → blue → red (highest)
-SPIRAL_COLORSCALE = [
-    [0.00, "#e0e0e0"],
-    [0.25, "#66bb6a"],
-    [0.50, "#ffd54f"],
-    [0.75, "#42a5f5"],
-    [1.00, "#ef5350"],
-]
 
 
 def plot_spiral(spiral_df, col, title, height=550):
@@ -185,16 +181,8 @@ def get_records_by_wc(ref_df):
 
 st.subheader("🌍 Global Record Showcase")
 
-_LIFT_COLORS = {
-    "Squat":    "#ef5350",
-    "Bench":    "#42a5f5",
-    "Deadlift": "#66bb6a",
-}
-_LIFT_ALPHA = {
-    "Squat":    "rgba(239,83,80,0.18)",
-    "Bench":    "rgba(66,165,245,0.18)",
-    "Deadlift": "rgba(102,187,106,0.18)",
-}
+_LIFT_COLORS = LIFT_COLORS
+_LIFT_ALPHA  = LIFT_ALPHA
 
 _mrecs = get_records_by_wc(malesdf)
 _frecs = get_records_by_wc(femalesdf)
