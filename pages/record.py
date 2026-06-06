@@ -116,11 +116,10 @@ def plot_spiral(spiral_df, col, accent_color, title):
                 zeroline=False, title="", showspikes=False,
             ),
             zaxis=dict(
-                title="Year",
+                title=dict(text="Year", font=dict(color="#9a9ab0")),
                 range=[z_min, z_max],
                 gridcolor="rgba(255,255,255,0.08)",
                 tickfont=dict(color="#9a9ab0", size=11),
-                titlefont=dict(color="#9a9ab0"),
             ),
             aspectmode="manual",
             aspectratio=dict(x=1, y=1, z=1.8),
