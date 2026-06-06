@@ -954,6 +954,7 @@ elif active == "pattern_discoverer":
     if "sandbox_z" not in st.session_state: st.session_state["sandbox_z"] = "None"
     if "sandbox_color" not in st.session_state: st.session_state["sandbox_color"] = "Equipment"
     if "sandbox_dim" not in st.session_state: st.session_state["sandbox_dim"] = "2D"
+    if "sandbox_camera" not in st.session_state: st.session_state["sandbox_camera"] = "Free"
 
     if p_c1.button("📈 The Age Peak", use_container_width=True):
         st.session_state["sandbox_x"], st.session_state["sandbox_y"], st.session_state["sandbox_z"] = "Age", "Total", "None"
@@ -1221,6 +1222,32 @@ elif active == "pattern_discoverer":
                     ),
                     hovertemplate=f"<b>YOU</b><br>{x_ax}: %{{x}}<br>{y_ax}: %{{y}}<br>{z_ax}: %{{z}}<extra></extra>"
                 ))
+    # ── 3D camera snap buttons ────────────────────────────────────────
+    if dim_mode == "3D":
+        _CAMERAS = {
+            "🔄 Free":         None,
+            "⬆️ Top (XY)":    dict(eye=dict(x=0,    y=0,    z=2.5), up=dict(x=0, y=1, z=0)),
+            "➡️ Front (XZ)":  dict(eye=dict(x=0,    y=-2.5, z=0  ), up=dict(x=0, y=0, z=1)),
+            "↙️ Side (YZ)":   dict(eye=dict(x=2.5,  y=0,    z=0  ), up=dict(x=0, y=0, z=1)),
+            "📐 Isometric":   dict(eye=dict(x=1.6,  y=1.6,  z=1.6)),
+        }
+        _cam_cols = st.columns(len(_CAMERAS))
+        for _ci, (_clabel, _ccam) in enumerate(_CAMERAS.items()):
+            _active = st.session_state["sandbox_camera"] == _clabel
+            if _cam_cols[_ci].button(
+                _clabel,
+                use_container_width=True,
+                type="primary" if _active else "secondary",
+                key=f"cam_snap_{_ci}",
+            ):
+                st.session_state["sandbox_camera"] = _clabel
+                st.rerun()
+
+        # Apply the selected camera preset (None = leave Plotly default)
+        _sel_cam = _CAMERAS.get(st.session_state["sandbox_camera"])
+        if _sel_cam:
+            fig_sb.update_layout(scene_camera=_sel_cam)
+
     bbb1, bbb2, bbb3 = st.columns([1,8,1])
     with bbb2:
         st.plotly_chart(fig_sb, use_container_width=True)
