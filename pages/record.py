@@ -464,56 +464,72 @@ with tab_d:
 
 # ── Tab E: Sunburst ──────────────────────────────────────────────────
 with tab_e:
-    _sun_df = pd.concat([
-        _mrecs.assign(Sex="Male"),
-        _frecs.assign(Sex="Female"),
-    ]).melt(
-        id_vars=["WeightClassKg", "Sex"],
-        value_vars=["Squat", "Bench", "Deadlift"],
-        var_name="Lift",
-        value_name="RecordKg",
-    )
-    _sun_df = _sun_df[_sun_df["RecordKg"] > 0].copy()
-    _sun_df["WeightClassKg"] = _sun_df["WeightClassKg"].astype(str) + "kg"
+    _ecol1, _ecol2 = st.columns(2)
 
-    _fig_e = px.sunburst(
-        _sun_df,
-        path=["Sex", "WeightClassKg", "Lift"],
-        values="RecordKg",
-        color="Lift",
-        color_discrete_map={
-            "Squat":    "#ef5350",
-            "Bench":    "#42a5f5",
-            "Deadlift": "#66bb6a",
-        },
-        template="plotly_dark",
-    )
-    _fig_e.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        height=640,
-        margin=dict(l=10, r=10, t=20, b=10),
-    )
-    _fig_e.update_traces(
-        insidetextorientation="radial",
-        textfont=dict(color="#f0f0f5"),
-    )
-    st.plotly_chart(_fig_e, use_container_width=True)
+    for _ecol, _sex_label, _recs_e in [
+        (_ecol1, "♂ Male",   _mrecs),
+        (_ecol2, "♀ Female", _frecs),
+    ]:
+        # Sort by weight class number so weight classes appear lightest→heaviest
+        # within each lift sector (clockwise along the arc).
+        _sun_df = _recs_e.melt(
+            id_vars=["WeightClassKg", "wc_num"],
+            value_vars=["Squat", "Bench", "Deadlift"],
+            var_name="Lift",
+            value_name="RecordKg",
+        )
+        _sun_df = _sun_df[_sun_df["RecordKg"] > 0].copy()
+        _sun_df = _sun_df.sort_values("wc_num")
+        _sun_df["WeightClassKg"] = _sun_df["WeightClassKg"].astype(str) + "kg"
+
+        # path=["Lift", "WeightClassKg"]:
+        #   inner ring  → 3 lift sectors  (angular / colour dimension)
+        #   outer ring  → weight classes within each lift (radial / distance dimension)
+        _fig_e = px.sunburst(
+            _sun_df,
+            path=["Lift", "WeightClassKg"],
+            values="RecordKg",
+            color="Lift",
+            color_discrete_map={
+                "Squat":    "#ef5350",
+                "Bench":    "#42a5f5",
+                "Deadlift": "#66bb6a",
+            },
+            title=_sex_label,
+            template="plotly_dark",
+        )
+        _fig_e.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            height=520,
+            margin=dict(l=10, r=10, t=40, b=10),
+            title=dict(x=0.5, xanchor="center", font=dict(color="#f0f0f5", size=15)),
+        )
+        _fig_e.update_traces(
+            insidetextorientation="radial",
+            textfont=dict(color="#f0f0f5"),
+        )
+        with _ecol:
+            st.plotly_chart(_fig_e, use_container_width=True)
+
     with st.expander("📖 How to read this chart"):
         st.markdown("""
             **Ring structure**
 
-            The chart has three concentric rings. The innermost ring splits the data into
-            Male and Female. The middle ring subdivides each sex into weight classes (lightest
-            to heaviest going clockwise). The outermost ring breaks each weight class into its
-            three component lifts: Squat (red), Bench (blue), Deadlift (green).
+            Each chart has two concentric rings. The **inner ring** divides the circle into
+            three angular sectors — Squat (red), Bench (blue), Deadlift (green). The size of
+            each sector is proportional to the sum of that lift's records across all weight
+            classes, so it immediately shows which lift produces the highest absolute numbers.
 
-            **Segment size**
+            The **outer ring** breaks each lift sector into individual weight classes, ordered
+            from lightest (closest to the inner boundary) to heaviest (furthest out), going
+            clockwise. Each slice's arc length reflects the all-time record for that lift in
+            that weight class. Heavier weight classes tend to have longer arcs because absolute
+            records grow with body mass.
 
-            Each segment's arc length is proportional to the all-time record value for that
-            lift in that weight class. Larger segments = higher records. Because the Squat and
-            Deadlift records are usually much higher than Bench, those two lifts dominate the
-            outer ring. Clicking a segment zooms into that slice, letting you inspect a single
-            sex or weight class in isolation. Click the centre circle to zoom back out.
+            **Interactivity**
+
+            Click any inner-ring sector to zoom in and inspect just that lift's weight-class
+            breakdown. Click the centre to zoom back out.
         """)
 
 st.markdown("---")
