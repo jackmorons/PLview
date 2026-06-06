@@ -481,13 +481,15 @@ with tab_e:
         _n = len(_ring_df)
         _fig_e = go.Figure()
 
+        # Reserve the inner 35 % of the radius as an empty hole for the label column.
+        _CF = 0.35
+
         for _i, _row in _ring_df.iterrows():
-            # Each ring occupies the annular band from r_in to r_out
-            # (expressed as fractions of the half-width = 0.5 of figure space).
-            _r_out = (_i + 1) / _n          # outer edge of this ring (0→1)
-            _r_in  = _i / _n                # inner edge
-            _hole  = _r_in / _r_out if _i > 0 else 0
-            _hw    = _r_out * 0.5           # half-width in figure coords
+            # Map ring i into the annular band between CF and 1.0 of the total radius.
+            _r_out_f = _CF + (_i + 1) / _n * (1 - _CF)
+            _r_in_f  = _CF + _i       / _n * (1 - _CF)
+            _hole    = _r_in_f / _r_out_f
+            _hw      = _r_out_f * 0.5        # half-width in figure coords
             _wc_label = str(_row["WeightClassKg"]) + "kg"
 
             _fig_e.add_trace(go.Pie(
@@ -503,8 +505,8 @@ with tab_e:
                     line=dict(color="rgba(0,0,0,0.4)", width=0.8),
                 ),
                 name=_wc_label,
-                showlegend=(_i == 0),   # legend labels come from the first trace only
-                sort=False,             # keep Squat/Bench/Deadlift in a fixed angular order
+                showlegend=(_i == 0),
+                sort=False,
                 textinfo="none",
                 hovertemplate=(
                     "<b>%{label}</b><br>"
@@ -515,25 +517,25 @@ with tab_e:
                 ),
             ))
 
-            # Label placed just outside the outer edge of this ring at a unique angle,
-            # distributed evenly around the full 360° so no two labels overlap.
-            # Angles start at top (90°) and rotate clockwise.
-            _angle_rad = np.radians(90 - _i * 360 / _n)
-            _lx = 0.5 + (_hw + 0.055) * np.cos(_angle_rad)
-            _ly = 0.5 + (_hw + 0.055) * np.sin(_angle_rad)
+        # Vertical label stack inside the central hole.
+        # Spread evenly over 80 % of the hole diameter (CF * 0.5 * 0.8 on each side).
+        _label_span = _CF * 0.5 * 0.80 * 2          # total vertical space
+        _step       = _label_span / max(_n, 1)
+        for _i, _row in _ring_df.iterrows():
+            _y = (0.5 + _label_span / 2 - _step / 2) - _i * _step
             _fig_e.add_annotation(
-                x=_lx, y=_ly,
-                text=_wc_label,
+                x=0.5, y=_y,
+                text=str(_row["WeightClassKg"]) + "kg",
                 showarrow=False,
-                font=dict(size=8.5, color="#b8b8cc"),
+                font=dict(size=8, color="#b8b8cc"),
                 xanchor="center", yanchor="middle",
             )
 
         _fig_e.update_layout(
             template="plotly_dark",
             paper_bgcolor="rgba(0,0,0,0)",
-            height=520,
-            margin=dict(l=55, r=55, t=55, b=55),
+            height=560,
+            margin=dict(l=20, r=20, t=50, b=30),
             title=dict(
                 text=_sex_label, x=0.5, xanchor="center",
                 font=dict(color="#f0f0f5", size=15),
