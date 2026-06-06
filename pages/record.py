@@ -462,7 +462,7 @@ with tab_d:
             on a Dots-adjusted basis the gap is much smaller.
         """)
 
-# ── Tab E: Sunburst ──────────────────────────────────────────────────
+# ── Tab E: Concentric ring pies ──────────────────────────────────────
 with tab_e:
     _ecol1, _ecol2 = st.columns(2)
 
@@ -470,66 +470,89 @@ with tab_e:
         (_ecol1, "♂ Male",   _mrecs),
         (_ecol2, "♀ Female", _frecs),
     ]:
-        # Sort by weight class number so weight classes appear lightest→heaviest
-        # within each lift sector (clockwise along the arc).
-        _sun_df = _recs_e.melt(
-            id_vars=["WeightClassKg", "wc_num"],
-            value_vars=["Squat", "Bench", "Deadlift"],
-            var_name="Lift",
-            value_name="RecordKg",
+        # One ring per weight class, sorted light → heavy (innermost → outermost).
+        _ring_df = (
+            _recs_e[["WeightClassKg", "wc_num", "Squat", "Bench", "Deadlift"]]
+            .dropna()
+            .query("Squat > 0 and Bench > 0 and Deadlift > 0")
+            .sort_values("wc_num")
+            .reset_index(drop=True)
         )
-        _sun_df = _sun_df[_sun_df["RecordKg"] > 0].copy()
-        _sun_df = _sun_df.sort_values("wc_num")
-        _sun_df["WeightClassKg"] = _sun_df["WeightClassKg"].astype(str) + "kg"
+        _n = len(_ring_df)
+        _fig_e = go.Figure()
 
-        # path=["Lift", "WeightClassKg"]:
-        #   inner ring  → 3 lift sectors  (angular / colour dimension)
-        #   outer ring  → weight classes within each lift (radial / distance dimension)
-        _fig_e = px.sunburst(
-            _sun_df,
-            path=["Lift", "WeightClassKg"],
-            values="RecordKg",
-            color="Lift",
-            color_discrete_map={
-                "Squat":    "#ef5350",
-                "Bench":    "#42a5f5",
-                "Deadlift": "#66bb6a",
-            },
-            title=_sex_label,
-            template="plotly_dark",
-        )
+        for _i, _row in _ring_df.iterrows():
+            # Each ring occupies the annular band from r_in to r_out
+            # (expressed as fractions of the half-width = 0.5 of figure space).
+            _r_out = (_i + 1) / _n          # outer edge of this ring (0→1)
+            _r_in  = _i / _n                # inner edge
+            _hole  = _r_in / _r_out if _i > 0 else 0
+            _hw    = _r_out * 0.5           # half-width in figure coords
+            _wc_label = str(_row["WeightClassKg"]) + "kg"
+
+            _fig_e.add_trace(go.Pie(
+                labels=["Squat", "Bench", "Deadlift"],
+                values=[_row["Squat"], _row["Bench"], _row["Deadlift"]],
+                hole=_hole,
+                domain=dict(
+                    x=[0.5 - _hw, 0.5 + _hw],
+                    y=[0.5 - _hw, 0.5 + _hw],
+                ),
+                marker=dict(
+                    colors=["#ef5350", "#42a5f5", "#66bb6a"],
+                    line=dict(color="rgba(0,0,0,0.4)", width=0.8),
+                ),
+                name=_wc_label,
+                showlegend=(_i == 0),   # legend labels come from the first trace only
+                sort=False,             # keep Squat/Bench/Deadlift in a fixed angular order
+                textinfo="none",
+                hovertemplate=(
+                    "<b>%{label}</b><br>"
+                    "%{percent:.1%} of total<br>"
+                    f"Record: %{{value:.1f}} kg<br>"
+                    f"<i>{_wc_label}</i>"
+                    "<extra></extra>"
+                ),
+            ))
+
         _fig_e.update_layout(
+            template="plotly_dark",
             paper_bgcolor="rgba(0,0,0,0)",
             height=520,
-            margin=dict(l=10, r=10, t=40, b=10),
-            title=dict(x=0.5, xanchor="center", font=dict(color="#f0f0f5", size=15)),
-        )
-        _fig_e.update_traces(
-            insidetextorientation="radial",
-            textfont=dict(color="#f0f0f5"),
+            margin=dict(l=10, r=10, t=50, b=30),
+            title=dict(
+                text=_sex_label, x=0.5, xanchor="center",
+                font=dict(color="#f0f0f5", size=15),
+            ),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=-0.06,
+                xanchor="center", x=0.5,
+                font=dict(color="#f0f0f5"),
+            ),
         )
         with _ecol:
             st.plotly_chart(_fig_e, use_container_width=True)
 
     with st.expander("📖 How to read this chart"):
         st.markdown("""
-            **Ring structure**
+            **Concentric rings**
 
-            Each chart has two concentric rings. The **inner ring** divides the circle into
-            three angular sectors — Squat (red), Bench (blue), Deadlift (green). The size of
-            each sector is proportional to the sum of that lift's records across all weight
-            classes, so it immediately shows which lift produces the highest absolute numbers.
+            Each ring represents one weight class. The innermost ring is the lightest
+            weight class; the outermost is the heaviest. Moving outward means moving up
+            in body mass.
 
-            The **outer ring** breaks each lift sector into individual weight classes, ordered
-            from lightest (closest to the inner boundary) to heaviest (furthest out), going
-            clockwise. Each slice's arc length reflects the all-time record for that lift in
-            that weight class. Heavier weight classes tend to have longer arcs because absolute
-            records grow with body mass.
+            **Slice proportions**
 
-            **Interactivity**
+            Within every ring, the circle is divided into three slices:
+            Squat (red), Bench (blue), and Deadlift (green). The size of each slice shows
+            what percentage of the combined S+B+D record that lift contributes —
+            essentially, how the total is split between the three disciplines.
+            Because all rings use the same angular reference, you can compare whether
+            the Squat or Deadlift dominates more at lighter vs. heavier weight classes
+            by tracking whether the red or green slice grows as you move outward.
 
-            Click any inner-ring sector to zoom in and inspect just that lift's weight-class
-            breakdown. Click the centre to zoom back out.
+            Hover over any slice to see the exact record and percentage for that
+            weight class and lift.
         """)
 
 st.markdown("---")
