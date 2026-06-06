@@ -122,7 +122,7 @@ def plot_spiral(spiral_df, col, accent_color, title):
                 tickfont=dict(color="#9a9ab0", size=11),
             ),
             aspectmode="manual",
-            aspectratio=dict(x=1, y=1, z=1.8),
+            aspectratio=dict(x=1, y=1, z=0.7),
         ),
     )
     return fig
