@@ -57,8 +57,10 @@ def build_record_spiral(df, col):
     all_months = pd.period_range(monthly["YM"].min(), monthly["YM"].max(), freq="M")
     full = pd.DataFrame({"YM": all_months}).merge(monthly, on="YM", how="left")
 
-    # Forward-fill: carry the record forward until it is broken
+    # Forward-fill: carry the record forward until it is broken,
+    # then cummax to guarantee the radius never shrinks.
     full[col] = full[col].ffill()
+    full[col] = full[col].cummax()
     full = full.dropna(subset=[col])
 
     # Convert to 3D spiral coordinates
