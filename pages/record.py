@@ -184,7 +184,6 @@ def get_records_by_wc(ref_df):
 # ── Global Record Showcase ────────────────────────────────────────────
 
 st.subheader("🌍 Global Record Showcase")
-st.caption("All-time records across every weight class — no filters applied.")
 
 _LIFT_COLORS = {
     "Squat":    "#ef5350",
@@ -210,10 +209,6 @@ tab_a, tab_b, tab_c, tab_d, tab_e = st.tabs([
 
 # ── Tab A: Polar Mandala ─────────────────────────────────────────────
 with tab_a:
-    st.caption(
-        "Each spoke is a weight class. The three overlapping webs show how Squat, Bench, "
-        "and Deadlift records scale across categories — Male (left) and Female (right)."
-    )
     _fig_a = make_subplots(
         rows=1, cols=2,
         specs=[[{"type": "polar"}, {"type": "polar"}]],
@@ -258,13 +253,27 @@ with tab_a:
                     angularaxis=dict(gridcolor="rgba(255,255,255,0.1)", tickfont=dict(color="#9a9ab0", size=9))),
     )
     st.plotly_chart(_fig_a, use_container_width=True)
+    with st.expander("📖 How to read this chart"):
+        st.markdown("""
+            **Axes & Shape**
+
+            Each spoke of the web corresponds to one weight class (lightest at the top, heaviest
+            going clockwise). The distance from the centre along each spoke is the all-time record
+            for that lift in that weight class — the further out, the heavier the record.
+            Three overlapping filled polygons are drawn for Squat (red), Bench (blue), and
+            Deadlift (green). A large, convex polygon means the records are high and consistent
+            across weight classes; a jagged or indented shape highlights categories where a
+            particular lift is disproportionately strong or weak.
+
+            **Male vs Female**
+
+            The left panel shows male records (solid lines), the right female records (dotted).
+            Comparing the two panels side by side reveals how the relative balance between lifts
+            shifts between sexes and weight classes.
+        """)
 
 # ── Tab B: 3D Terrain ────────────────────────────────────────────────
 with tab_b:
-    st.caption(
-        "X = weight class, rows = lift type, Z = all-time record. "
-        "Male terrain (front) and Female terrain (back) share the same gradient."
-    )
     _lifts_t = ["Squat", "Bench", "Deadlift"]
     _mz = np.array([_mrecs[l].fillna(0).values for l in _lifts_t])   # (3, N_m)
     _fz = np.array([_frecs[l].fillna(0).values for l in _lifts_t])   # (3, N_f)
@@ -303,7 +312,7 @@ with tab_b:
                 title="",
                 tickvals=[0, 1, 2, 4, 5, 6],
                 ticktext=["M Squat","M Bench","M Deadlift","F Squat","F Bench","F Deadlift"],
-                gridcolor="rgba(255,255,255,0.08)", tickfont=dict(color="#9a9ab0", size=9),
+                gridcolor="rgba(255,255,255,0.08)", tickfont=dict(color="#9a9ab0", size=13),
             ),
             zaxis=dict(title=dict(text="Record (kg)", font=dict(color="#9a9ab0")),
                        gridcolor="rgba(255,255,255,0.08)", tickfont=dict(color="#9a9ab0")),
@@ -312,13 +321,27 @@ with tab_b:
         ),
     )
     st.plotly_chart(_fig_b, use_container_width=True)
+    with st.expander("📖 How to read this chart"):
+        st.markdown("""
+            **Reading the terrain**
+
+            The chart is a 3D surface where the horizontal plane encodes two dimensions:
+            the X axis is the weight class (in kg) and the depth axis separates the three
+            lift types (Squat, Bench, Deadlift). The vertical Z axis is the all-time record
+            in kg. A peak in the surface means a particularly high record for that lift at
+            that weight class; a valley indicates a relatively modest record.
+
+            **Two surfaces**
+
+            Male records occupy the front half of the scene (rows labelled M Squat → M Deadlift)
+            and female records occupy the back half (F Squat → F Deadlift). Both surfaces use
+            the same white → green → yellow → blue → red gradient, so colour directly compares
+            absolute heights across both sexes. You can rotate and zoom the scene freely with
+            the mouse.
+        """)
 
 # ── Tab C: Parallel Coordinates ──────────────────────────────────────
 with tab_c:
-    st.caption(
-        "Each line is one weight class. "
-        "Blue = Male, Red = Female. Drag any axis range to filter and highlight."
-    )
     _pc_df = pd.concat([
         _mrecs.assign(Sex=1.0),
         _frecs.assign(Sex=0.0),
@@ -359,13 +382,28 @@ with tab_c:
         font=dict(color="#9a9ab0"),
     )
     st.plotly_chart(_fig_c, use_container_width=True)
+    with st.expander("📖 How to read this chart"):
+        st.markdown("""
+            **Structure**
+
+            Each line in the chart represents one weight class. The six vertical axes are
+            (from left to right): weight class, Squat record, Bench record, Deadlift record,
+            Total record, and Dots score. A line's position on each axis reflects the
+            all-time record for that weight class on that metric. Lines that stay high across
+            all axes belong to weight classes with elite records on every lift.
+
+            **Colour & Interaction**
+
+            Blue lines are male weight classes; red lines are female. Because heavier weight
+            classes tend to have higher absolute records, male lines generally sit higher on
+            the Squat/Bench/Deadlift axes while female lines may score comparably on Dots
+            (the bodyweight-adjusted coefficient). You can **drag a range on any axis** to
+            highlight only the lines that pass through it — useful for isolating, say, all
+            weight classes where the Bench record exceeds a certain threshold.
+        """)
 
 # ── Tab D: Bubble Landscape ──────────────────────────────────────────
 with tab_d:
-    st.caption(
-        "X = weight class, Y = record value. "
-        "Color = lift type. Circle = Male, Diamond = Female. Bubble size scales with the record."
-    )
     _bubble_df = pd.concat([
         _mrecs.assign(Sex="Male"),
         _frecs.assign(Sex="Female"),
@@ -403,13 +441,29 @@ with tab_d:
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
     st.plotly_chart(_fig_d, use_container_width=True)
+    with st.expander("📖 How to read this chart"):
+        st.markdown("""
+            **Axes & Encoding**
+
+            X axis: weight class in kg (lightest left, heaviest right). Y axis: the all-time
+            record in kg. Each dot is one (weight class, lift) combination. The **colour**
+            identifies the lift — Squat (red), Bench (blue), Deadlift (green), Total (gold) —
+            and the **shape** distinguishes Male (circle) from Female (diamond). Bubble size
+            is proportional to the record value, so the largest circles/diamonds also sit
+            highest on the chart.
+
+            **Patterns to look for**
+
+            Heavier weight classes naturally produce higher absolute records, so all four lift
+            clouds rise toward the right. The vertical gap between Deadlift and Bench clouds
+            shows how much more athletes deadlift than they bench across every category. The
+            Total cloud floats above all three individual lifts because it sums them. Female
+            records (diamonds) run parallel to male records but at a lower absolute level;
+            on a Dots-adjusted basis the gap is much smaller.
+        """)
 
 # ── Tab E: Sunburst ──────────────────────────────────────────────────
 with tab_e:
-    st.caption(
-        "Inner ring = Sex, middle ring = Weight Class, outer ring = Lift. "
-        "Segment size = absolute all-time record. Reveals the S/B/D composition of the total."
-    )
     _sun_df = pd.concat([
         _mrecs.assign(Sex="Male"),
         _frecs.assign(Sex="Female"),
@@ -444,6 +498,23 @@ with tab_e:
         textfont=dict(color="#f0f0f5"),
     )
     st.plotly_chart(_fig_e, use_container_width=True)
+    with st.expander("📖 How to read this chart"):
+        st.markdown("""
+            **Ring structure**
+
+            The chart has three concentric rings. The innermost ring splits the data into
+            Male and Female. The middle ring subdivides each sex into weight classes (lightest
+            to heaviest going clockwise). The outermost ring breaks each weight class into its
+            three component lifts: Squat (red), Bench (blue), Deadlift (green).
+
+            **Segment size**
+
+            Each segment's arc length is proportional to the all-time record value for that
+            lift in that weight class. Larger segments = higher records. Because the Squat and
+            Deadlift records are usually much higher than Bench, those two lifts dominate the
+            outer ring. Clicking a segment zooms into that slice, letting you inspect a single
+            sex or weight class in isolation. Click the centre circle to zoom back out.
+        """)
 
 st.markdown("---")
 
