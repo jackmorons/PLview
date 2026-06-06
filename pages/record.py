@@ -279,6 +279,29 @@ else:
             plot_spiral(total_spiral, "TotalKg", "🏆 Total Record — History Spiral", height=750),
             use_container_width=True
         )
+        with st.expander("📖 How to read this chart"):
+            st.markdown("""
+                **The Spiral Shape**
+
+                Each full revolution of the spiral represents one calendar year.
+                The vertical axis is time — the spiral climbs upward as years pass.
+                Within each revolution, the angle encodes the month (January at the front,
+                rotating clockwise through to December).
+                The **radius** — how far the line sits from the central vertical axis —
+                represents the all-time record at that moment. When a new record is set,
+                the line jumps outward. When no new record is set, it holds at the same
+                radius and continues its revolution flat. The result is a growing helix:
+                tighter and closer to the centre in the early years, expanding outward
+                whenever the sport pushed a new boundary.
+
+                **The Colour Gradient**
+
+                The line colour encodes the record value on a shared scale across all four charts:
+                near-white and grey represent the lowest records (early, weaker performances),
+                progressing through green → yellow → blue → red as the record climbs.
+                The mapping is quadratic, so the vivid colours are concentrated at the top end —
+                only the truly elite performances burn red.
+            """)
     else:
         st.caption("Not enough historical data to build the spiral for this category.")
 
