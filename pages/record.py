@@ -75,23 +75,47 @@ def build_record_spiral(df, col):
     return full
 
 
-def plot_spiral(spiral_df, col, accent_color, title):
+
+# Shared colorscale for all spirals: white (lowest) → green → yellow → blue → red (highest)
+SPIRAL_COLORSCALE = [
+    [0.00, "#e0e0e0"],
+    [0.25, "#66bb6a"],
+    [0.50, "#ffd54f"],
+    [0.75, "#42a5f5"],
+    [1.00, "#ef5350"],
+]
+
+
+def plot_spiral(spiral_df, col, title):
     """
     Render a 3D line spiral where:
       - height   = time (year)
       - angle    = month within the year
       - radius   = running record value (kg)
 
-    The line is coloured from dark (oldest) to accent_color (most recent).
+    Line colour is mapped quadratically to the record value:
+    low records → near-white, high records → vivid red.
+    All four charts share the same white→green→yellow→blue→red gradient.
     """
+    # Quadratic normalisation: compresses low values toward white,
+    # stretches high values toward the vivid end of the scale.
+    vals = spiral_df[col].values.astype(float)
+    v_min, v_max = vals.min(), vals.max()
+    if v_max > v_min:
+        color_vals = ((vals - v_min) / (v_max - v_min)) ** 2
+    else:
+        color_vals = vals * 0.0
+
     fig = go.Figure(data=[go.Scatter3d(
         x=spiral_df["x"],
         y=spiral_df["y"],
         z=spiral_df["z"],
         mode="lines",
         line=dict(
-            color=spiral_df["z"],
-            colorscale=[[0, "rgba(25, 25, 40, 0.9)"], [1, accent_color]],
+            color=color_vals,
+            colorscale=SPIRAL_COLORSCALE,
+            cmin=0,
+            cmax=1,
             width=5,
         ),
         customdata=np.stack([spiral_df["label"], spiral_df[col].round(1)], axis=-1),
@@ -252,7 +276,7 @@ else:
     total_spiral = build_record_spiral(filtered, "TotalKg")
     if total_spiral is not None:
         st.plotly_chart(
-            plot_spiral(total_spiral, "TotalKg", "#ffd54f", "🏆 Total Record — History Spiral"),
+            plot_spiral(total_spiral, "TotalKg", "🏆 Total Record — History Spiral"),
             use_container_width=True
         )
     else:
@@ -292,7 +316,7 @@ with r1:
         squat_spiral = build_record_spiral(filtered, "Best3SquatKg")
         if squat_spiral is not None:
             st.plotly_chart(
-                plot_spiral(squat_spiral, "Best3SquatKg", "#ef5350", "🏋️ Squat Record — History Spiral"),
+                plot_spiral(squat_spiral, "Best3SquatKg", "🏋️ Squat Record — History Spiral"),
                 use_container_width=True
             )
         else:
@@ -328,7 +352,7 @@ with r2:
         bench_spiral = build_record_spiral(filtered, "Best3BenchKg")
         if bench_spiral is not None:
             st.plotly_chart(
-                plot_spiral(bench_spiral, "Best3BenchKg", "#42a5f5", "💪 Bench Record — History Spiral"),
+                plot_spiral(bench_spiral, "Best3BenchKg", "💪 Bench Record — History Spiral"),
                 use_container_width=True
             )
         else:
@@ -364,7 +388,7 @@ with r3:
         deadlift_spiral = build_record_spiral(filtered, "Best3DeadliftKg")
         if deadlift_spiral is not None:
             st.plotly_chart(
-                plot_spiral(deadlift_spiral, "Best3DeadliftKg", "#66bb6a", "🔥 Deadlift Record — History Spiral"),
+                plot_spiral(deadlift_spiral, "Best3DeadliftKg", "🔥 Deadlift Record — History Spiral"),
                 use_container_width=True
             )
         else:
