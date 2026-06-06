@@ -481,15 +481,11 @@ with tab_e:
         _n = len(_ring_df)
         _fig_e = go.Figure()
 
-        # Reserve the inner 35 % of the radius as an empty hole for the label column.
-        _CF = 0.35
-
         for _i, _row in _ring_df.iterrows():
-            # Map ring i into the annular band between CF and 1.0 of the total radius.
-            _r_out_f = _CF + (_i + 1) / _n * (1 - _CF)
-            _r_in_f  = _CF + _i       / _n * (1 - _CF)
-            _hole    = _r_in_f / _r_out_f
-            _hw      = _r_out_f * 0.5        # half-width in figure coords
+            _r_out = (_i + 1) / _n
+            _r_in  = _i / _n
+            _hole  = _r_in / _r_out if _i > 0 else 0
+            _hw    = _r_out * 0.5           # half-width in figure coords
             _wc_label = str(_row["WeightClassKg"]) + "kg"
 
             _fig_e.add_trace(go.Pie(
@@ -517,25 +513,27 @@ with tab_e:
                 ),
             ))
 
-        # Vertical label stack inside the central hole.
-        # Spread evenly over 80 % of the hole diameter (CF * 0.5 * 0.8 on each side).
-        _label_span = _CF * 0.5 * 0.80 * 2          # total vertical space
-        _step       = _label_span / max(_n, 1)
-        for _i, _row in _ring_df.iterrows():
-            _y = (0.5 + _label_span / 2 - _step / 2) - _i * _step
+            # Place the label at the midpoint radius of this ring, on the right side
+            # (angle = 0°, i.e. the 3 o'clock position). All labels lie on a single
+            # horizontal spoke, reading outward from lightest to heaviest.
+            _r_mid_fig = (_i + 0.5) / _n * 0.5
             _fig_e.add_annotation(
-                x=0.5, y=_y,
-                text=str(_row["WeightClassKg"]) + "kg",
+                x=0.5 + _r_mid_fig,
+                y=0.5,
+                text=_wc_label,
                 showarrow=False,
-                font=dict(size=8, color="#b8b8cc"),
-                xanchor="center", yanchor="middle",
+                font=dict(size=7.5, color="white"),
+                xanchor="center",
+                yanchor="middle",
+                bgcolor="rgba(0,0,0,0.45)",
+                borderpad=1,
             )
 
         _fig_e.update_layout(
             template="plotly_dark",
             paper_bgcolor="rgba(0,0,0,0)",
-            height=560,
-            margin=dict(l=20, r=20, t=50, b=30),
+            height=520,
+            margin=dict(l=10, r=10, t=50, b=30),
             title=dict(
                 text=_sex_label, x=0.5, xanchor="center",
                 font=dict(color="#f0f0f5", size=15),
