@@ -1,9 +1,5 @@
 import streamlit as st
-from style_utils import (
-    inject_custom_css, format_decimal,
-    LIFT_COLORS, DENSITY_COLORSCALE,
-    PLOTLY_LAYOUT_BASE, PLOTLY_AXIS_STYLE,
-)
+from style_utils import inject_custom_css, format_decimal
 
 inject_custom_css()
 
@@ -15,7 +11,12 @@ import numpy as np
 import urllib.parse
 # import geopandas as gpd
 
-# DENSITY_COLORSCALE, LIFT_COLORS, PLOTLY_LAYOUT_BASE, PLOTLY_AXIS_STYLE imported from style_utils
+# --- Custom Colorscale for Density Heatmaps (Log-like scaling) ---
+# This stretches the low end of the palette to better highlight low-density regions
+viridis_base = px.colors.sequential.Viridis
+# Position = (i/N)^3 compresses colors at the bottom, mapping low values to "higher" colors
+# e.g., 1% density (0.01) maps to i/(N-1) = 0.01^(1/3) = 0.21 on the original palette
+DENSITY_COLORSCALE = [[(i/(len(viridis_base)-1))**3, c] for i, c in enumerate(viridis_base)]
 
 # st.set_page_config(page_title="Tools - PLview", page_icon="⚙️", layout="wide")
 
